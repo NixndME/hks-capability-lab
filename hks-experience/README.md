@@ -113,8 +113,7 @@ different repository from the existing validator's
 
 | Tag | Architecture | Status |
 |---|---|---|
-| `latest`, `1.0.0` | `linux/amd64` | Published. Built, smoke-tested, and pulled fresh from Docker Hub to confirm — repeated after every fix in this repo's history. |
-| — | `linux/arm64` | Not published yet. See below. |
+| `latest`, `1.0.0` | `linux/amd64`, `linux/arm64` | Published. Built, multi-arch manifest pushed, smoke-tested, and verified on both architectures. |
 
 ## Building multi-arch (`linux/amd64` + `linux/arm64`)
 
