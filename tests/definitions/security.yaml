@@ -17,7 +17,7 @@
   result: PASS
   result_notes: "frontend -> backend: HTTP 200 (allowed). untrusted -> backend: connection timeout, curl exit 28 (denied). Both directions proven."
   evidence: [evidence/networkpolicy/netpol.txt]
-  docs: [TEST_RESULTS.md]
+  docs: [docs/validation/TEST_RESULTS.md]
   last_validated: "2026-08-12"
 
 - id: RBAC-001
@@ -40,5 +40,5 @@
   result: PASS
   result_notes: "Scoped ServiceAccount/Role/RoleBinding created and used."
   evidence: []
-  docs: [TEST_RESULTS.md, HKS_CAPABILITY_MATRIX.md]
+  docs: [docs/validation/TEST_RESULTS.md, docs/validation/HKS_CAPABILITY_MATRIX.md]
   last_validated: "2026-08-12"

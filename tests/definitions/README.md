@@ -15,7 +15,7 @@ that's preserved verbatim rather than upgraded to a PASS.
 ## Schema
 
 ```yaml
-id: string              # stable ID, e.g. NET-003 (matches TEST_RESULTS.md where one exists)
+id: string              # stable ID, e.g. NET-003 (matches docs/validation/TEST_RESULTS.md where one exists)
 name: string             # short human-readable name
 category: string         # Networking | Storage | Observability | Scaling |
                           # Deployments | Security | Scheduling | Resiliency | Application

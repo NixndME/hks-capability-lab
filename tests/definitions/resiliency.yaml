@@ -15,7 +15,7 @@
   result: PASS
   result_notes: "Pod correctly removed from Service endpoints while unready (READY 0/1), and rejoined automatically once the injected failure window expired."
   evidence: [evidence/resiliency/resiliency.txt]
-  docs: [TEST_RESULTS.md]
+  docs: [docs/validation/TEST_RESULTS.md]
   last_validated: "2026-08-12"
 
 - id: RES-002
@@ -34,7 +34,7 @@
   result: PASS
   result_notes: "Container restarted after 3 consecutive probe failures (RESTARTS incremented, kubectl describe pod showed Unhealthy -> Killing -> Created/Started)."
   evidence: [evidence/resiliency/resiliency.txt]
-  docs: [TEST_RESULTS.md]
+  docs: [docs/validation/TEST_RESULTS.md]
   last_validated: "2026-08-12"
 
 - id: RES-003
@@ -51,7 +51,7 @@
   result: PASS
   result_notes: "Container restarted automatically."
   evidence: [evidence/resiliency/resiliency.txt]
-  docs: [TEST_RESULTS.md]
+  docs: [docs/validation/TEST_RESULTS.md]
   last_validated: "2026-08-12"
 
 - id: RES-004
@@ -70,5 +70,5 @@
   result: PASS
   result_notes: "Service remained reachable throughout replacement; desired replica count (2) was restored within ~10s."
   evidence: [evidence/resiliency/resiliency.txt]
-  docs: [TEST_RESULTS.md]
+  docs: [docs/validation/TEST_RESULTS.md]
   last_validated: "2026-08-12"

@@ -13,7 +13,7 @@
   result: PASS
   result_notes: "Both object kinds accepted."
   evidence: []
-  docs: [PROMETHEUS_VALIDATION.md]
+  docs: [docs/validation/PROMETHEUS_VALIDATION.md]
   last_validated: "2026-08-12"
 
 - id: MON-002
@@ -48,7 +48,7 @@
     - evidence/prometheus/targets.txt
     - evidence/prometheus/query-app_info.json
     - evidence/prometheus/query-http_requests_total.json
-  docs: [PROMETHEUS_VALIDATION.md]
+  docs: [docs/validation/PROMETHEUS_VALIDATION.md]
   last_validated: "2026-08-12"
 
 - id: MON-003
@@ -64,5 +64,5 @@
   result: NOT_VALIDATED
   result_notes: "PodMonitor CRD is present on the cluster but was not exercised in this test run."
   evidence: [evidence/00-discovery/podmonitor.txt]
-  docs: [HKS_CAPABILITY_MATRIX.md]
+  docs: [docs/validation/HKS_CAPABILITY_MATRIX.md]
   last_validated: "2026-08-12"

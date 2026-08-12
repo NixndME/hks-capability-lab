@@ -14,7 +14,7 @@
   result: PASS
   result_notes: "HTTP 200, /api/info returned valid JSON."
   evidence: [evidence/access-modes/portforward.txt]
-  docs: [TEST_RESULTS.md]
+  docs: [docs/validation/TEST_RESULTS.md]
   last_validated: "2026-08-12"
 
 - id: NET-002
@@ -36,7 +36,7 @@
   result: PASS
   result_notes: "All 4 DNS forms resolved and returned HTTP 200."
   evidence: []
-  docs: [TEST_RESULTS.md]
+  docs: [docs/validation/TEST_RESULTS.md]
   last_validated: "2026-08-12"
 
 - id: NET-003
@@ -53,7 +53,7 @@
   result: PASS
   result_notes: "HTTP 200 from all 4 node IPs (externalTrafficPolicy: Cluster, the default). Node IPs are RFC1918 private -- no public path from this cluster."
   evidence: [evidence/access-modes/nodeport.txt]
-  docs: [TEST_RESULTS.md]
+  docs: [docs/validation/TEST_RESULTS.md]
   last_validated: "2026-08-12"
 
 - id: NET-004
@@ -78,7 +78,7 @@
     controller exists on this cluster. This is an infrastructure gap, not a
     Kubernetes defect. API SUPPORTED / INFRASTRUCTURE NOT AVAILABLE.
   evidence: [evidence/access-modes/loadbalancer.txt]
-  docs: [TEST_RESULTS.md]
+  docs: [docs/validation/TEST_RESULTS.md]
   last_validated: "2026-08-12"
 
 - id: NET-005
@@ -97,9 +97,9 @@
   result_notes: >
     Calico on this cluster is latently capable of Gateway API, but enabling
     it is a cluster-scoped change and was deliberately not made for this
-    test run. See NETWORKING_DECISION.md.
+    test run. See docs/validation/NETWORKING_DECISION.md.
   evidence: []
-  docs: [NETWORKING_DECISION.md]
+  docs: [docs/validation/NETWORKING_DECISION.md]
   last_validated: "2026-08-12"
 
 - id: NET-006
@@ -122,7 +122,7 @@
     identified. Retested against the correct node: HTTP 200. HTTPS via the
     controller's default self-signed cert also validated.
   evidence: [evidence/access-modes/ingress.txt]
-  docs: [TEST_RESULTS.md, NETWORKING_DECISION.md]
+  docs: [docs/validation/TEST_RESULTS.md, docs/validation/NETWORKING_DECISION.md]
   last_validated: "2026-08-12"
 
 - id: NET-007
@@ -139,5 +139,5 @@
   result: PASS
   result_notes: "HTTPS NodePort 30337, self-signed default cert, HTTP 200."
   evidence: [evidence/access-modes/ingress.txt]
-  docs: [TEST_RESULTS.md]
+  docs: [docs/validation/TEST_RESULTS.md]
   last_validated: "2026-08-12"

@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # Verifies the app's ServiceMonitor is actually being scraped by the
 # cluster's existing Prometheus (not just that the CRD was accepted).
-# See PROMETHEUS_VALIDATION.md for the RBAC gap this had to work around.
+# See docs/validation/PROMETHEUS_VALIDATION.md for the RBAC gap this had to work around.
 set -uo pipefail
 cd "$(dirname "${BASH_SOURCE[0]}")/.."
 source scripts/lib.sh
@@ -49,7 +49,7 @@ print(all(v=='1' for v in vals))
   log_info "MON-002 attempt $attempt: not yet visible (Prometheus config reload can take up to ~90s after a ServiceMonitor change), retrying..."
   sleep 15
 done
-$OK || log_fail "MON-002 no healthy scrape target found after retries -- check RBAC (see PROMETHEUS_VALIDATION.md) and prometheus-operator logs"
+$OK || log_fail "MON-002 no healthy scrape target found after retries -- check RBAC (see docs/validation/PROMETHEUS_VALIDATION.md) and prometheus-operator logs"
 
 kill $PF_PID 2>/dev/null
 trap - EXIT

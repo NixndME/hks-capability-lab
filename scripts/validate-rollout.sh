@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Rolling update v1 -> v2 -> v3 (via APP_VERSION env change, which triggers
-# a normal Deployment rolling update), then rollback. See TEST_RESULTS.md
+# a normal Deployment rolling update), then rollback. See docs/validation/TEST_RESULTS.md
 # (DEP-* test IDs) for a worked example from this cluster.
 set -uo pipefail
 cd "$(dirname "${BASH_SOURCE[0]}")/.."

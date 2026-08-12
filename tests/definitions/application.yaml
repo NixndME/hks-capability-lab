@@ -32,5 +32,5 @@
     - evidence/00-discovery/pods-a.txt
   docs:
     - README.md
-    - TEST_RESULTS.md
+    - docs/validation/TEST_RESULTS.md
   last_validated: "2026-08-12"

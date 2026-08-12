@@ -1,5 +1,5 @@
 # Ingress through a specific, already-installed IngressClass (this cluster's
-# validated run used ingress-nginx -- see NETWORKING_DECISION.md). Does not
+# validated run used ingress-nginx -- see docs/validation/NETWORKING_DECISION.md). Does not
 # install an ingress controller.
 # helm install hks-lab helm/hks-capability-lab -f helm/examples/values-ingress.yaml
 ingress:

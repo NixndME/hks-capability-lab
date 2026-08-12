@@ -678,7 +678,7 @@ spec:
 # On kube-prometheus installs that scope Prometheus's RBAC per-namespace
 # (rather than a blanket cluster-wide read), the ServiceMonitor above will
 # be created successfully but silently produce zero targets without this —
-# see PROMETHEUS_VALIDATION.md for how this was discovered. Namespace/name
+# see docs/validation/PROMETHEUS_VALIDATION.md for how this was discovered. Namespace/name
 # of the Prometheus ServiceAccount are supplied by run-hks-test.sh from live
 # discovery (kubectl get prometheus -A), never hard-coded. Purely additive:
 # does not touch anything in the Prometheus/monitoring namespace itself.

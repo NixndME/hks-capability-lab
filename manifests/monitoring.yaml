@@ -20,7 +20,7 @@ metadata:
     # kube-prometheus's Prometheus CR typically selects PrometheusRules by
     # release label; run-hks-test.sh checks the CR's ruleSelector and only
     # applies this file if it will actually be picked up (see
-    # PROMETHEUS_VALIDATION.md for the observed selector on this cluster).
+    # docs/validation/PROMETHEUS_VALIDATION.md for the observed selector on this cluster).
 spec:
   groups:
     - name: hks-capability-lab.rules

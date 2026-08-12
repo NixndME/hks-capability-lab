@@ -56,7 +56,7 @@ do_bluegreen() {
   sleep 3
   log_info "Rolling back green -> blue"
   kubectl -n "$NAMESPACE" patch svc hks-lab-bluegreen -p '{"spec":{"selector":{"hks-capability-lab/track":"blue"}}}'
-  log_pass "Blue/Green: both tracks coexisted, traffic switch + rollback both worked (see BLUE_GREEN section of TEST_RESULTS.md)"
+  log_pass "Blue/Green: both tracks coexisted, traffic switch + rollback both worked (see BLUE_GREEN section of docs/validation/TEST_RESULTS.md)"
 }
 
 do_canary() {
@@ -103,13 +103,13 @@ do_networkpolicy() {
 
 do_scheduling() {
   log_step "Scheduling"
-  log_info "See SCHEDULING_VALIDATION.md -- run individual probes via kubectl using the manifests documented there (nodeSelector, node affinity, tolerations)."
+  log_info "See docs/validation/SCHEDULING_VALIDATION.md -- run individual probes via kubectl using the manifests documented there (nodeSelector, node affinity, tolerations)."
   kubectl -n "$NAMESPACE" get pods -l app.kubernetes.io/name=hks-lab-app -o custom-columns=NAME:.metadata.name,NODE:.spec.nodeName
 }
 
 generate_report() {
   log_step "Generating report"
-  echo "See HKS_CAPABILITY_MATRIX.md, TEST_RESULTS.md, and HKS_PRODUCT_VALIDATION_REPORT.md for the full write-up."
+  echo "See docs/validation/HKS_CAPABILITY_MATRIX.md, docs/validation/TEST_RESULTS.md, and docs/validation/HKS_PRODUCT_VALIDATION_REPORT.md for the full write-up."
   echo "Raw test log for this run: $RESULTS_LOG"
 }
 

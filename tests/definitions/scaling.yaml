@@ -14,7 +14,7 @@
   result: PASS
   result_notes: "2 -> 6 replicas (max) within ~40 seconds; CPU utilization peaked at 570% of the 50% target."
   evidence: [evidence/autoscaler/hpa-timeline.txt]
-  docs: [TEST_RESULTS.md]
+  docs: [docs/validation/TEST_RESULTS.md]
   last_validated: "2026-08-12"
 
 - id: AUT-002
@@ -31,7 +31,7 @@
   result: PASS
   result_notes: "6 -> 2 replicas roughly 60-90s after CPU utilization returned to 0%, per the HPA's 60s scaleDown.stabilizationWindowSeconds."
   evidence: [evidence/autoscaler/hpa-timeline.txt]
-  docs: [TEST_RESULTS.md]
+  docs: [docs/validation/TEST_RESULTS.md]
   last_validated: "2026-08-12"
 
 - id: AUT-003
@@ -62,5 +62,5 @@
     level defect. Test resources cleaned up immediately after evidence
     capture.
   evidence: [evidence/autoscaler/ca-exhaustion.txt]
-  docs: [AUTOSCALER_VALIDATION.md]
+  docs: [docs/validation/AUTOSCALER_VALIDATION.md]
   last_validated: "2026-08-12"

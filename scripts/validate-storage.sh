@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # Storage validation: apply manifests/storage-test.yaml, write a known
 # marker, delete the pod, confirm the marker survives on the new pod.
-# See STORAGE_VALIDATION.md for the reasoning and a worked example.
+# See docs/validation/STORAGE_VALIDATION.md for the reasoning and a worked example.
 set -uo pipefail
 cd "$(dirname "${BASH_SOURCE[0]}")/.."
 source scripts/lib.sh

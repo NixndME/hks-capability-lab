@@ -41,11 +41,11 @@ product. Concretely:
 - `evidence/` — real command output from an actual run against a live HKS
   cluster (`kubernetes-admin@HKS`, still the active kubeconfig context in
   this environment) on 2026-08-12, plus a reference discovery snapshot.
-- Nine top-level markdown docs (`README.md`, `TEST_RESULTS.md`,
-  `HKS_CAPABILITY_MATRIX.md`, `HKS_PRODUCT_VALIDATION_REPORT.md`,
-  `NETWORKING_DECISION.md`, `STORAGE_VALIDATION.md`,
-  `PROMETHEUS_VALIDATION.md`, `AUTOSCALER_VALIDATION.md`,
-  `SCHEDULING_VALIDATION.md`) documenting what was tested and why, with two
+- Nine top-level markdown docs (`README.md`, `docs/validation/TEST_RESULTS.md`,
+  `docs/validation/HKS_CAPABILITY_MATRIX.md`, `docs/validation/HKS_PRODUCT_VALIDATION_REPORT.md`,
+  `docs/validation/NETWORKING_DECISION.md`, `docs/validation/STORAGE_VALIDATION.md`,
+  `docs/validation/PROMETHEUS_VALIDATION.md`, `docs/validation/AUTOSCALER_VALIDATION.md`,
+  `docs/validation/SCHEDULING_VALIDATION.md`) documenting what was tested and why, with two
   real platform bugs found and fixed (ServiceMonitor RBAC gap, duplicate
   scrape via a dedicated `hks-capability-lab/metrics: primary` label).
 

@@ -1,6 +1,6 @@
 # Enables the ServiceMonitor + the additive namespace-scoped RBAC grant
 # needed on clusters that scope Prometheus RBAC per-namespace (see
-# PROMETHEUS_VALIDATION.md -- this was a real finding on the reference
+# docs/validation/PROMETHEUS_VALIDATION.md -- this was a real finding on the reference
 # cluster, not a hypothetical). CONFIRM the Prometheus Operator CRDs exist
 # before enabling:
 #   kubectl get crd servicemonitors.monitoring.coreos.com

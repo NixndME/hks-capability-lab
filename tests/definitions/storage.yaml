@@ -13,7 +13,7 @@
   result: PASS
   result_notes: "Bound immediately to a dynamically-provisioned rook-ceph-block RBD volume."
   evidence: [evidence/storage-test.txt]
-  docs: [STORAGE_VALIDATION.md]
+  docs: [docs/validation/STORAGE_VALIDATION.md]
   last_validated: "2026-08-12"
 
 - id: STG-002
@@ -33,7 +33,7 @@
   result: PASS
   result_notes: "Identical content on the new pod; new pod name confirmed different from the original."
   evidence: [evidence/storage-test.txt]
-  docs: [STORAGE_VALIDATION.md]
+  docs: [docs/validation/STORAGE_VALIDATION.md]
   last_validated: "2026-08-12"
 
 - id: STG-003
@@ -50,7 +50,7 @@
   result: PASS
   result_notes: "RBD driver validated end-to-end; CephFS driver is registered but RWX was not configured/exercised on this cluster."
   evidence: [evidence/00-discovery/csi.txt, evidence/00-discovery/csinodes.txt]
-  docs: [STORAGE_VALIDATION.md]
+  docs: [docs/validation/STORAGE_VALIDATION.md]
   last_validated: "2026-08-12"
 
 - id: STG-004
@@ -70,5 +70,5 @@
   result: PASS
   result_notes: "Pre-existing install, HEALTH_OK; validated read-only plus one isolated PVC (STG-001/002), Rook/Ceph itself was not modified."
   evidence: []
-  docs: [STORAGE_VALIDATION.md]
+  docs: [docs/validation/STORAGE_VALIDATION.md]
   last_validated: "2026-08-12"

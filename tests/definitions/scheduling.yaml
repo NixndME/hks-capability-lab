@@ -16,7 +16,7 @@
     under node contention. This is expected Kubernetes behavior for
     "preferred" (as opposed to "required") constraints, not a defect.
   evidence: [evidence/scheduling/scheduling.txt]
-  docs: [SCHEDULING_VALIDATION.md]
+  docs: [docs/validation/SCHEDULING_VALIDATION.md]
   last_validated: "2026-08-12"
 
 - id: SCHED-002
@@ -31,9 +31,9 @@
   success_conditions:
     - pod_scheduled_only_on_matching_node
   result: PASS
-  result_notes: "See SCHEDULING_VALIDATION.md for the probe manifest and observed placement."
+  result_notes: "See docs/validation/SCHEDULING_VALIDATION.md for the probe manifest and observed placement."
   evidence: [evidence/00-discovery/node-labels.txt]
-  docs: [SCHEDULING_VALIDATION.md]
+  docs: [docs/validation/SCHEDULING_VALIDATION.md]
   last_validated: "2026-08-12"
 
 - id: SCHED-003
@@ -49,7 +49,7 @@
   result: PASS
   result_notes: "Required affinity pinned the pod to the exact target node."
   evidence: []
-  docs: [SCHEDULING_VALIDATION.md]
+  docs: [docs/validation/SCHEDULING_VALIDATION.md]
   last_validated: "2026-08-12"
 
 - id: SCHED-004
@@ -67,7 +67,7 @@
   result: PASS
   result_notes: "Untainted-pod stayed Pending on the control-plane node; a pod with the matching toleration scheduled there successfully."
   evidence: []
-  docs: [SCHEDULING_VALIDATION.md]
+  docs: [docs/validation/SCHEDULING_VALIDATION.md]
   last_validated: "2026-08-12"
 
 - id: SCHED-005
@@ -85,5 +85,5 @@
   result: PASS
   result_notes: "Insufficient cpu correctly blocked scheduling."
   evidence: [evidence/00-discovery/events.txt]
-  docs: [SCHEDULING_VALIDATION.md]
+  docs: [docs/validation/SCHEDULING_VALIDATION.md]
   last_validated: "2026-08-12"

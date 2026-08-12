@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # HPA scale-up/down using the app's own load generator, plus (optional,
 # bounded) Cluster Autoscaler reaction test via a temporary,
-# over-provisioned Deployment. See AUTOSCALER_VALIDATION.md for the
+# over-provisioned Deployment. See docs/validation/AUTOSCALER_VALIDATION.md for the
 # reasoning and a worked example from this cluster.
 set -uo pipefail
 cd "$(dirname "${BASH_SOURCE[0]}")/.."
@@ -104,7 +104,7 @@ log_info "Temporary exhaustion-test Deployment removed"
 if [[ "$AFTER_NODES" -gt "$BEFORE_NODES" ]]; then
   log_pass "AUT-003 Cluster Autoscaler added a node in response to Pending pods"
 elif [[ "$PENDING" -gt 0 ]]; then
-  log_info "AUT-003 CLUSTER AUTOSCALER = NOT VALIDATED (infrastructure not available on this cluster) -- Pending pods observed, no node added. See AUTOSCALER_VALIDATION.md."
+  log_info "AUT-003 CLUSTER AUTOSCALER = NOT VALIDATED (infrastructure not available on this cluster) -- Pending pods observed, no node added. See docs/validation/AUTOSCALER_VALIDATION.md."
 else
   log_info "AUT-003 inconclusive -- cluster had enough spare capacity to schedule all test pods; increase replica count/cpu request to force exhaustion"
 fi

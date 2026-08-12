@@ -102,7 +102,7 @@ prometheus:
     interval: 15s
   # Additive, namespace-scoped RBAC grant letting the cluster's existing
   # Prometheus ServiceAccount discover scrape targets in this namespace.
-  # See PROMETHEUS_VALIDATION.md for why this is needed on clusters that
+  # See docs/validation/PROMETHEUS_VALIDATION.md for why this is needed on clusters that
   # scope Prometheus RBAC per-namespace. Never touches the monitoring
   # namespace itself.
   scrapeRbac:

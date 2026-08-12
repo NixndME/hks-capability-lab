@@ -15,7 +15,7 @@
   result: PASS
   result_notes: "Rolled out respecting maxUnavailable:1/maxSurge:1; /api/info on new pods reported v2."
   evidence: []
-  docs: [TEST_RESULTS.md]
+  docs: [docs/validation/TEST_RESULTS.md]
   last_validated: "2026-08-12"
 
 - id: DEP-002
@@ -33,7 +33,7 @@
   result: PASS
   result_notes: "Same behavior as v1->v2; /api/info reported v3."
   evidence: []
-  docs: [TEST_RESULTS.md]
+  docs: [docs/validation/TEST_RESULTS.md]
   last_validated: "2026-08-12"
 
 - id: DEP-003
@@ -51,7 +51,7 @@
   result: PASS
   result_notes: "Reused the existing v2 ReplicaSet (hks-lab-app-7cd694d464) rather than recreating it; /api/info confirmed v2 after pods settled."
   evidence: []
-  docs: [TEST_RESULTS.md]
+  docs: [docs/validation/TEST_RESULTS.md]
   last_validated: "2026-08-12"
 
 - id: DEP-004
@@ -71,7 +71,7 @@
   result: PASS
   result_notes: "5/5 requests to blue returned blue v1; after the flip, 5/5 returned green v2; after rolling back, 5/5 returned blue v1 again. Both tracks ran simultaneously throughout (2 blue + 2 green pods)."
   evidence: [evidence/bluegreen/bluegreen.txt]
-  docs: [TEST_RESULTS.md]
+  docs: [docs/validation/TEST_RESULTS.md]
   last_validated: "2026-08-12"
 
 - id: DEP-005
@@ -97,5 +97,5 @@
     cluster: 50 requests via Ingress -> 45 stable (v2) / 5 canary (v3), a
     90/10 split matching the configured 10% weight.
   evidence: [evidence/canary/results.txt, evidence/canary/summary.txt]
-  docs: [TEST_RESULTS.md]
+  docs: [docs/validation/TEST_RESULTS.md]
   last_validated: "2026-08-12"
