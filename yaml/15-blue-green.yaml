@@ -1,0 +1,156 @@
+# HKS Capability Lab -- Blue/Green Deployment
+#
+# Two full versions running side by side (BLUE = v1, GREEN = v2), each its
+# own Deployment, plus one Service whose selector decides which track
+# receives live traffic. Traffic starts pointed at BLUE.
+#
+# Depends on: 01-namespace.yaml, 02-application.yaml (for the shared
+# ConfigMap/Secret/ServiceAccount this reuses).
+#
+# Apply with:
+#   kubectl apply -f 15-blue-green.yaml
+#
+# Switch traffic to GREEN:
+#   kubectl -n hks-capability-lab patch svc hks-lab-bluegreen -p '{"spec":{"selector":{"hks-capability-lab/track":"green"}}}'
+#
+# Roll back to BLUE the same way, pointing the selector back to "blue".
+#
+# Verify:
+#   kubectl -n hks-capability-lab get deploy hks-lab-app-blue hks-lab-app-green
+#   kubectl -n hks-capability-lab get svc hks-lab-bluegreen -o jsonpath='{.spec.selector}'
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: hks-lab-app-blue
+  namespace: hks-capability-lab
+  labels:
+    app.kubernetes.io/name: hks-lab-app
+    app.kubernetes.io/part-of: hks-capability-lab
+    hks-capability-lab/track: blue
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: hks-lab-app
+      hks-capability-lab/track: blue
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: hks-lab-app
+        app.kubernetes.io/part-of: hks-capability-lab
+        hks-capability-lab/track: blue
+    spec:
+      serviceAccountName: hks-lab-app
+      automountServiceAccountToken: false
+      containers:
+        - name: app
+          image: python:3.12-alpine
+          command: ["python3", "/app/app.py"]
+          ports:
+            - name: http
+              containerPort: 8080
+          env:
+            - name: APP_VERSION
+              value: "v1"
+            - name: APP_COLOR
+              value: "blue"
+            - name: POD_NAME
+              valueFrom: { fieldRef: { fieldPath: metadata.name } }
+            - name: NODE_NAME
+              valueFrom: { fieldRef: { fieldPath: spec.nodeName } }
+            - name: POD_NAMESPACE
+              valueFrom: { fieldRef: { fieldPath: metadata.namespace } }
+          resources:
+            requests: { cpu: 50m, memory: 32Mi }
+            limits: { cpu: 250m, memory: 64Mi }
+          readinessProbe:
+            httpGet: { path: /readyz, port: 8080 }
+            initialDelaySeconds: 2
+            periodSeconds: 5
+          volumeMounts:
+            - name: app-code
+              mountPath: /app
+              readOnly: true
+      volumes:
+        - name: app-code
+          configMap:
+            name: hks-lab-app-code
+            defaultMode: 0555
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: hks-lab-app-green
+  namespace: hks-capability-lab
+  labels:
+    app.kubernetes.io/name: hks-lab-app
+    app.kubernetes.io/part-of: hks-capability-lab
+    hks-capability-lab/track: green
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: hks-lab-app
+      hks-capability-lab/track: green
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: hks-lab-app
+        app.kubernetes.io/part-of: hks-capability-lab
+        hks-capability-lab/track: green
+    spec:
+      serviceAccountName: hks-lab-app
+      automountServiceAccountToken: false
+      containers:
+        - name: app
+          image: python:3.12-alpine
+          command: ["python3", "/app/app.py"]
+          ports:
+            - name: http
+              containerPort: 8080
+          env:
+            - name: APP_VERSION
+              value: "v2"
+            - name: APP_COLOR
+              value: "green"
+            - name: POD_NAME
+              valueFrom: { fieldRef: { fieldPath: metadata.name } }
+            - name: NODE_NAME
+              valueFrom: { fieldRef: { fieldPath: spec.nodeName } }
+            - name: POD_NAMESPACE
+              valueFrom: { fieldRef: { fieldPath: metadata.namespace } }
+          resources:
+            requests: { cpu: 50m, memory: 32Mi }
+            limits: { cpu: 250m, memory: 64Mi }
+          readinessProbe:
+            httpGet: { path: /readyz, port: 8080 }
+            initialDelaySeconds: 2
+            periodSeconds: 5
+          volumeMounts:
+            - name: app-code
+              mountPath: /app
+              readOnly: true
+      volumes:
+        - name: app-code
+          configMap:
+            name: hks-lab-app-code
+            defaultMode: 0555
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: hks-lab-bluegreen
+  namespace: hks-capability-lab
+  labels:
+    app.kubernetes.io/name: hks-lab-app
+    app.kubernetes.io/part-of: hks-capability-lab
+spec:
+  type: ClusterIP
+  selector:
+    app.kubernetes.io/name: hks-lab-app
+    hks-capability-lab/track: blue
+  ports:
+    - name: http
+      port: 80
+      targetPort: 8080

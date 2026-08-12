@@ -11,11 +11,9 @@
     - "Check whether Cluster Autoscaler infrastructure is present"
     - "If present: create pending workload and watch a new node join"
     - "If absent: understand exactly why, and what would be needed"
-  deploy:
-    yaml:
-      artifact: hks-capability-lab.yaml
-      commands:
-        - "kubectl get pods -A | grep -i cluster-autoscaler"
+  deploy: null
+  manual_commands:
+    - "kubectl get pods -A | grep -i cluster-autoscaler"
   verify:
     description: Only claims PASS if pending workload + autoscaler reaction + new Ready node + pending pods scheduled were ALL observed.
     success_conditions: [autoscaler_present, new_node_joins_and_ready, pending_pods_scheduled]

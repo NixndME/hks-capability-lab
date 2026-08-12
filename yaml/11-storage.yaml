@@ -1,0 +1,72 @@
+# HKS Capability Lab -- Persistent Storage
+#
+# Proves that data survives pod replacement: an isolated PVC plus a
+# single-replica Deployment used to write a marker file, delete the pod,
+# and read the marker back from the new pod. Does not touch any existing
+# PV/PVC/StorageClass in your cluster.
+#
+# `storageClassName` is omitted so your cluster's default StorageClass is
+# used. If your cluster has no default StorageClass, add
+# `storageClassName: <your-storage-class>` under the PVC's spec before
+# applying.
+#
+# Depends on: 01-namespace.yaml.
+#
+# Apply with:
+#   kubectl apply -f 11-storage.yaml
+#
+# Verify:
+#   kubectl -n hks-capability-lab get pvc hks-lab-storage-test
+#   kubectl -n hks-capability-lab get pods -l hks-capability-lab/role=storage-test
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: hks-lab-storage-test
+  namespace: hks-capability-lab
+  labels:
+    app.kubernetes.io/part-of: hks-capability-lab
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: hks-lab-storage-test
+  namespace: hks-capability-lab
+  labels:
+    app.kubernetes.io/part-of: hks-capability-lab
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      hks-capability-lab/role: storage-test
+  template:
+    metadata:
+      labels:
+        hks-capability-lab/role: storage-test
+    spec:
+      containers:
+        - name: storage-test
+          image: python:3.12-alpine
+          command: ["sleep", "infinity"]
+          volumeMounts:
+            - name: data
+              mountPath: /data
+          resources:
+            requests:
+              cpu: 10m
+              memory: 16Mi
+            limits:
+              cpu: 100m
+              memory: 64Mi
+      volumes:
+        - name: data
+          persistentVolumeClaim:
+            claimName: hks-lab-storage-test

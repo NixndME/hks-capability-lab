@@ -5,7 +5,7 @@ from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
 
 from . import config
-from .routers import artifacts, cluster, health, info, live, steps, summary
+from .routers import artifacts, cluster, health, info, live, public_yaml, steps, summary
 
 app = FastAPI(
     title=config.APP_DISPLAY_NAME,
@@ -19,6 +19,7 @@ app.include_router(cluster.router)
 app.include_router(steps.router)
 app.include_router(summary.router)
 app.include_router(artifacts.router)
+app.include_router(public_yaml.router)
 app.include_router(live.router)
 
 _FRONTEND_DIST = Path(__file__).resolve().parent.parent.parent / "frontend" / "dist"

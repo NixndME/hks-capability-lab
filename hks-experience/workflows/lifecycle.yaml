@@ -5,17 +5,20 @@
   skippable: true
   prerequisites: [deploy-app]
   test_ref: [DEP-001, DEP-002]
-  what: "Release a new version of your application without downtime."
+  what: >
+    Release a new version of your application without downtime. Applying
+    yaml/13-rolling-update-v2.yaml updates the running Deployment to v2;
+    applying yaml/14-rolling-update-v3.yaml right after triggers a second
+    rolling update to v3, if you want to see it happen twice.
   why: "Kubernetes gradually replaces old pods with new ones while maintaining availability — this is the default, safest deployment strategy."
   what_you_will_do:
-    - "Trigger a version change (v1 → v2)"
+    - "Apply the v2 Deployment manifest"
     - "Watch old and new pods coexist during the rollout"
     - "Confirm the new version is fully live"
   deploy:
     yaml:
-      artifact: hks-capability-lab.yaml
+      artifact: rolling-update-v2
       commands:
-        - "kubectl -n hks-capability-lab set env deployment/hks-lab-app APP_VERSION=v2"
         - "kubectl -n hks-capability-lab rollout status deployment/hks-lab-app"
   verify:
     description: Rollout completes, new pods report the new version via /api/info.
@@ -36,11 +39,9 @@
   what_you_will_do:
     - "Trigger a rollback to the previous version"
     - "Confirm the app is back on the old version"
-  deploy:
-    yaml:
-      artifact: hks-capability-lab.yaml
-      commands:
-        - "kubectl -n hks-capability-lab rollout undo deployment/hks-lab-app"
+  deploy: null
+  manual_commands:
+    - "kubectl -n hks-capability-lab rollout undo deployment/hks-lab-app"
   verify:
     description: Existing ReplicaSet reused, pods report the previous version.
     success_conditions: [previous_replicaset_reused, pods_report_previous_version]
@@ -64,10 +65,10 @@
     - "Roll back to BLUE if needed"
   deploy:
     yaml:
-      artifact: manifests/blue-green.yaml
-      commands:
-        - "envsubst < manifests/blue-green.yaml | kubectl apply -f -"
-        - "kubectl -n hks-capability-lab patch svc hks-lab-bluegreen -p '{\"spec\":{\"selector\":{\"hks-capability-lab/track\":\"green\"}}}'"
+      artifact: blue-green
+      commands: []
+  manual_commands:
+    - "kubectl -n hks-capability-lab patch svc hks-lab-bluegreen -p '{\"spec\":{\"selector\":{\"hks-capability-lab/track\":\"green\"}}}'"
   verify:
     description: Observed traffic matches the active track before and after the switch.
     success_conditions: [both_tracks_coexist, traffic_switches_on_selector_patch]
@@ -90,10 +91,8 @@
     - "Send traffic and observe the actual distribution"
   deploy:
     yaml:
-      artifact: manifests/canary.yaml
-      commands:
-        - "envsubst < manifests/canary.yaml | kubectl apply -f -"
-        - "for i in $(seq 1 30); do curl -s -H \"Host: ${TEST_HOST}\" http://<ctrl-ip>:<nodeport>/api/info; done"
+      artifact: canary
+      commands: []
   verify:
     description: Requires the discovered IngressClass to be nginx; observed split approximates the configured weight.
     success_conditions: [observed_split_approximates_weight]

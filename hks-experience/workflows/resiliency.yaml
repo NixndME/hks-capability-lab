@@ -5,7 +5,11 @@
   skippable: true
   prerequisites: [deploy-app]
   test_ref: [RES-001, RES-002, RES-003, RES-004]
-  what: "What happens when a pod fails? Let's test it."
+  what: >
+    What happens when a pod fails? Let's test it. The Deployment created in
+    02-application.yaml already includes the PodDisruptionBudget that
+    protects it during voluntary disruptions -- shown on its own as
+    yaml/17-resiliency.yaml if you want to inspect it.
   why: "Self-healing is one of Kubernetes' core promises — but it's worth actually watching happen rather than taking on faith."
   what_you_will_do:
     - "Note the current replica count"

@@ -1,0 +1,61 @@
+# HKS Capability Lab -- Gateway API
+#
+# The Gateway API alternative to Ingress. Only apply this if your cluster
+# has a Gateway API controller installed (`kubectl get gatewayclass`) --
+# the HKS Experience portal checks this automatically and only shows this
+# option when a compatible implementation was detected. Applying it against
+# a cluster with no Gateway controller will leave the Gateway's address
+# unset, the same honest "not available" outcome as an unfulfilled
+# LoadBalancer.
+#
+# `gatewayClassName` below is a placeholder -- replace it with the
+# GatewayClass your cluster actually reports before applying.
+#
+# Depends on: 01-namespace.yaml, 02-application.yaml.
+#
+# Apply with:
+#   kubectl apply -f 07-gateway.yaml
+#
+# Verify:
+#   kubectl -n hks-capability-lab get gateway hks-lab-gateway
+#   kubectl -n hks-capability-lab get httproute hks-lab-app
+---
+apiVersion: gateway.networking.k8s.io/v1
+kind: Gateway
+metadata:
+  name: hks-lab-gateway
+  namespace: hks-capability-lab
+  labels:
+    app.kubernetes.io/name: hks-lab-app
+    app.kubernetes.io/part-of: hks-capability-lab
+spec:
+  gatewayClassName: <your-gatewayclass-name>
+  listeners:
+    - name: http
+      protocol: HTTP
+      port: 80
+      allowedRoutes:
+        namespaces:
+          from: Same
+---
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: hks-lab-app
+  namespace: hks-capability-lab
+  labels:
+    app.kubernetes.io/name: hks-lab-app
+    app.kubernetes.io/part-of: hks-capability-lab
+spec:
+  parentRefs:
+    - name: hks-lab-gateway
+  hostnames:
+    - hks-demo.example.com
+  rules:
+    - matches:
+        - path:
+            type: PathPrefix
+            value: /
+      backendRefs:
+        - name: hks-lab-app
+          port: 80

@@ -14,11 +14,8 @@
     - "Confirm untrusted → backend is denied"
   deploy:
     yaml:
-      artifact: manifests/network-policy.yaml
-      commands:
-        - "envsubst < manifests/network-policy.yaml | kubectl apply -f -"
-        - "kubectl -n hks-capability-lab exec <frontend-pod> -- curl -s -o /dev/null -m5 http://netpol-backend:8080/"
-        - "kubectl -n hks-capability-lab exec <untrusted-pod> -- curl -s -o /dev/null -m5 http://netpol-backend:8080/"
+      artifact: network-policy
+      commands: []
   verify:
     description: Allowed request succeeds; denied request times out.
     success_conditions: [frontend_to_backend_allowed, untrusted_to_backend_denied]

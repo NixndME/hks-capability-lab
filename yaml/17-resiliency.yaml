@@ -1,0 +1,36 @@
+# HKS Capability Lab -- Resiliency (PodDisruptionBudget)
+#
+# The Resiliency step itself is a live action (kill a pod and watch
+# Kubernetes replace it) rather than a resource you deploy -- there's
+# nothing to "apply" to make self-healing happen, it's a built-in property
+# of the Deployment controller already created by 02-application.yaml.
+#
+# This file is the supporting artifact: the same PodDisruptionBudget
+# already included in 02-application.yaml, shown here on its own so you
+# can see exactly what protects hks-lab-app from being fully drained
+# during voluntary disruptions (node drains, cluster upgrades) -- it
+# guarantees at least 1 replica stays available. Applying it again is a
+# safe no-op if 02-application.yaml is already applied.
+#
+# Depends on: 01-namespace.yaml, 02-application.yaml.
+#
+# Apply with:
+#   kubectl apply -f 17-resiliency.yaml
+#
+# Verify:
+#   kubectl -n hks-capability-lab get pdb hks-lab-app
+---
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: hks-lab-app
+  namespace: hks-capability-lab
+  labels:
+    app.kubernetes.io/name: hks-lab-app
+    app.kubernetes.io/part-of: hks-capability-lab
+spec:
+  minAvailable: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: hks-lab-app
+      hks-capability-lab/track: stable

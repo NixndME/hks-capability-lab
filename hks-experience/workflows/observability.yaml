@@ -14,10 +14,8 @@
     - "Query real application metrics"
   deploy:
     yaml:
-      artifact: hks-capability-lab.yaml
-      commands:
-        - "kubectl -n hks-capability-lab get servicemonitor hks-lab-app"
-        - "curl -s http://localhost:19090/api/v1/targets?state=active"
+      artifact: servicemonitor
+      commands: []
     helm:
       chart: helm/hks-capability-lab
       commands:

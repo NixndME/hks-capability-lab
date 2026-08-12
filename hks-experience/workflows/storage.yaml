@@ -14,12 +14,8 @@
     - "Read the marker back from the new pod"
   deploy:
     yaml:
-      artifact: manifests/storage-test.yaml
-      commands:
-        - "envsubst < manifests/storage-test.yaml | kubectl apply -f -"
-        - "kubectl -n hks-capability-lab exec <pod> -- sh -c 'echo HKS_STORAGE_TEST=$(date) > /data/marker.txt'"
-        - "kubectl -n hks-capability-lab delete pod <pod>"
-        - "kubectl -n hks-capability-lab exec <new-pod> -- cat /data/marker.txt"
+      artifact: storage
+      commands: []
   verify:
     description: Marker content identical after pod replacement, new pod name differs from original.
     success_conditions: [pvc_bound, marker_content_identical_after_restart]

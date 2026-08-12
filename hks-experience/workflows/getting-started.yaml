@@ -57,14 +57,8 @@
     - Confirm it's Active
   deploy:
     yaml:
-      artifact: hks-capability-lab.yaml
-      commands:
-        - "envsubst < hks-capability-lab.yaml | kubectl apply -f - --selector=nothing"
-        - "kubectl create namespace hks-capability-lab --dry-run=client -o yaml | kubectl apply -f -"
-    helm:
-      chart: helm/hks-capability-lab
-      commands:
-        - "helm install hks-lab helm/hks-capability-lab --dry-run  # namespace.create: true by default"
+      artifact: namespace
+      commands: []
   verify:
     description: Namespace exists and is Active.
     success_conditions:
@@ -94,9 +88,8 @@
     - Wait for the rollout to finish
   deploy:
     yaml:
-      artifact: hks-capability-lab.yaml
+      artifact: application
       commands:
-        - "envsubst < hks-capability-lab.yaml | kubectl apply -f -"
         - "kubectl -n hks-capability-lab rollout status deployment/hks-lab-app --timeout=120s"
     helm:
       chart: helm/hks-capability-lab

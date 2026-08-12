@@ -22,7 +22,10 @@ export function ErrorPanel({ error, onRetry, retrying }: { error: StructuredErro
   const [copied, setCopied] = useState(false);
   const [showDetails, setShowDetails] = useState(false);
 
-  const commandLine = error.remediation.find((r) => r.trim().startsWith("podman") || r.trim().startsWith("kubectl"));
+  // Kubernetes-journey remediations are always kubectl or plain prose --
+  // never podman/docker (that only ever appears in README's Local
+  // Installation section, not inside the guided journey itself).
+  const commandLine = error.remediation.find((r) => r.trim().startsWith("kubectl"));
   const proseLines = error.remediation.filter((r) => r !== commandLine);
 
   const copyCommand = async () => {

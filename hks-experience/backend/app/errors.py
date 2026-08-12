@@ -36,10 +36,9 @@ class StructuredError:
 
 REMEDIATION = {
     "KUBECONFIG_NOT_FOUND": [
-        "No kubeconfig was found inside this container.",
-        "Start the container with your kubeconfig mounted read-only:",
-        "podman run --rm -p 8080:8080 -v ~/.kube:/home/hksexp/.kube:ro "
-        "docker.io/nixndme/hks-capability-lab-experience:latest",
+        "This portal is running without Kubernetes credentials.",
+        "To enable automatic local validation, start the portal with your kubeconfig mounted read-only.",
+        "See the README's Local Installation → Kubernetes-connected mode section for the exact command for your container runtime (Docker or Podman).",
     ],
     "KUBECONFIG_INVALID": [
         "The mounted kubeconfig could not be parsed.",
@@ -67,11 +66,11 @@ REMEDIATION = {
     ],
     "INTERNAL_ERROR": [
         "Something went wrong inside this application, not on your cluster.",
-        "Check the container logs (podman logs <container>) for a full traceback.",
+        "Check this container's logs for a full traceback (see the README's Local Installation section for how to view them).",
     ],
     "HOSTED_MODE_NOT_EXECUTED": [
         "Hosted mode never connects to a Kubernetes cluster.",
-        "Run this locally with Podman to execute real actions against your own cluster.",
+        "Run this locally to execute real actions against your own cluster -- see the README's Local Installation section.",
     ],
 }
 

@@ -1,0 +1,44 @@
+# HKS Capability Lab -- Ingress
+#
+# Routes HTTP traffic into the cluster with host-based rules through
+# whatever Ingress controller is already installed. Only present this step
+# to a customer whose cluster actually has an IngressClass registered
+# (`kubectl get ingressclass`) -- the HKS Experience portal checks this
+# automatically during Cluster Preparation.
+#
+# `ingressClassName` below assumes ingress-nginx, the most common default.
+# If your cluster's IngressClass has a different name, edit that one field
+# before applying. `host` is deliberately left as a placeholder you should
+# replace with your own domain (see the Public Domain step) or a hostname
+# you resolve with `curl -H "Host: ..."` / `--resolve`.
+#
+# Depends on: 01-namespace.yaml, 02-application.yaml.
+#
+# Apply with:
+#   kubectl apply -f 06-ingress.yaml
+#
+# Verify:
+#   kubectl -n hks-capability-lab get ingress hks-lab-app
+#   curl -H "Host: hks-demo.example.com" http://<ingress-controller-ip>:<port>/
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: hks-lab-app
+  namespace: hks-capability-lab
+  labels:
+    app.kubernetes.io/name: hks-lab-app
+    app.kubernetes.io/part-of: hks-capability-lab
+spec:
+  ingressClassName: nginx
+  rules:
+    - host: hks-demo.example.com
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: hks-lab-app
+                port:
+                  number: 80

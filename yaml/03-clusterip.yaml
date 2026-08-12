@@ -1,0 +1,35 @@
+# HKS Capability Lab -- ClusterIP (internal access)
+#
+# The default Kubernetes Service type: reachable from inside the cluster by
+# DNS name only. This is the same Service already created by
+# 02-application.yaml -- applying this file on its own is a safe, idempotent
+# way to demonstrate ClusterIP specifically, independent of the rest of the
+# application bundle.
+#
+# Depends on: 01-namespace.yaml, 02-application.yaml (for the pods it
+# selects).
+#
+# Apply with:
+#   kubectl apply -f 03-clusterip.yaml
+#
+# Verify:
+#   kubectl -n hks-capability-lab get svc hks-lab-app
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: hks-lab-app
+  namespace: hks-capability-lab
+  labels:
+    app.kubernetes.io/name: hks-lab-app
+    app.kubernetes.io/part-of: hks-capability-lab
+    hks-capability-lab/metrics: primary
+spec:
+  type: ClusterIP
+  selector:
+    app.kubernetes.io/name: hks-lab-app
+    hks-capability-lab/track: stable
+  ports:
+    - name: http
+      port: 80
+      targetPort: 8080

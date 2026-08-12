@@ -1,4 +1,4 @@
-import { CheckCircle2, Circle, Lock, XCircle, MinusCircle, Loader2, AlertTriangle } from "lucide-react";
+import { CheckCircle2, Circle, XCircle, MinusCircle, Loader2, AlertTriangle } from "lucide-react";
 import type { StepStatus } from "../lib/api";
 
 const META: Record<StepStatus, { icon: typeof CheckCircle2; className: string; label: string }> = {
@@ -8,7 +8,6 @@ const META: Record<StepStatus, { icon: typeof CheckCircle2; className: string; l
   NOT_APPLICABLE: { icon: MinusCircle, className: "text-muted", label: "Not applicable" },
   IN_PROGRESS: { icon: Loader2, className: "text-primary animate-spin", label: "In progress" },
   AVAILABLE: { icon: Circle, className: "text-muted", label: "Available" },
-  LOCKED: { icon: Lock, className: "text-slate-300", label: "Locked" },
   // BLOCKED is distinct from FAILED: a prerequisite (cluster connectivity,
   // RBAC) is missing -- the capability test itself never ran, so it's
   // never coded/colored as a failure.
@@ -35,7 +34,6 @@ export function StepStatusBadge({ status }: { status: StepStatus }) {
     NOT_APPLICABLE: "bg-slate-100 text-slate-600 border-slate-200",
     IN_PROGRESS: "bg-indigo-50 text-primary border-indigo-200",
     AVAILABLE: "bg-slate-50 text-muted border-border",
-    LOCKED: "bg-slate-50 text-slate-400 border-border",
     BLOCKED: "bg-amber-50 text-amber-700 border-amber-200",
   };
   return (

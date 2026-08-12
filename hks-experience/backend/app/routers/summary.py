@@ -14,7 +14,7 @@ def summary(response: Response, hks_experience_session: str | None = Cookie(defa
     steps = workflow.load_steps()
     counts = {
         "COMPLETED": 0, "SKIPPED": 0, "FAILED": 0, "NOT_APPLICABLE": 0,
-        "AVAILABLE": 0, "LOCKED": 0, "IN_PROGRESS": 0,
+        "AVAILABLE": 0, "IN_PROGRESS": 0,
     }
     by_category: dict[str, list[dict]] = {}
     for step in steps:

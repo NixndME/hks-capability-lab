@@ -1,0 +1,34 @@
+# HKS Capability Lab -- LoadBalancer
+#
+# LoadBalancer is a Kubernetes API concept -- the Service type below is
+# always accepted by the API server. Whether an EXTERNAL-IP actually gets
+# assigned depends entirely on infrastructure outside the Service API
+# itself (a cloud provider's controller, or something like MetalLB). If
+# EXTERNAL-IP stays <pending>, that means this cluster has no LoadBalancer
+# implementation installed -- not that anything here failed.
+#
+# Depends on: 01-namespace.yaml, 02-application.yaml.
+#
+# Apply with:
+#   kubectl apply -f 05-loadbalancer.yaml
+#
+# Verify:
+#   kubectl -n hks-capability-lab get svc hks-lab-app-lb
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: hks-lab-app-lb
+  namespace: hks-capability-lab
+  labels:
+    app.kubernetes.io/name: hks-lab-app
+    app.kubernetes.io/part-of: hks-capability-lab
+spec:
+  type: LoadBalancer
+  selector:
+    app.kubernetes.io/name: hks-lab-app
+    hks-capability-lab/track: stable
+  ports:
+    - name: http
+      port: 80
+      targetPort: 8080

@@ -1,8 +1,9 @@
 import { useState } from "react";
-import { ChevronLeft, ChevronRight, SkipForward, PlayCircle, HelpCircle, CheckCircle2 } from "lucide-react";
+import { ChevronLeft, ChevronRight, SkipForward, PlayCircle, HelpCircle, CheckCircle2, Download, Package } from "lucide-react";
 import type { RunResult, Step, StructuredError } from "../lib/api";
 import { api } from "../lib/api";
 import { CodeBlock } from "./CodeBlock";
+import { CommandLine } from "./CommandLine";
 import { StepStatusBadge } from "./StatusIcon";
 import { ErrorPanel } from "./ErrorPanel";
 import { ClusterDiscoveryPanel } from "./ClusterDiscoveryPanel";
@@ -46,7 +47,7 @@ export function StepShell({
       const fallback: StructuredError = {
         code: "INTERNAL_ERROR",
         message: "Could not reach the portal backend.",
-        remediation: ["Check the container is still running (podman ps).", String(e)],
+        remediation: ["Check that this portal's container is still running.", String(e)],
       };
       setResult({ step_id: step.id, executed: false, result: "ERROR", status: "BLOCKED", log: [], error: fallback });
     } finally {
@@ -110,7 +111,81 @@ export function StepShell({
               </div>
             )}
           </div>
-          <CodeBlock filename={`${step.id}.sh`} code={activeDeploy.commands.join("\n")} />
+
+          {mode === "yaml" && step.deploy?.yaml && (
+            <div className="space-y-4">
+              {!!step.deploy.yaml.resources?.length && (
+                <div className="rounded-card border border-border bg-slate-50 p-3">
+                  <p className="mb-2 font-subheading text-xs uppercase tracking-wide text-muted">What this YAML creates</p>
+                  <ul className="space-y-1 text-sm">
+                    {step.deploy.yaml.resources.map((r) => (
+                      <li key={`${r.kind}/${r.name}`} className="flex items-baseline gap-2">
+                        <span className="font-subheading text-text">{r.kind}</span>
+                        <span className="text-muted">{r.name}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+
+              {step.deploy.yaml.content && (
+                <div>
+                  <p className="mb-1.5 font-subheading text-sm">YAML — {step.deploy.yaml.filename}</p>
+                  <CodeBlock filename={step.deploy.yaml.filename ?? `${step.id}.yaml`} code={step.deploy.yaml.content} />
+                </div>
+              )}
+
+              {step.deploy.yaml.apply_command ? (
+                <CommandLine
+                  label="Apply this YAML"
+                  command={step.deploy.yaml.apply_command}
+                  href={step.deploy.yaml.raw_url ?? undefined}
+                  hrefLabel="Open Raw GitHub"
+                />
+              ) : (
+                <p className="text-sm text-muted">
+                  Couldn't determine this repository's public GitHub URL — download the YAML above and apply it directly:
+                  <code className="ml-1 rounded bg-slate-100 px-1.5 py-0.5 text-xs">kubectl apply -f {step.deploy.yaml.filename}</code>
+                </p>
+              )}
+
+              {!!step.deploy.yaml.commands?.length && (
+                <div>
+                  <p className="mb-1.5 font-subheading text-sm text-muted">Additional commands for this step</p>
+                  <CodeBlock filename={`${step.id}-extra.sh`} code={step.deploy.yaml.commands.join("\n")} />
+                </div>
+              )}
+            </div>
+          )}
+
+          {mode === "helm" && step.deploy?.helm && (
+            <div className="space-y-4">
+              <div className="flex items-center justify-between rounded-card border border-border bg-slate-50 p-3">
+                <div className="flex items-center gap-2 text-sm">
+                  <Package size={16} className="text-primary" aria-hidden="true" />
+                  <span className="font-subheading">{step.deploy.helm.chart}</span>
+                </div>
+                <a href={api.helmChartUrl} className="btn-secondary !min-h-[32px] !py-1 text-xs">
+                  <Download size={14} aria-hidden="true" /> Download Chart
+                </a>
+              </div>
+              <div>
+                <p className="mb-1.5 font-subheading text-sm">Install</p>
+                <CodeBlock filename={`${step.id}-helm.sh`} code={step.deploy.helm.commands.join("\n")} />
+              </div>
+            </div>
+          )}
+        </section>
+      )}
+
+      {!!step.manual_commands?.length && (
+        <section className="mb-6">
+          <h2 className="mb-2 font-subheading text-sm">Run this</h2>
+          <div className="space-y-2">
+            {step.manual_commands.map((cmd) => (
+              <CommandLine key={cmd} command={cmd} />
+            ))}
+          </div>
         </section>
       )}
 
@@ -119,7 +194,7 @@ export function StepShell({
         <p className="mb-4 text-sm text-muted">{step.expected_result}</p>
 
         {canRun ? (
-          <button onClick={run} disabled={running || step.status === "LOCKED"} className="btn-primary">
+          <button onClick={run} disabled={running} className="btn-primary">
             <PlayCircle size={16} aria-hidden="true" />
             {running ? "Checking…" : "Run / Verify"}
           </button>

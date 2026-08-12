@@ -21,7 +21,7 @@ export function Welcome() {
   if (!info || !steps) return <LoadingState />;
 
   const lastStepDef = lastStep ? steps.find((s) => s.id === lastStep) : null;
-  const firstAvailable = steps.find((s) => s.status !== "LOCKED" && s.status !== "COMPLETED") ?? steps[0];
+  const firstAvailable = steps.find((s) => s.status !== "COMPLETED") ?? steps[0];
 
   return (
     <div className="flex min-h-screen items-center justify-center p-6">
@@ -46,7 +46,7 @@ export function Welcome() {
           )}
 
           <div className="mt-8 flex flex-col items-center gap-3">
-            {lastStepDef && lastStepDef.status !== "LOCKED" && (
+            {lastStepDef && (
               <button onClick={() => navigate(`/journey/${lastStepDef.id}`)} className="btn-secondary w-full max-w-xs">
                 Continue where you left off — {lastStepDef.title}
               </button>

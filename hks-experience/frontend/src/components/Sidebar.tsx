@@ -27,13 +27,14 @@ export function Sidebar({ steps, currentStepId }: { steps: Step[]; currentStepId
           <ul>
             {steps.filter((s) => s.category === cat).map((s) => (
               <li key={s.id}>
+                {/* Every step is directly reachable -- no locking. A
+                 * customer can jump straight to e.g. Helm or Scaling
+                 * without walking earlier steps first. */}
                 <NavLink
-                  to={s.status === "LOCKED" ? "#" : `/journey/${s.id}`}
-                  aria-disabled={s.status === "LOCKED"}
-                  onClick={(e) => { if (s.status === "LOCKED") e.preventDefault(); }}
+                  to={`/journey/${s.id}`}
                   className={({ isActive }) =>
                     `flex min-h-[40px] items-center gap-2.5 rounded-lg px-2 py-1.5 text-sm ${
-                      isActive || s.id === currentStepId ? "bg-indigo-50 text-primary font-subheading" : s.status === "LOCKED" ? "text-slate-300 cursor-not-allowed" : "text-text hover:bg-slate-50"
+                      isActive || s.id === currentStepId ? "bg-indigo-50 text-primary font-subheading" : "text-text hover:bg-slate-50"
                     }`
                   }
                 >

@@ -1,0 +1,35 @@
+# HKS Capability Lab -- NodePort (external access via worker nodes)
+#
+# Exposes the application on a fixed port across every worker node. Works
+# on any cluster without extra infrastructure -- a reasonable baseline for
+# external access when no LoadBalancer or Ingress controller is available.
+#
+# Depends on: 01-namespace.yaml, 02-application.yaml.
+#
+# Apply with:
+#   kubectl apply -f 04-nodeport.yaml
+#
+# Verify:
+#   kubectl -n hks-capability-lab get svc hks-lab-app-nodeport
+#   kubectl get nodes -o wide
+#   curl http://<node-ip>:<node-port>/
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: hks-lab-app-nodeport
+  namespace: hks-capability-lab
+  labels:
+    app.kubernetes.io/name: hks-lab-app
+    app.kubernetes.io/part-of: hks-capability-lab
+  annotations:
+    hks-capability-lab/note: "Dedicated NodePort service for explicit NodePort access testing; the primary Service (03-clusterip.yaml) stays ClusterIP."
+spec:
+  type: NodePort
+  selector:
+    app.kubernetes.io/name: hks-lab-app
+    hks-capability-lab/track: stable
+  ports:
+    - name: http
+      port: 80
+      targetPort: 8080

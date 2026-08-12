@@ -1,0 +1,120 @@
+# HKS Capability Lab -- Canary Deployment
+#
+# Sends a small percentage of traffic to a new version before rolling it
+# out fully. Uses ingress-nginx's native canary-weight annotation for
+# weighted traffic splitting -- no service mesh required. Only works if
+# your cluster's IngressClass is ingress-nginx and 06-ingress.yaml has
+# already been applied (this file shares the same host/path).
+#
+# Depends on: 01-namespace.yaml, 02-application.yaml, 06-ingress.yaml.
+#
+# Apply with:
+#   kubectl apply -f 16-canary.yaml
+#
+# Verify:
+#   kubectl -n hks-capability-lab get deploy hks-lab-app-canary
+#   for i in $(seq 1 20); do curl -s -H "Host: hks-demo.example.com" http://<ingress-controller-ip>:<port>/api/info; done
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: hks-lab-app-canary
+  namespace: hks-capability-lab
+  labels:
+    app.kubernetes.io/name: hks-lab-app
+    app.kubernetes.io/part-of: hks-capability-lab
+    hks-capability-lab/track: canary
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: hks-lab-app
+      hks-capability-lab/track: canary
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: hks-lab-app
+        app.kubernetes.io/part-of: hks-capability-lab
+        hks-capability-lab/track: canary
+    spec:
+      serviceAccountName: hks-lab-app
+      automountServiceAccountToken: false
+      containers:
+        - name: app
+          image: python:3.12-alpine
+          command: ["python3", "/app/app.py"]
+          ports:
+            - name: http
+              containerPort: 8080
+          env:
+            - name: APP_VERSION
+              value: "v3"
+            - name: APP_COLOR
+              value: "canary"
+            - name: POD_NAME
+              valueFrom: { fieldRef: { fieldPath: metadata.name } }
+            - name: NODE_NAME
+              valueFrom: { fieldRef: { fieldPath: spec.nodeName } }
+            - name: POD_NAMESPACE
+              valueFrom: { fieldRef: { fieldPath: metadata.namespace } }
+          resources:
+            requests: { cpu: 50m, memory: 32Mi }
+            limits: { cpu: 250m, memory: 64Mi }
+          readinessProbe:
+            httpGet: { path: /readyz, port: 8080 }
+            initialDelaySeconds: 2
+            periodSeconds: 5
+          volumeMounts:
+            - name: app-code
+              mountPath: /app
+              readOnly: true
+      volumes:
+        - name: app-code
+          configMap:
+            name: hks-lab-app-code
+            defaultMode: 0555
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: hks-lab-app-canary
+  namespace: hks-capability-lab
+  labels:
+    app.kubernetes.io/name: hks-lab-app
+    app.kubernetes.io/part-of: hks-capability-lab
+spec:
+  type: ClusterIP
+  selector:
+    app.kubernetes.io/name: hks-lab-app
+    hks-capability-lab/track: canary
+  ports:
+    - name: http
+      port: 80
+      targetPort: 8080
+---
+# Same host+path as the stable Ingress in 06-ingress.yaml. nginx routes
+# ~10% of requests here, 90% to the stable backend.
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: hks-lab-app-canary
+  namespace: hks-capability-lab
+  labels:
+    app.kubernetes.io/name: hks-lab-app
+    app.kubernetes.io/part-of: hks-capability-lab
+  annotations:
+    nginx.ingress.kubernetes.io/canary: "true"
+    nginx.ingress.kubernetes.io/canary-weight: "10"
+spec:
+  ingressClassName: nginx
+  rules:
+    - host: hks-demo.example.com
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: hks-lab-app-canary
+                port:
+                  number: 80

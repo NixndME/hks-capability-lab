@@ -44,7 +44,7 @@ check_connectivity() {
 
 require_connectivity() {
   if ! check_connectivity; then
-    log_blocked "KUBERNETES_CONNECTION_FAILED: kubectl could not reach a Kubernetes API server. If running via Podman, mount your kubeconfig: -v ~/.kube:/home/hksexp/.kube:ro (or set KUBECONFIG to a valid file inside the container)."
+    log_blocked "KUBERNETES_CONNECTION_FAILED: kubectl could not reach a Kubernetes API server. This portal must be started with your kubeconfig mounted read-only -- see the README's Local Installation -> Kubernetes-connected mode section."
     return 1
   fi
   return 0

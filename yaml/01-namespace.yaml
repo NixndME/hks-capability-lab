@@ -1,0 +1,16 @@
+# HKS Capability Lab -- Create the test namespace
+#
+# Creates one isolated namespace. Every later step in this journey lives
+# here, so cleanup is a single `kubectl delete namespace hks-capability-lab`
+# and nothing here can collide with or affect your existing workloads.
+#
+# Apply with:
+#   kubectl apply -f 01-namespace.yaml
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: hks-capability-lab
+  labels:
+    app.kubernetes.io/part-of: hks-capability-lab
+    hks-capability-lab/managed: "true"

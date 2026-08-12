@@ -13,9 +13,8 @@
     - "Continue to the next step to generate load and watch it react"
   deploy:
     yaml:
-      artifact: hks-capability-lab.yaml
-      commands:
-        - "kubectl -n hks-capability-lab get hpa hks-lab-app"
+      artifact: hpa
+      commands: []
     helm:
       chart: helm/hks-capability-lab
       commands:
@@ -37,15 +36,11 @@
   what: "Push CPU utilization above the HPA's target and watch Kubernetes react in real time."
   why: "This is the 'aha moment' — you'll see replica count actually increase because of real, measured pressure, then decrease once it's gone."
   what_you_will_do:
-    - "Start a CPU load job on the running pods"
+    - "Open the sample application"
+    - "Set CPU load % and duration, then start it"
     - "Watch replica count climb as utilization exceeds target"
     - "Stop the load and watch replicas settle back down"
-  deploy:
-    yaml:
-      artifact: hks-capability-lab.yaml
-      commands:
-        - "curl -s -X POST 'http://<app>/api/load?cpu=90&duration=240&concurrency=2'"
-        - "kubectl -n hks-capability-lab get hpa hks-lab-app -w"
+  deploy: null
   verify:
     description: Replica count increases while load is active, and returns toward minReplicas after the stabilization window once load stops.
     success_conditions: [replicas_increase_under_load, replicas_return_to_min_after_cooldown]
@@ -66,13 +61,10 @@
   what: "See how HKS behaves when the workload consumes memory instead of CPU."
   why: "This HPA is configured for CPU only — memory pressure won't trigger scaling, which is itself a useful thing to understand."
   what_you_will_do:
+    - "Open the sample application"
     - "Start a bounded memory load job (safe limits enforced)"
     - "Observe memory usage without triggering CPU-based scaling"
-  deploy:
-    yaml:
-      artifact: hks-capability-lab.yaml
-      commands:
-        - "curl -s -X POST 'http://<app>/api/load?cpu=0&duration=60&concurrency=1'  # memory variant"
+  deploy: null
   verify:
     description: Memory usage rises and is reported; confirms this HPA doesn't react to memory alone.
     success_conditions: [memory_load_started]

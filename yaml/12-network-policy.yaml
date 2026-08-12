@@ -1,0 +1,158 @@
+# HKS Capability Lab -- NetworkPolicy
+#
+# Proves that permitted traffic works and unauthorized traffic is blocked.
+# Self-contained: 3 disposable pods (frontend / backend / untrusted) plus 2
+# NetworkPolicies, all inside hks-capability-lab. Does not touch any
+# pre-existing namespace or workload.
+#   frontend  -> backend : ALLOWED
+#   untrusted -> backend : DENIED
+#
+# Depends on: 01-namespace.yaml.
+#
+# Apply with:
+#   kubectl apply -f 12-network-policy.yaml
+#
+# Verify:
+#   kubectl -n hks-capability-lab exec deploy/netpol-frontend  -- curl -s -o /dev/null -m5 -w '%{http_code}\n' http://netpol-backend:8080/
+#   kubectl -n hks-capability-lab exec deploy/netpol-untrusted -- curl -s -o /dev/null -m5 -w '%{http_code}\n' http://netpol-backend:8080/
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: netpol-backend
+  namespace: hks-capability-lab
+  labels:
+    app.kubernetes.io/part-of: hks-capability-lab
+    hks-capability-lab/role: backend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      hks-capability-lab/role: backend
+  template:
+    metadata:
+      labels:
+        hks-capability-lab/role: backend
+    spec:
+      containers:
+        - name: backend
+          image: nginxinc/nginx-unprivileged:alpine
+          ports:
+            - containerPort: 8080
+          resources:
+            requests:
+              cpu: 25m
+              memory: 16Mi
+            limits:
+              cpu: 100m
+              memory: 32Mi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: netpol-backend
+  namespace: hks-capability-lab
+  labels:
+    app.kubernetes.io/part-of: hks-capability-lab
+spec:
+  selector:
+    hks-capability-lab/role: backend
+  ports:
+    - port: 8080
+      targetPort: 8080
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: netpol-frontend
+  namespace: hks-capability-lab
+  labels:
+    app.kubernetes.io/part-of: hks-capability-lab
+    hks-capability-lab/role: frontend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      hks-capability-lab/role: frontend
+  template:
+    metadata:
+      labels:
+        hks-capability-lab/role: frontend
+    spec:
+      containers:
+        - name: curl
+          image: curlimages/curl:8.10.1
+          command: ["sleep", "3600"]
+          resources:
+            requests:
+              cpu: 10m
+              memory: 8Mi
+            limits:
+              cpu: 50m
+              memory: 16Mi
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: netpol-untrusted
+  namespace: hks-capability-lab
+  labels:
+    app.kubernetes.io/part-of: hks-capability-lab
+    hks-capability-lab/role: untrusted
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      hks-capability-lab/role: untrusted
+  template:
+    metadata:
+      labels:
+        hks-capability-lab/role: untrusted
+    spec:
+      containers:
+        - name: curl
+          image: curlimages/curl:8.10.1
+          command: ["sleep", "3600"]
+          resources:
+            requests:
+              cpu: 10m
+              memory: 8Mi
+            limits:
+              cpu: 50m
+              memory: 16Mi
+---
+# Default-deny all ingress to backend pods, then explicitly allow only from
+# frontend-labeled pods. Scoped by podSelector, so it cannot affect any
+# workload outside this label/namespace combination.
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: netpol-default-deny-backend
+  namespace: hks-capability-lab
+spec:
+  podSelector:
+    matchLabels:
+      hks-capability-lab/role: backend
+  policyTypes:
+    - Ingress
+  ingress: []
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: netpol-allow-frontend-to-backend
+  namespace: hks-capability-lab
+spec:
+  podSelector:
+    matchLabels:
+      hks-capability-lab/role: backend
+  policyTypes:
+    - Ingress
+  ingress:
+    - from:
+        - podSelector:
+            matchLabels:
+              hks-capability-lab/role: frontend
+      ports:
+        - protocol: TCP
+          port: 8080

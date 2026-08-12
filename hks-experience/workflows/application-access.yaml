@@ -28,9 +28,13 @@
   what: "The default Kubernetes Service type — reachable from inside the cluster by DNS name."
   why: "This is how pods talk to each other inside your cluster, and the foundation every other access mode builds on."
   what_you_will_do:
+    - "Apply the ClusterIP Service"
     - "Exec into a pod"
     - "Resolve the Service by its short name, namespace-qualified name, and full FQDN"
-  deploy: null
+  deploy:
+    yaml:
+      artifact: clusterip
+      commands: []
   verify:
     description: All 4 DNS forms resolve and return HTTP 200 from inside the cluster.
     success_conditions: [short_name_resolves, fqdn_resolves]
@@ -51,6 +55,8 @@
     - "Run kubectl port-forward"
     - "Open the app locally"
   deploy: null
+  manual_commands:
+    - "kubectl -n hks-capability-lab port-forward svc/hks-lab-app 18080:80"
   verify:
     description: Local port responds with HTTP 200.
     success_conditions: [http_200_on_root]
@@ -72,10 +78,10 @@
     - "Reach it via any node's IP"
   deploy:
     yaml:
-      artifact: hks-capability-lab.yaml
+      artifact: nodeport
       commands:
         - "kubectl -n hks-capability-lab get svc hks-lab-app-nodeport -o jsonpath='{.spec.ports[0].nodePort}'"
-        - "curl -s http://<node-ip>:<nodeport>/"
+        - "kubectl get nodes -o jsonpath='{.items[0].status.addresses[?(@.type==\"InternalIP\")].address}'"
   verify:
     description: NodePort answers from node IPs.
     success_conditions: [http_200_from_node_ip]
@@ -101,9 +107,8 @@
     - "Check whether EXTERNAL-IP resolves, or stays <pending>"
   deploy:
     yaml:
-      artifact: manifests/monitoring.yaml
-      commands:
-        - "kubectl -n hks-capability-lab expose deployment hks-lab-app --name=hks-lab-app-lb --type=LoadBalancer --port=80 --target-port=8080"
+      artifact: loadbalancer
+      commands: []
     helm:
       chart: helm/hks-capability-lab
       commands:
@@ -126,18 +131,23 @@
   skippable: true
   prerequisites: [deploy-app]
   test_ref: [NET-005, NET-006]
-  what: "We'll check the routing infrastructure available in this cluster — Ingress controller or Gateway API."
+  what: >
+    We'll check the routing infrastructure available in this cluster --
+    Ingress controller or Gateway API -- and only offer the one(s) your
+    cluster actually has. This step applies the Ingress artifact; if your
+    cluster has a Gateway API controller instead
+    (`kubectl get gatewayclass`), the equivalent Gateway API manifest is
+    available as yaml/07-gateway.yaml alongside this one.
   why: "Ingress/Gateway is how most real-world HTTP traffic reaches Kubernetes workloads with host-based routing and TLS."
   what_you_will_do:
     - "Discover the IngressClass (or GatewayClass) already installed"
-    - "Apply an Ingress routing to the app"
+    - "Apply the Ingress routing to the app"
     - "Verify via the ingress controller's node/NodePort"
   deploy:
     yaml:
-      artifact: hks-capability-lab.yaml
+      artifact: ingress
       commands:
         - "kubectl get ingressclass"
-        - "curl -H \"Host: ${TEST_HOST}\" http://<node-ip>:<http-nodeport>/"
   verify:
     description: HTTP 200 via the discovered Ingress/Gateway.
     success_conditions: [http_200_via_ingress_host_header]

@@ -1,0 +1,43 @@
+# HKS Capability Lab -- ServiceMonitor
+#
+# Wires the sample app into your cluster's EXISTING Prometheus install via
+# the Prometheus Operator's ServiceMonitor CRD. Requires the
+# servicemonitors.monitoring.coreos.com CRD to already be installed
+# (kubectl get crd servicemonitors.monitoring.coreos.com) -- if it isn't,
+# this step doesn't apply to your cluster.
+#
+# If your Prometheus scopes RBAC per-namespace rather than granting a
+# blanket cluster-wide read, you may also need to grant its ServiceAccount
+# read access to Services/Endpoints/Pods in this namespace -- see
+# docs/validation/PROMETHEUS_VALIDATION.md in this repository for the
+# additive RBAC grant this was validated against.
+#
+# Depends on: 01-namespace.yaml, 02-application.yaml.
+#
+# Apply with:
+#   kubectl apply -f 10-servicemonitor.yaml
+#
+# Verify:
+#   kubectl -n hks-capability-lab get servicemonitor hks-lab-app
+#   (then check your Prometheus's Targets page for job="hks-lab-app", state up)
+---
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: hks-lab-app
+  namespace: hks-capability-lab
+  labels:
+    app.kubernetes.io/name: hks-lab-app
+    app.kubernetes.io/part-of: hks-capability-lab
+    hks-capability-lab/servicemonitor: "true"
+spec:
+  selector:
+    matchLabels:
+      hks-capability-lab/metrics: primary
+  namespaceSelector:
+    matchNames:
+      - hks-capability-lab
+  endpoints:
+    - port: http
+      path: /metrics
+      interval: 15s

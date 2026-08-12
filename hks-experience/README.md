@@ -15,7 +15,20 @@ UI instead of a menu or a flat dashboard.
 - **Isn't:** "run everything and show 26/28 PASS" on load. There is no
   bulk-run entrypoint anywhere in this app, by design.
 
-## Run it
+## Running the portal vs. testing your cluster
+
+Two completely separate concerns:
+
+- **Running this portal** — Docker/Podman only matter here (see "Local
+  Installation" below), or the hosted SaaS at `https://hks.nixndme.com`.
+- **Testing your Kubernetes/HKS cluster** — the guided journey never asks
+  you to use Docker or Podman for a Kubernetes deployment step. Every
+  Kubernetes action in the journey is `kubectl apply -f <a public
+  raw-GitHub YAML URL>` (see [`../yaml/`](../yaml/)), `helm install`, your
+  browser, or your DNS provider — nothing else. If a step's error message
+  ever mentions your container runtime, that's a bug; file it.
+
+## Local Installation
 
 Podman and Docker both work — the image and flags are identical either way
 (only the CLI name changes):
@@ -87,10 +100,48 @@ reports a replica count or traffic split, since a single pod can't
 honestly know that; anything cluster-wide comes from the backend's
 `/api/live/*` endpoints instead (which do have cluster API access).
 
-The "Deploy the Sample Application" step reuses the existing validator's
-entire proven Deployment/Service/HPA/RBAC infrastructure from
-`../hks-capability-lab.yaml` — only the ConfigMap's embedded app source is
-swapped for this new one. One workload, two ways to operate it.
+The "Deploy the Sample Application" step's **Run / Verify** button reuses
+the existing validator's entire proven Deployment/Service/HPA/RBAC
+infrastructure from `../hks-capability-lab.yaml` via `shim.sh` — only the
+ConfigMap's embedded app source is swapped for this new one. The step's
+**copy-pasteable `kubectl apply -f <url>` command**, shown to the customer
+above that button, applies the equivalent public manifest,
+[`../yaml/02-application.yaml`](../yaml/02-application.yaml) — same
+resource names/namespace either way, so Verify works no matter which path
+you took. One workload, two ways to operate it, one set of resource names.
+
+## Public YAML artifacts
+
+The guided journey never asks a customer to `git clone` this repository or
+run `envsubst`. Every step that's a genuine Kubernetes resource deployment
+points at a plain, human-readable manifest committed under
+[`../yaml/`](../yaml/) (separate from `../manifests/`, which belongs to the
+existing CLI validator and uses `envsubst` placeholders) — with a stable
+raw GitHub URL a customer can `kubectl apply -f` directly:
+
+```
+https://raw.githubusercontent.com/<owner>/<repo>/<ref>/yaml/<file>
+```
+
+`<owner>/<repo>` is never hard-coded: `backend/app/config.py` derives it
+from this checkout's own `git remote get-url origin` at runtime (dev), or
+from `PUBLIC_GITHUB_OWNER`/`PUBLIC_GITHUB_REPO` env vars baked in at
+container build time (production, since a built image never contains
+`.git` — see `.containerignore`). `<ref>` defaults to the current git
+branch, overridable via `PUBLIC_ARTIFACT_REF` — pin it to a release tag
+(e.g. `v1.0.0`) for reproducible production artifacts. The whole base URL
+can also be overridden directly via `PUBLIC_GITHUB_RAW_BASE_URL`. See
+[`../yaml/README.md`](../yaml/README.md) for the full file list and
+[`backend/app/public_artifacts.py`](backend/app/public_artifacts.py) for
+how each step's "What this YAML creates" / View / Copy / Download / Open
+Raw GitHub panel gets its content — always read live from `../yaml/`,
+never duplicated by hand into the workflow files.
+
+Helm works the same way without cloning: `GET
+/api/public-yaml/helm-chart.tgz` packages
+[`../helm/hks-capability-lab`](../helm/hks-capability-lab) live via `helm
+package`, so the "Download Chart" button in the journey's Helm tab hands
+back a single installable archive.
 
 ## Structure
 
@@ -100,7 +151,8 @@ frontend/      React/TS/Tailwind: Welcome, Journey (sidebar+stepper), Summary
 sample-app/    HKS Demo Workload (separate from ../sample-app/app.py)
 workflows/     23-step journey content (YAML, one file per category) -- see workflows/README.md
 charts/        Reuses ../helm/hks-capability-lab -- not duplicated, see charts/README.md
-artifacts/     Live-generated YAML/Helm bundle download, not static copies -- see artifacts/README.md
+artifacts/     Live-generated bundle.zip (whole-repo YAML+Helm download) -- see artifacts/README.md
+../yaml/       Customer-facing public manifests with stable raw GitHub URLs -- see ../yaml/README.md
 scripts/       build-multiarch.sh (Podman) + build-multiarch-docker.sh (Docker Buildx) for THIS image
 Containerfile  Separate image: docker.io/nixndme/hks-capability-lab-experience
 ```

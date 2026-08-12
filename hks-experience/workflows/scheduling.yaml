@@ -13,13 +13,10 @@
     - "Node affinity — a required rule that must be satisfied"
     - "Taints/tolerations — only tolerated pods schedule onto a tainted node"
     - "Topology spread — pods distribute across nodes where capacity allows"
-  deploy:
-    yaml:
-      artifact: hks-capability-lab.yaml
-      commands:
-        - "kubectl -n hks-capability-lab get pods -o custom-columns=NAME:.metadata.name,NODE:.spec.nodeName"
-        - "kubectl get nodes --show-labels"
-        - "kubectl describe node <control-plane-node> | grep Taints"
+  deploy: null
+  manual_commands:
+    - "kubectl -n hks-capability-lab get pods -o custom-columns=NAME:.metadata.name,NODE:.spec.nodeName"
+    - "kubectl get nodes --show-labels"
   verify:
     description: Each sub-check runs independently; results reported per-concept, not as one pass/fail.
     success_conditions: [resource_request_scheduling_correct, node_affinity_honored, taints_tolerations_honored]

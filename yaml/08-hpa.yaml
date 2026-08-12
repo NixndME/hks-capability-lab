@@ -1,0 +1,40 @@
+# HKS Capability Lab -- Horizontal Pod Autoscaler
+#
+# Automatically adjusts hks-lab-app's replica count based on CPU
+# utilization: scales up toward 6 replicas as CPU exceeds 50%, and back
+# down toward 2 once it settles (with a 60s stabilization window so it
+# doesn't flap).
+#
+# Depends on: 01-namespace.yaml, 02-application.yaml.
+#
+# Apply with:
+#   kubectl apply -f 08-hpa.yaml
+#
+# Verify:
+#   kubectl -n hks-capability-lab get hpa hks-lab-app
+---
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: hks-lab-app
+  namespace: hks-capability-lab
+  labels:
+    app.kubernetes.io/name: hks-lab-app
+    app.kubernetes.io/part-of: hks-capability-lab
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: hks-lab-app
+  minReplicas: 2
+  maxReplicas: 6
+  metrics:
+    - type: Resource
+      resource:
+        name: cpu
+        target:
+          type: Utilization
+          averageUtilization: 50
+  behavior:
+    scaleDown:
+      stabilizationWindowSeconds: 60

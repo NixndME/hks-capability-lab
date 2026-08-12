@@ -1,0 +1,41 @@
+# HKS Capability Lab -- Prometheus alerting (optional)
+#
+# We never install a second Prometheus -- this journey only proves your
+# cluster's EXISTING Prometheus can observe the sample app (see
+# 10-servicemonitor.yaml, which is the artifact the "Observe Prometheus"
+# step actually applies). This file is an OPTIONAL addition: a
+# PrometheusRule so your existing Prometheus/Alertmanager can alert if the
+# app's scrape target goes down. It does not modify any existing rule,
+# alert route, or receiver.
+#
+# Only takes effect if the Prometheus Operator's PrometheusRule CRD is
+# installed (kubectl get crd prometheusrules.monitoring.coreos.com) AND
+# your Prometheus custom resource's ruleSelector picks up this
+# namespace/labels -- check your own Prometheus CR if the rule doesn't
+# appear to be loaded.
+#
+# Depends on: 01-namespace.yaml, 10-servicemonitor.yaml.
+#
+# Apply with:
+#   kubectl apply -f 09-prometheus.yaml
+---
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: hks-lab-app
+  namespace: hks-capability-lab
+  labels:
+    app.kubernetes.io/name: hks-lab-app
+    app.kubernetes.io/part-of: hks-capability-lab
+spec:
+  groups:
+    - name: hks-capability-lab.rules
+      rules:
+        - alert: HksLabAppTargetDown
+          expr: up{job="hks-lab-app"} == 0
+          for: 2m
+          labels:
+            severity: warning
+          annotations:
+            summary: "HKS Capability Lab sample app target is down"
+            description: "Prometheus has not been able to scrape the hks-lab-app ServiceMonitor target for 2 minutes."

@@ -11,7 +11,7 @@ import threading
 from typing import Literal
 
 Status = Literal[
-    "LOCKED", "AVAILABLE", "IN_PROGRESS", "COMPLETED", "SKIPPED", "FAILED", "NOT_APPLICABLE", "BLOCKED"
+    "AVAILABLE", "IN_PROGRESS", "COMPLETED", "SKIPPED", "FAILED", "NOT_APPLICABLE", "BLOCKED"
 ]
 
 _LOCK = threading.Lock()
