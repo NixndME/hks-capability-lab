@@ -165,7 +165,7 @@ different repository from the existing validator's
 
 | Tag | Architecture | Status |
 |---|---|---|
-| `latest`, `1.0.0` | `linux/amd64`, `linux/arm64` | Published. Built, multi-arch manifest pushed, smoke-tested, and verified on both architectures. |
+| `latest`, `1.1.0`, `1.0.0` | `linux/amd64`, `linux/arm64` | Published. Built, multi-arch manifest pushed, smoke-tested, and verified on both architectures. |
 
 ## Building multi-arch (`linux/amd64` + `linux/arm64`)
 

@@ -41,6 +41,7 @@ COPY hks-capability-lab.yaml /app/hks-capability-lab.yaml
 COPY config.env.example /app/config.env.example
 COPY manifests /app/manifests
 COPY helm /app/helm
+COPY yaml /app/yaml
 
 COPY hks-experience/backend/app /app/hks-experience/backend/app
 COPY hks-experience/workflows /app/hks-experience/workflows

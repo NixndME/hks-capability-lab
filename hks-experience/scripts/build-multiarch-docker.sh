@@ -56,6 +56,9 @@ echo
 echo "== Building ${IMAGE} for ${PLATFORMS} =="
 
 ARGS=(buildx build --platform "$PLATFORMS" -t "$IMAGE" -f "$CONTAINERFILE" .)
+if [[ "$TAG" != "latest" ]]; then
+  ARGS+=(-t "${IMAGE_REPOSITORY}:latest")
+fi
 if [[ "$PUSH" == true ]]; then
   ARGS+=(--push)
 else
