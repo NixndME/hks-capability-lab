@@ -1,0 +1,34 @@
+- id: prometheus
+  category: Observability
+  order: 14
+  title: Observe Prometheus
+  skippable: true
+  prerequisites: [deploy-app]
+  test_ref: [MON-001, MON-002]
+  what: "Your cluster already has Prometheus. Let's verify it can actually observe your application."
+  why: "We never install a second Prometheus — this proves the platform's existing observability stack works end-to-end with a real workload."
+  what_you_will_do:
+    - "Deploy a ServiceMonitor pointing at the app"
+    - "Wait for Prometheus to discover the scrape target"
+    - "Verify the target is UP"
+    - "Query real application metrics"
+  deploy:
+    yaml:
+      artifact: hks-capability-lab.yaml
+      commands:
+        - "kubectl -n hks-capability-lab get servicemonitor hks-lab-app"
+        - "curl -s http://localhost:19090/api/v1/targets?state=active"
+    helm:
+      chart: helm/hks-capability-lab
+      commands:
+        - "helm upgrade hks-lab helm/hks-capability-lab --set prometheus.serviceMonitor.enabled=true --set prometheus.scrapeRbac.enabled=true"
+  verify:
+    description: Scrape target reports up, and app_info/http_requests_total are queryable.
+    success_conditions: [scrape_target_up, metrics_queryable]
+    executor: verify_prometheus
+  expected_result: "Target shows UP, and live request count / app_info are queryable from Prometheus."
+  learn_more: >
+    If the target doesn't come up immediately, this cluster may scope
+    Prometheus RBAC per-namespace — see
+    ../../docs/validation/PROMETHEUS_VALIDATION.md for the additive RBAC
+    grant this journey applies automatically.

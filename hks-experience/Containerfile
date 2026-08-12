@@ -1,0 +1,66 @@
+# HKS Capability Lab -- Guided Customer Experience.
+#
+# A SEPARATE product/image from the existing validator's portal
+# (docker.io/nixndme/hks-capability-lab) -- this is
+# docker.io/nixndme/hks-capability-lab-experience. Single container:
+# FastAPI backend + built React frontend + workflow definitions + the
+# existing validator's proven scripts/lib.sh (invoked via shim.sh, never
+# duplicated). kubectl is bundled here (unlike the existing portal) because
+# this app's whole point is to run real kubectl/helm actions on request.
+#
+#   podman build -t hks-capability-lab-experience:dev -f hks-experience/Containerfile hks-experience/..
+#   podman run --rm -p 8080:8080 -v ~/.kube:/home/hksexp/.kube:ro hks-capability-lab-experience:dev
+
+FROM node:22-slim AS frontend-build
+WORKDIR /frontend
+COPY hks-experience/frontend/package.json hks-experience/frontend/package-lock.json* /frontend/
+RUN npm install
+COPY hks-experience/frontend/ /frontend/
+RUN npm run build
+
+FROM python:3.12-slim AS runtime
+
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    curl ca-certificates gnupg gettext-base \
+    && curl -fsSL -o /usr/local/bin/kubectl "https://dl.k8s.io/release/v1.31.0/bin/linux/$(dpkg --print-architecture)/kubectl" \
+    && chmod +x /usr/local/bin/kubectl \
+    && curl -fsSL https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash \
+    && apt-get purge -y gnupg && apt-get autoremove -y \
+    && rm -rf /var/lib/apt/lists/*
+
+WORKDIR /app
+
+COPY hks-experience/backend/requirements.txt /app/hks-experience/backend/requirements.txt
+RUN pip install --no-cache-dir -r /app/hks-experience/backend/requirements.txt
+
+# The existing validator's proven engine -- reused, not duplicated. Only
+# what shim.sh actually needs: scripts/lib.sh + the manifests/artifacts it
+# renders. hks-experience never bundles run-hks-test.sh's menu/CLI itself.
+COPY scripts/lib.sh /app/scripts/lib.sh
+COPY hks-capability-lab.yaml /app/hks-capability-lab.yaml
+COPY config.env.example /app/config.env.example
+COPY manifests /app/manifests
+COPY helm /app/helm
+
+COPY hks-experience/backend/app /app/hks-experience/backend/app
+COPY hks-experience/workflows /app/hks-experience/workflows
+COPY hks-experience/sample-app /app/hks-experience/sample-app
+COPY --from=frontend-build /frontend/dist /app/hks-experience/frontend/dist
+
+RUN useradd --system --create-home --uid 10002 hksexp \
+    && chmod +x /app/hks-experience/backend/app/shim.sh \
+    && mkdir -p /app/evidence \
+    && chown -R hksexp:hksexp /app/evidence
+USER hksexp
+
+ENV PYTHONUNBUFFERED=1 \
+    PORTAL_MODE=local \
+    PORT=8080
+
+WORKDIR /app/hks-experience/backend
+EXPOSE 8080
+
+HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
+    CMD python3 -c "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8080/health', timeout=2)" || exit 1
+
+CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8080"]

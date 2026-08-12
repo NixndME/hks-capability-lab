@@ -1,0 +1,2 @@
+[34mINFO[0m  Resolved Prometheus ServiceAccount -> monitoring/prometheus-k8s
+[32mPASS[0m  HPA hks-lab-app active, current CPU=0%

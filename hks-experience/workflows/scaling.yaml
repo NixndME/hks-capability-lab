@@ -1,0 +1,84 @@
+- id: hpa
+  category: Scaling
+  order: 11
+  title: Enable HPA
+  skippable: true
+  prerequisites: [deploy-app]
+  test_ref: [AUT-001, AUT-002]
+  what: "The Horizontal Pod Autoscaler automatically adjusts your application's replica count based on CPU utilization."
+  why: "This demonstrates workload elasticity on HKS — your app grows and shrinks with real demand, without manual intervention."
+  what_you_will_do:
+    - "Apply the HPA configuration (min 2, max 6, target 50% CPU)"
+    - "Confirm it's tracking the Deployment"
+    - "Continue to the next step to generate load and watch it react"
+  deploy:
+    yaml:
+      artifact: hks-capability-lab.yaml
+      commands:
+        - "kubectl -n hks-capability-lab get hpa hks-lab-app"
+    helm:
+      chart: helm/hks-capability-lab
+      commands:
+        - "helm upgrade hks-lab helm/hks-capability-lab --set hpa.enabled=true"
+  verify:
+    description: HPA exists and reports a valid current-CPU metric.
+    success_conditions: [hpa_exists, hpa_has_metrics]
+    executor: verify_hpa
+  expected_result: "HPA shows minReplicas 2, maxReplicas 6, target 50% CPU, and a live current-CPU reading."
+  learn_more: null
+
+- id: cpu-load
+  category: Scaling
+  order: 12
+  title: Generate CPU Load
+  skippable: true
+  prerequisites: [hpa]
+  test_ref: [AUT-001, AUT-002]
+  what: "Push CPU utilization above the HPA's target and watch Kubernetes react in real time."
+  why: "This is the 'aha moment' — you'll see replica count actually increase because of real, measured pressure, then decrease once it's gone."
+  what_you_will_do:
+    - "Start a CPU load job on the running pods"
+    - "Watch replica count climb as utilization exceeds target"
+    - "Stop the load and watch replicas settle back down"
+  deploy:
+    yaml:
+      artifact: hks-capability-lab.yaml
+      commands:
+        - "curl -s -X POST 'http://<app>/api/load?cpu=90&duration=240&concurrency=2'"
+        - "kubectl -n hks-capability-lab get hpa hks-lab-app -w"
+  verify:
+    description: Replica count increases while load is active, and returns toward minReplicas after the stabilization window once load stops.
+    success_conditions: [replicas_increase_under_load, replicas_return_to_min_after_cooldown]
+    executor: run_cpu_load
+  expected_result: "Replicas climb from 2 toward 6 as CPU exceeds 50%, then settle back to 2 roughly 60-90s after load stops."
+  learn_more: >
+    HPA requested additional replicas because your application's measured
+    CPU utilization ({observed_cpu}%) exceeded the configured target
+    ({target_cpu}%). Current replica count: {replica_count}.
+
+- id: memory-load
+  category: Scaling
+  order: 13
+  title: Generate Memory Load
+  skippable: true
+  prerequisites: [hpa]
+  test_ref: []
+  what: "See how HKS behaves when the workload consumes memory instead of CPU."
+  why: "This HPA is configured for CPU only — memory pressure won't trigger scaling, which is itself a useful thing to understand."
+  what_you_will_do:
+    - "Start a bounded memory load job (safe limits enforced)"
+    - "Observe memory usage without triggering CPU-based scaling"
+  deploy:
+    yaml:
+      artifact: hks-capability-lab.yaml
+      commands:
+        - "curl -s -X POST 'http://<app>/api/load?cpu=0&duration=60&concurrency=1'  # memory variant"
+  verify:
+    description: Memory usage rises and is reported; confirms this HPA doesn't react to memory alone.
+    success_conditions: [memory_load_started]
+    executor: run_memory_load
+  expected_result: "Memory usage increases on the pod; replica count stays unchanged because this HPA targets CPU only."
+  learn_more: >
+    This cluster's HPA is configured for CPU utilization only. Memory
+    pressure alone won't trigger scaling — that would require an
+    additional `resource: memory` metric on the HPA spec.

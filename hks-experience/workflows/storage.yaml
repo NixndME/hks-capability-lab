@@ -1,0 +1,28 @@
+- id: storage
+  category: Storage
+  order: 19
+  title: Persistent Storage
+  skippable: true
+  prerequisites: [deploy-app]
+  test_ref: [STG-001, STG-002]
+  what: "Let's prove that data survives pod replacement."
+  why: "Pods are ephemeral by design — anything that needs to survive a restart must live on a PersistentVolume, not the pod's own filesystem."
+  what_you_will_do:
+    - "Create a PVC"
+    - "Write a timestamped marker file"
+    - "Delete the pod"
+    - "Read the marker back from the new pod"
+  deploy:
+    yaml:
+      artifact: manifests/storage-test.yaml
+      commands:
+        - "envsubst < manifests/storage-test.yaml | kubectl apply -f -"
+        - "kubectl -n hks-capability-lab exec <pod> -- sh -c 'echo HKS_STORAGE_TEST=$(date) > /data/marker.txt'"
+        - "kubectl -n hks-capability-lab delete pod <pod>"
+        - "kubectl -n hks-capability-lab exec <new-pod> -- cat /data/marker.txt"
+  verify:
+    description: Marker content identical after pod replacement, new pod name differs from original.
+    success_conditions: [pvc_bound, marker_content_identical_after_restart]
+    executor: run_storage_test
+  expected_result: "The exact same timestamp you wrote is read back from a brand-new pod."
+  learn_more: null

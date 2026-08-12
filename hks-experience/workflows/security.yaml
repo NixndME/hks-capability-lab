@@ -1,0 +1,27 @@
+- id: network-policy
+  category: Security
+  order: 20
+  title: Network Policy
+  skippable: true
+  prerequisites: [deploy-app]
+  test_ref: [NETPOL-001]
+  what: "Let's prove that permitted traffic works, and unauthorized traffic is blocked."
+  why: "By default, Kubernetes allows all pod-to-pod traffic. NetworkPolicy is how you actually enforce least-privilege network access."
+  what_you_will_do:
+    - "Deploy frontend, backend, and untrusted pods"
+    - "Apply a default-deny policy with an explicit allow from frontend"
+    - "Confirm frontend → backend is allowed"
+    - "Confirm untrusted → backend is denied"
+  deploy:
+    yaml:
+      artifact: manifests/network-policy.yaml
+      commands:
+        - "envsubst < manifests/network-policy.yaml | kubectl apply -f -"
+        - "kubectl -n hks-capability-lab exec <frontend-pod> -- curl -s -o /dev/null -m5 http://netpol-backend:8080/"
+        - "kubectl -n hks-capability-lab exec <untrusted-pod> -- curl -s -o /dev/null -m5 http://netpol-backend:8080/"
+  verify:
+    description: Allowed request succeeds; denied request times out.
+    success_conditions: [frontend_to_backend_allowed, untrusted_to_backend_denied]
+    executor: run_network_policy
+  expected_result: "Allowed request: HTTP 200. Blocked request: connection timeout — both are the correct, expected outcome."
+  learn_more: null

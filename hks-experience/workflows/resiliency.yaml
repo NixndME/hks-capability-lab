@@ -1,0 +1,26 @@
+- id: resiliency
+  category: Resiliency
+  order: 22
+  title: Resiliency
+  skippable: true
+  prerequisites: [deploy-app]
+  test_ref: [RES-001, RES-002, RES-003, RES-004]
+  what: "What happens when a pod fails? Let's test it."
+  why: "Self-healing is one of Kubernetes' core promises — but it's worth actually watching happen rather than taking on faith."
+  what_you_will_do:
+    - "Note the current replica count"
+    - "Kill one pod"
+    - "Watch the Deployment detect the missing replica"
+    - "Watch a new pod get created"
+    - "Confirm the Service recovered throughout"
+  deploy: null
+  verify:
+    description: Desired replica count restored within ~10s; Service stayed reachable throughout.
+    success_conditions: [desired_replica_count_restored, service_remained_reachable]
+    executor: run_resiliency_test
+  expected_result: "A new pod replaces the killed one within ~10 seconds; the Service never stopped answering requests."
+  learn_more: >
+    The Deployment controller continuously reconciles actual replica count
+    against your desired count ({desired_replicas}). When a pod
+    disappears, it's replaced automatically — no human, no script,
+    watching for this specific failure.

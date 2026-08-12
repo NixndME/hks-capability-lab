@@ -1,0 +1,33 @@
+- id: cluster-autoscaler
+  category: Autoscaling
+  order: 23
+  title: Cluster Autoscaler
+  skippable: true
+  prerequisites: [hpa]
+  test_ref: [AUT-003]
+  what: "When pods can't be scheduled anywhere, can this cluster provision more nodes automatically?"
+  why: "This is different from HPA — HPA changes replica count, Cluster Autoscaler changes node count. Both matter for true elasticity."
+  what_you_will_do:
+    - "Check whether Cluster Autoscaler infrastructure is present"
+    - "If present: create pending workload and watch a new node join"
+    - "If absent: understand exactly why, and what would be needed"
+  deploy:
+    yaml:
+      artifact: hks-capability-lab.yaml
+      commands:
+        - "kubectl get pods -A | grep -i cluster-autoscaler"
+  verify:
+    description: Only claims PASS if pending workload + autoscaler reaction + new Ready node + pending pods scheduled were ALL observed.
+    success_conditions: [autoscaler_present, new_node_joins_and_ready, pending_pods_scheduled]
+    executor: verify_cluster_autoscaler
+  expected_result: >
+    Either a real end-to-end scale-up is observed, or you're told clearly
+    this cluster has no node-pool/autoscaler infrastructure — this
+    capability legitimately cannot be exercised without it, and that's
+    reported honestly rather than silently skipped or faked.
+  learn_more: >
+    Cluster Autoscaler requires infrastructure integration (a node-pool
+    provider) beyond what raw Kubernetes provides. CPU pressure inside an
+    existing pod is NOT a Cluster Autoscaler test — a real test requires
+    genuinely unschedulable (Pending) pods and an observed node-count
+    change.

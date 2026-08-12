@@ -1,0 +1,32 @@
+- id: scheduling
+  category: Scheduling
+  order: 21
+  title: Kubernetes Scheduling
+  skippable: true
+  prerequisites: [deploy-app]
+  test_ref: [SCHED-001, SCHED-002, SCHED-003, SCHED-004, SCHED-005]
+  what: "Let's see how Kubernetes decides where a pod should run."
+  why: "Scheduling constraints are how you express placement requirements — spreading for resiliency, pinning for locality, or excluding nodes entirely."
+  what_you_will_do:
+    - "Resource requests — a pod requesting more than any node can give correctly stays Pending"
+    - "nodeSelector — pin a pod to a labeled node"
+    - "Node affinity — a required rule that must be satisfied"
+    - "Taints/tolerations — only tolerated pods schedule onto a tainted node"
+    - "Topology spread — pods distribute across nodes where capacity allows"
+  deploy:
+    yaml:
+      artifact: hks-capability-lab.yaml
+      commands:
+        - "kubectl -n hks-capability-lab get pods -o custom-columns=NAME:.metadata.name,NODE:.spec.nodeName"
+        - "kubectl get nodes --show-labels"
+        - "kubectl describe node <control-plane-node> | grep Taints"
+  verify:
+    description: Each sub-check runs independently; results reported per-concept, not as one pass/fail.
+    success_conditions: [resource_request_scheduling_correct, node_affinity_honored, taints_tolerations_honored]
+    executor: verify_scheduling
+  expected_result: "Each scheduling concept demonstrates the expected placement behavior on your cluster's actual nodes."
+  learn_more: >
+    Soft (preferred) anti-affinity and topology spread influence but don't
+    guarantee perfectly even distribution under contention — that's
+    expected Kubernetes behavior for "preferred" (vs. "required")
+    constraints, not a defect.

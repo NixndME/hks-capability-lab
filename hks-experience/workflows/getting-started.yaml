@@ -1,0 +1,112 @@
+- id: cluster-prep
+  category: Getting Started
+  order: 1
+  title: Cluster Preparation
+  skippable: false
+  prerequisites: []
+  test_ref: []
+  what: >
+    Before we touch anything, let's confirm we can actually see your
+    cluster — its Kubernetes version, node count, and whatever HKS
+    infrastructure (StorageClass, IngressClass, Prometheus, Gateway API,
+    Cluster Autoscaler) is already there.
+  why: >
+    Every later step depends on knowing what your cluster actually has.
+    We never assume — we discover, the same way the existing validator
+    does before running anything.
+  what_you_will_do:
+    - Confirm the Kubernetes API is reachable
+    - Review what HKS discovered automatically
+  deploy: null
+  verify:
+    description: >
+      Read-only discovery via the Kubernetes python client (no kubectl
+      dependency): connection, version, and node count must all succeed for
+      this step to complete. StorageClass/Prometheus/Gateway API/Cluster
+      Autoscaler are then discovered independently and shown as
+      detected/not_detected -- their absence never fails this step. Handled
+      by a dedicated backend code path (see backend/app/routers/steps.py's
+      _run_cluster_prep), not the generic shim.sh executor other steps use.
+    success_conditions:
+      - kubernetes_api_reachable
+      - kubernetes_version_detected
+    executor: null
+  expected_result: >
+    Cluster context, Kubernetes version, and node count are shown, along
+    with what optional infrastructure (Prometheus, Gateway API, Cluster
+    Autoscaler, LoadBalancer) is present so later steps can tell you
+    honestly what to expect.
+  learn_more: null
+
+- id: namespace
+  category: Getting Started
+  order: 2
+  title: Create Namespace
+  skippable: false
+  prerequisites: [cluster-prep]
+  test_ref: [APP-001]
+  what: >
+    A dedicated namespace keeps everything this journey creates isolated
+    from the rest of your cluster.
+  why: >
+    Every resource this journey creates lives in one namespace
+    (`hks-capability-lab`) so cleanup is a single, safe operation, and
+    nothing here can collide with or affect your existing workloads.
+  what_you_will_do:
+    - Apply the Namespace manifest
+    - Confirm it's Active
+  deploy:
+    yaml:
+      artifact: hks-capability-lab.yaml
+      commands:
+        - "envsubst < hks-capability-lab.yaml | kubectl apply -f - --selector=nothing"
+        - "kubectl create namespace hks-capability-lab --dry-run=client -o yaml | kubectl apply -f -"
+    helm:
+      chart: helm/hks-capability-lab
+      commands:
+        - "helm install hks-lab helm/hks-capability-lab --dry-run  # namespace.create: true by default"
+  verify:
+    description: Namespace exists and is Active.
+    success_conditions:
+      - namespace_status_active
+    executor: create_namespace
+  expected_result: "Namespace `hks-capability-lab` shows `Active`."
+  learn_more: null
+
+- id: deploy-app
+  category: Getting Started
+  order: 3
+  title: Deploy the Sample Application
+  skippable: false
+  prerequisites: [namespace]
+  test_ref: [APP-001]
+  what: >
+    Deploy HKS Demo Workload — the realistic sample app every later step in
+    this journey exercises. It reuses the exact same Deployment, Services,
+    HPA, and RBAC the existing validator already proved out; only the
+    application UI itself is the new, purpose-built demo workload.
+  why: >
+    You need a real, running workload before you can validate networking,
+    scaling, observability, or resiliency against it.
+  what_you_will_do:
+    - Choose YAML or Helm
+    - Deploy
+    - Wait for the rollout to finish
+  deploy:
+    yaml:
+      artifact: hks-capability-lab.yaml
+      commands:
+        - "envsubst < hks-capability-lab.yaml | kubectl apply -f -"
+        - "kubectl -n hks-capability-lab rollout status deployment/hks-lab-app --timeout=120s"
+    helm:
+      chart: helm/hks-capability-lab
+      commands:
+        - "helm install hks-lab helm/hks-capability-lab -f helm/examples/values-default.yaml"
+  verify:
+    description: Deployment reaches the desired replica count and all pods are Ready.
+    success_conditions:
+      - deployment_available_replicas_ge_min
+      - all_pods_ready
+    executor: deploy_app
+  expected_result: "`hks-lab-app` shows `2/2` (or more) pods Ready."
+  learn_more: null

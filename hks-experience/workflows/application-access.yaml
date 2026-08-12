@@ -1,0 +1,168 @@
+- id: open-app
+  category: Application Access
+  order: 4
+  title: Open the Application
+  skippable: false
+  prerequisites: [deploy-app]
+  test_ref: [NET-001]
+  what: "Confirm the app is actually reachable before we explore every way to expose it."
+  why: "A quick port-forward is the fastest way to see it's really working."
+  what_you_will_do:
+    - Port-forward the Service to your laptop
+    - Open it in your browser
+  deploy: null
+  verify:
+    description: Port-forward established, HTTP 200 on /.
+    success_conditions: [http_200_on_root]
+    executor: open_app
+  expected_result: "HKS Demo Workload loads at http://localhost:18080, showing your pod, node, and namespace."
+  learn_more: null
+
+- id: clusterip
+  category: Application Access
+  order: 5
+  title: ClusterIP — Internal Access
+  skippable: true
+  prerequisites: [deploy-app]
+  test_ref: [NET-002]
+  what: "The default Kubernetes Service type — reachable from inside the cluster by DNS name."
+  why: "This is how pods talk to each other inside your cluster, and the foundation every other access mode builds on."
+  what_you_will_do:
+    - "Exec into a pod"
+    - "Resolve the Service by its short name, namespace-qualified name, and full FQDN"
+  deploy: null
+  verify:
+    description: All 4 DNS forms resolve and return HTTP 200 from inside the cluster.
+    success_conditions: [short_name_resolves, fqdn_resolves]
+    executor: verify_clusterip
+  expected_result: "hks-lab-app, hks-lab-app.hks-capability-lab, and the full FQDN all resolve and return HTTP 200."
+  learn_more: null
+
+- id: port-forward
+  category: Application Access
+  order: 6
+  title: Port Forward
+  skippable: true
+  prerequisites: [deploy-app]
+  test_ref: [NET-001]
+  what: "Temporarily expose the app to your laptop without changing any cluster configuration."
+  why: "The fastest way to check something works, with zero infrastructure changes."
+  what_you_will_do:
+    - "Run kubectl port-forward"
+    - "Open the app locally"
+  deploy: null
+  verify:
+    description: Local port responds with HTTP 200.
+    success_conditions: [http_200_on_root]
+    executor: open_app
+  expected_result: "http://localhost:18080 loads the app."
+  learn_more: null
+
+- id: nodeport
+  category: Application Access
+  order: 7
+  title: NodePort
+  skippable: true
+  prerequisites: [deploy-app]
+  test_ref: [NET-003]
+  what: "Expose the application on a fixed port across every worker node."
+  why: "NodePort works on any cluster without extra infrastructure — a reasonable baseline for external access."
+  what_you_will_do:
+    - "Look up the assigned NodePort"
+    - "Reach it via any node's IP"
+  deploy:
+    yaml:
+      artifact: hks-capability-lab.yaml
+      commands:
+        - "kubectl -n hks-capability-lab get svc hks-lab-app-nodeport -o jsonpath='{.spec.ports[0].nodePort}'"
+        - "curl -s http://<node-ip>:<nodeport>/"
+  verify:
+    description: NodePort answers from node IPs.
+    success_conditions: [http_200_from_node_ip]
+    executor: verify_nodeport
+  expected_result: "HTTP 200 from the node IP on the detected NodePort."
+  learn_more: null
+
+- id: loadbalancer
+  category: Application Access
+  order: 8
+  title: LoadBalancer
+  skippable: true
+  prerequisites: [deploy-app]
+  test_ref: [NET-004]
+  what: "We'll check whether your cluster has LoadBalancer infrastructure (MetalLB, cloud controller) available."
+  why: >
+    LoadBalancer is a Kubernetes API concept — the Service type is always
+    accepted. Whether an external IP actually gets assigned depends
+    entirely on infrastructure the API can't provide by itself. We check
+    honestly rather than assume.
+  what_you_will_do:
+    - "Request a LoadBalancer-type Service"
+    - "Check whether EXTERNAL-IP resolves, or stays <pending>"
+  deploy:
+    yaml:
+      artifact: manifests/monitoring.yaml
+      commands:
+        - "kubectl -n hks-capability-lab expose deployment hks-lab-app --name=hks-lab-app-lb --type=LoadBalancer --port=80 --target-port=8080"
+    helm:
+      chart: helm/hks-capability-lab
+      commands:
+        - "helm upgrade hks-lab helm/hks-capability-lab --set service.loadBalancer.enabled=true"
+  verify:
+    description: Checks EXTERNAL-IP; reports NOT_AVAILABLE (not FAIL) if it stays pending due to missing infra.
+    success_conditions: [external_ip_assigned]
+    executor: verify_loadbalancer
+  expected_result: "Either an external IP is assigned, or we tell you clearly this cluster has no LoadBalancer infrastructure — both are valid, honest outcomes."
+  learn_more: >
+    If EXTERNAL-IP stayed <pending>, that's not a failure — it means this
+    cluster doesn't have a LoadBalancer controller (like MetalLB or a
+    cloud provider's) installed. The Kubernetes API accepted your request
+    correctly; there's just nothing to fulfill it yet.
+
+- id: ingress-gateway
+  category: Application Access
+  order: 9
+  title: Ingress / Gateway
+  skippable: true
+  prerequisites: [deploy-app]
+  test_ref: [NET-005, NET-006]
+  what: "We'll check the routing infrastructure available in this cluster — Ingress controller or Gateway API."
+  why: "Ingress/Gateway is how most real-world HTTP traffic reaches Kubernetes workloads with host-based routing and TLS."
+  what_you_will_do:
+    - "Discover the IngressClass (or GatewayClass) already installed"
+    - "Apply an Ingress routing to the app"
+    - "Verify via the ingress controller's node/NodePort"
+  deploy:
+    yaml:
+      artifact: hks-capability-lab.yaml
+      commands:
+        - "kubectl get ingressclass"
+        - "curl -H \"Host: ${TEST_HOST}\" http://<node-ip>:<http-nodeport>/"
+  verify:
+    description: HTTP 200 via the discovered Ingress/Gateway.
+    success_conditions: [http_200_via_ingress_host_header]
+    executor: verify_ingress
+  expected_result: "HTTP 200 routed through the cluster's existing ingress controller, using the Host header."
+  learn_more: null
+
+- id: domain
+  category: Application Access
+  order: 10
+  title: Public Domain
+  skippable: true
+  prerequisites: [ingress-gateway]
+  test_ref: []
+  what: "Do you want to expose the application using your own domain?"
+  why: "A real domain is how customers would actually reach this in production."
+  what_you_will_do:
+    - "Enter your domain"
+    - "We tell you exactly what DNS record (A or CNAME) to create"
+  deploy: null
+  verify:
+    description: No automated check — DNS changes are external and never made automatically.
+    success_conditions: []
+    executor: null
+  expected_result: "You know exactly which DNS record to create and where it should point, based on what was discovered about your cluster's ingress/gateway infrastructure."
+  learn_more: >
+    We never modify external DNS on your behalf. This step only tells you
+    what record to create — you (or your DNS provider) create it.

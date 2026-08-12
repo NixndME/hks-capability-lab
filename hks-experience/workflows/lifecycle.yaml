@@ -1,0 +1,105 @@
+- id: rolling-update
+  category: Lifecycle
+  order: 15
+  title: Rolling Update
+  skippable: true
+  prerequisites: [deploy-app]
+  test_ref: [DEP-001, DEP-002]
+  what: "Release a new version of your application without downtime."
+  why: "Kubernetes gradually replaces old pods with new ones while maintaining availability — this is the default, safest deployment strategy."
+  what_you_will_do:
+    - "Trigger a version change (v1 → v2)"
+    - "Watch old and new pods coexist during the rollout"
+    - "Confirm the new version is fully live"
+  deploy:
+    yaml:
+      artifact: hks-capability-lab.yaml
+      commands:
+        - "kubectl -n hks-capability-lab set env deployment/hks-lab-app APP_VERSION=v2"
+        - "kubectl -n hks-capability-lab rollout status deployment/hks-lab-app"
+  verify:
+    description: Rollout completes, new pods report the new version via /api/info.
+    success_conditions: [rollout_completes, new_pods_report_new_version]
+    executor: run_rolling_update
+  expected_result: "Deployment shows 100% new-version pods, zero downtime observed."
+  learn_more: null
+
+- id: rollback
+  category: Lifecycle
+  order: 16
+  title: Rollback
+  skippable: true
+  prerequisites: [rolling-update]
+  test_ref: [DEP-003]
+  what: "Something went wrong with the new version? Let's roll back."
+  why: "Kubernetes keeps prior ReplicaSets around specifically so a rollback is instant, reusing the old pod spec rather than rebuilding it."
+  what_you_will_do:
+    - "Trigger a rollback to the previous version"
+    - "Confirm the app is back on the old version"
+  deploy:
+    yaml:
+      artifact: hks-capability-lab.yaml
+      commands:
+        - "kubectl -n hks-capability-lab rollout undo deployment/hks-lab-app"
+  verify:
+    description: Existing ReplicaSet reused, pods report the previous version.
+    success_conditions: [previous_replicaset_reused, pods_report_previous_version]
+    executor: run_rollback
+  expected_result: "App reports the previous version again; the existing ReplicaSet was reused, not rebuilt."
+  learn_more: null
+
+- id: blue-green
+  category: Lifecycle
+  order: 17
+  title: Blue / Green
+  skippable: true
+  prerequisites: [deploy-app]
+  test_ref: [DEP-004]
+  what: "Run two full versions side by side, and switch all traffic between them instantly."
+  why: "Blue/Green gives you an instant, zero-downtime cutover — and an equally instant rollback if something's wrong, because the old version never stopped running."
+  what_you_will_do:
+    - "Deploy BLUE (v1) and GREEN (v2) simultaneously"
+    - "Confirm traffic is on BLUE"
+    - "Switch traffic to GREEN"
+    - "Roll back to BLUE if needed"
+  deploy:
+    yaml:
+      artifact: manifests/blue-green.yaml
+      commands:
+        - "envsubst < manifests/blue-green.yaml | kubectl apply -f -"
+        - "kubectl -n hks-capability-lab patch svc hks-lab-bluegreen -p '{\"spec\":{\"selector\":{\"hks-capability-lab/track\":\"green\"}}}'"
+  verify:
+    description: Observed traffic matches the active track before and after the switch.
+    success_conditions: [both_tracks_coexist, traffic_switches_on_selector_patch]
+    executor: run_bluegreen
+  expected_result: "Requests to the shared Service return BLUE v1 before the switch, GREEN v2 after — both pods stay running throughout."
+  learn_more: null
+
+- id: canary
+  category: Lifecycle
+  order: 18
+  title: Canary
+  skippable: true
+  prerequisites: [deploy-app]
+  test_ref: [DEP-005]
+  what: "Send a small percentage of traffic to a new version before rolling it out fully."
+  why: "Canary releases let you validate a new version against real traffic with limited blast radius, before committing to it for everyone."
+  what_you_will_do:
+    - "Deploy a canary track alongside stable"
+    - "Configure a 90/10 traffic split"
+    - "Send traffic and observe the actual distribution"
+  deploy:
+    yaml:
+      artifact: manifests/canary.yaml
+      commands:
+        - "envsubst < manifests/canary.yaml | kubectl apply -f -"
+        - "for i in $(seq 1 30); do curl -s -H \"Host: ${TEST_HOST}\" http://<ctrl-ip>:<nodeport>/api/info; done"
+  verify:
+    description: Requires the discovered IngressClass to be nginx; observed split approximates the configured weight.
+    success_conditions: [observed_split_approximates_weight]
+    executor: run_canary
+  expected_result: "Roughly 90% of requests hit stable, ~10% hit canary — matching the configured weight."
+  learn_more: >
+    This uses ingress-nginx's native canary-weight annotation — no service
+    mesh required. If your cluster's IngressClass isn't nginx, this step
+    is correctly skipped rather than failed.

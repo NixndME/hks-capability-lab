@@ -1,0 +1,11 @@
+[34mINFO[0m  Resolved Prometheus ServiceAccount -> monitoring/prometheus-k8s
+[34mINFO[0m  context=kubernetes-admin@HKS
+[34mINFO[0m  version=v1.35.7
+[34mINFO[0m  nodes=4
+[34mINFO[0m  storageclass=rook-ceph-block
+[34mINFO[0m  ingressclass=nginx
+[34mINFO[0m  prometheus=yes
+[34mINFO[0m  gateway_api=no
+[34mINFO[0m  cluster_autoscaler=no
+[34mINFO[0m  metrics_api=yes
+[32mPASS[0m  Cluster discovery complete
