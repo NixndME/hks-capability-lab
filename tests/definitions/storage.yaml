@@ -1,0 +1,74 @@
+- id: STG-001
+  name: PVC provisioning
+  category: Storage
+  description: Dynamic PVC provisioning against the cluster's discovered/default StorageClass.
+  prerequisites: [APP-001]
+  deployment_modes: [yaml]
+  artifacts: [manifests/storage-test.yaml]
+  commands:
+    - "envsubst < manifests/storage-test.yaml | kubectl apply -f -"
+    - "kubectl -n hks-capability-lab get pvc -w"
+  success_conditions:
+    - pvc_reaches_bound
+  result: PASS
+  result_notes: "Bound immediately to a dynamically-provisioned rook-ceph-block RBD volume."
+  evidence: [evidence/storage-test.txt]
+  docs: [STORAGE_VALIDATION.md]
+  last_validated: "2026-08-12"
+
+- id: STG-002
+  name: Persistence across pod restart
+  category: Storage
+  description: Data written to a PVC-backed path survives pod deletion and rescheduling.
+  prerequisites: [STG-001]
+  deployment_modes: [yaml]
+  artifacts: [manifests/storage-test.yaml]
+  commands:
+    - "kubectl exec <pod> -- sh -c 'echo HKS_STORAGE_TEST=$(date) > /data/marker.txt'"
+    - "kubectl delete pod <pod>"
+    - "kubectl exec <new-pod> -- cat /data/marker.txt"
+  success_conditions:
+    - marker_content_identical_after_restart
+    - new_pod_name_differs_from_original
+  result: PASS
+  result_notes: "Identical content on the new pod; new pod name confirmed different from the original."
+  evidence: [evidence/storage-test.txt]
+  docs: [STORAGE_VALIDATION.md]
+  last_validated: "2026-08-12"
+
+- id: STG-003
+  name: CSI driver discovery
+  category: Storage
+  description: RBD and CephFS CSI drivers registered on the cluster.
+  prerequisites: []
+  deployment_modes: [yaml]
+  artifacts: []
+  commands:
+    - "kubectl get csidrivers"
+  success_conditions:
+    - rbd_csi_driver_registered
+  result: PASS
+  result_notes: "RBD driver validated end-to-end; CephFS driver is registered but RWX was not configured/exercised on this cluster."
+  evidence: [evidence/00-discovery/csi.txt, evidence/00-discovery/csinodes.txt]
+  docs: [STORAGE_VALIDATION.md]
+  last_validated: "2026-08-12"
+
+- id: STG-004
+  name: Rook/Ceph integration (read-only)
+  category: Storage
+  description: >
+    Confirm the pre-existing Rook/Ceph install is healthy and usable via its
+    StorageClass, without modifying the Rook/Ceph deployment itself.
+  prerequisites: []
+  deployment_modes: [yaml]
+  artifacts: []
+  commands:
+    - "kubectl -n rook-ceph get cephclusters.ceph.rook.io -o wide"
+  success_conditions:
+    - cephcluster_health_ok
+    - storageclass_backed_by_rook_ceph_provisions_successfully
+  result: PASS
+  result_notes: "Pre-existing install, HEALTH_OK; validated read-only plus one isolated PVC (STG-001/002), Rook/Ceph itself was not modified."
+  evidence: []
+  docs: [STORAGE_VALIDATION.md]
+  last_validated: "2026-08-12"

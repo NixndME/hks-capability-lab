@@ -1,0 +1,6 @@
+=== node labels ===
+NAME           STATUS   ROLES           AGE   VERSION   LABELS
+hks-master     Ready    control-plane   75m   v1.35.7   beta.kubernetes.io/arch=amd64,beta.kubernetes.io/os=linux,ceph-storage=enabled,kubernetes.io/arch=amd64,kubernetes.io/hostname=hks-master,kubernetes.io/os=linux,node-role.kubernetes.io/control-plane=,node.kubernetes.io/exclude-from-external-load-balancers=
+hks-worker-1   Ready    <none>          73m   v1.35.7   beta.kubernetes.io/arch=amd64,beta.kubernetes.io/os=linux,ceph-storage=enabled,kubernetes.io/arch=amd64,kubernetes.io/hostname=hks-worker-1,kubernetes.io/os=linux
+hks-worker-2   Ready    <none>          73m   v1.35.7   beta.kubernetes.io/arch=amd64,beta.kubernetes.io/os=linux,ceph-storage=enabled,kubernetes.io/arch=amd64,kubernetes.io/hostname=hks-worker-2,kubernetes.io/os=linux
+hks-worker-3   Ready    <none>          73m   v1.35.7   beta.kubernetes.io/arch=amd64,beta.kubernetes.io/os=linux,ceph-storage=enabled,kubernetes.io/arch=amd64,kubernetes.io/hostname=hks-worker-3,kubernetes.io/os=linux

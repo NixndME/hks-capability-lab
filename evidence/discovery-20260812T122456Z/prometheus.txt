@@ -1,0 +1,2 @@
+NAMESPACE    NAME   VERSION   DESIRED   READY   RECONCILED   AVAILABLE   AGE    PAUSED
+monitoring   k8s    3.10.0    2         2       True         True        130m   false

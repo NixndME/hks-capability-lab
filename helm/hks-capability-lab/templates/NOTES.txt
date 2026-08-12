@@ -1,0 +1,27 @@
+HKS Capability Lab ({{ .Chart.Name }} {{ .Chart.Version }}) installed as release "{{ .Release.Name }}"
+in namespace "{{ include "hks.namespace" . }}".
+
+Check rollout status:
+  kubectl -n {{ include "hks.namespace" . }} rollout status deployment/{{ include "hks.fullname" . }}
+
+Port-forward:
+  kubectl -n {{ include "hks.namespace" . }} port-forward svc/{{ include "hks.fullname" . }} 8080:{{ .Values.service.clusterIP.port }}
+  open http://localhost:8080
+
+{{- if .Values.service.nodePort.enabled }}
+NodePort service: {{ include "hks.fullname" . }}-nodeport
+  kubectl -n {{ include "hks.namespace" . }} get svc {{ include "hks.fullname" . }}-nodeport
+{{- end }}
+
+{{- if .Values.ingress.enabled }}
+Ingress host: {{ .Values.ingress.host }}
+  (point DNS at your ingress controller, or use curl --resolve/Host header --
+  see NETWORKING_DECISION.md)
+{{- end }}
+
+{{- if not .Values.prometheus.serviceMonitor.enabled }}
+Prometheus ServiceMonitor is disabled by default. Enable with
+--set prometheus.serviceMonitor.enabled=true,prometheus.scrapeRbac.enabled=true
+only after confirming the Prometheus Operator CRDs are installed:
+  kubectl get crd servicemonitors.monitoring.coreos.com
+{{- end }}

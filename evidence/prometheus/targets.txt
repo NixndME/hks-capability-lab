@@ -1,0 +1,2 @@
+up hks-lab-app http://172.20.230.217:8080/metrics
+up hks-lab-app http://172.20.30.14:8080/metrics

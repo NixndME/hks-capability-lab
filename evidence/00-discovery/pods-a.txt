@@ -1,0 +1,77 @@
+=== pods -A ===
+NAMESPACE         NAME                                                     READY   STATUS      RESTARTS      AGE   IP                NODE           NOMINATED NODE   READINESS GATES
+calico-system     calico-apiserver-6679bd5db4-2m9z4                        1/1     Running     0             72m   172.20.230.198    hks-worker-3   <none>           <none>
+calico-system     calico-apiserver-6679bd5db4-g9f9p                        1/1     Running     0             72m   172.20.230.199    hks-worker-3   <none>           <none>
+calico-system     calico-kube-controllers-6dfb4c88fb-86bst                 1/1     Running     0             72m   172.20.230.197    hks-worker-3   <none>           <none>
+calico-system     calico-node-gpmd2                                        1/1     Running     0             72m   192.168.122.232   hks-worker-2   <none>           <none>
+calico-system     calico-node-j6tcf                                        1/1     Running     0             72m   192.168.122.233   hks-worker-3   <none>           <none>
+calico-system     calico-node-z7gwb                                        1/1     Running     0             72m   192.168.122.231   hks-worker-1   <none>           <none>
+calico-system     calico-node-zcgc5                                        1/1     Running     0             72m   192.168.122.230   hks-master     <none>           <none>
+calico-system     calico-typha-54568994df-hl925                            1/1     Running     0             72m   192.168.122.232   hks-worker-2   <none>           <none>
+calico-system     calico-typha-54568994df-srkrw                            1/1     Running     0             72m   192.168.122.233   hks-worker-3   <none>           <none>
+calico-system     calicoctl                                                1/1     Running     0             73m   192.168.122.233   hks-worker-3   <none>           <none>
+calico-system     csi-node-driver-2nhmc                                    2/2     Running     0             72m   172.20.230.193    hks-worker-3   <none>           <none>
+calico-system     csi-node-driver-4h4s7                                    2/2     Running     0             72m   172.20.0.1        hks-master     <none>           <none>
+calico-system     csi-node-driver-hfcqk                                    2/2     Running     0             72m   172.20.30.1       hks-worker-1   <none>           <none>
+calico-system     csi-node-driver-t6bb7                                    2/2     Running     0             72m   172.20.67.1       hks-worker-2   <none>           <none>
+ingress-nginx     ingress-nginx-admission-create-pd749                     0/1     Completed   0             70m   172.20.30.5       hks-worker-1   <none>           <none>
+ingress-nginx     ingress-nginx-admission-patch-c2htl                      0/1     Completed   2             70m   172.20.67.4       hks-worker-2   <none>           <none>
+ingress-nginx     ingress-nginx-controller-5d984ffcf5-qfhd2                1/1     Running     0             70m   172.20.67.5       hks-worker-2   <none>           <none>
+kube-system       coredns-6f65db5985-bzzql                                 1/1     Running     0             73m   172.20.230.196    hks-worker-3   <none>           <none>
+kube-system       coredns-6f65db5985-d4vxw                                 1/1     Running     0             73m   172.20.230.195    hks-worker-3   <none>           <none>
+kube-system       etcd-hks-master                                          1/1     Running     0             76m   192.168.122.230   hks-master     <none>           <none>
+kube-system       kube-apiserver-hks-master                                1/1     Running     0             75m   192.168.122.230   hks-master     <none>           <none>
+kube-system       kube-controller-manager-hks-master                       1/1     Running     1 (76m ago)   76m   192.168.122.230   hks-master     <none>           <none>
+kube-system       kube-proxy-5qssc                                         1/1     Running     0             73m   192.168.122.231   hks-worker-1   <none>           <none>
+kube-system       kube-proxy-h27nn                                         1/1     Running     0             76m   192.168.122.230   hks-master     <none>           <none>
+kube-system       kube-proxy-n2fcv                                         1/1     Running     0             73m   192.168.122.232   hks-worker-2   <none>           <none>
+kube-system       kube-proxy-r6rlm                                         1/1     Running     0             73m   192.168.122.233   hks-worker-3   <none>           <none>
+kube-system       kube-scheduler-hks-master                                1/1     Running     1 (76m ago)   76m   192.168.122.230   hks-master     <none>           <none>
+logging           fluent-bit-7nsjw                                         1/1     Running     0             71m   172.20.30.2       hks-worker-1   <none>           <none>
+logging           fluent-bit-9kwtn                                         1/1     Running     0             71m   172.20.0.2        hks-master     <none>           <none>
+logging           fluent-bit-gfrqd                                         1/1     Running     0             71m   172.20.67.2       hks-worker-2   <none>           <none>
+logging           fluent-bit-tjv96                                         1/1     Running     0             71m   172.20.230.204    hks-worker-3   <none>           <none>
+monitoring        alertmanager-main-0                                      2/2     Running     0             68m   172.20.67.9       hks-worker-2   <none>           <none>
+monitoring        alertmanager-main-1                                      2/2     Running     0             68m   172.20.230.206    hks-worker-3   <none>           <none>
+monitoring        alertmanager-main-2                                      2/2     Running     0             68m   172.20.30.7       hks-worker-1   <none>           <none>
+monitoring        blackbox-exporter-86f4c466db-8tbmk                       3/3     Running     0             71m   172.20.230.202    hks-worker-3   <none>           <none>
+monitoring        grafana-b4b4fffff-zsbcr                                  1/1     Running     0             71m   172.20.230.203    hks-worker-3   <none>           <none>
+monitoring        kube-state-metrics-5799f9d7d6-gnvwp                      3/3     Running     0             70m   172.20.30.3       hks-worker-1   <none>           <none>
+monitoring        node-exporter-4rxdt                                      2/2     Running     0             70m   192.168.122.230   hks-master     <none>           <none>
+monitoring        node-exporter-59qmc                                      2/2     Running     0             70m   192.168.122.231   hks-worker-1   <none>           <none>
+monitoring        node-exporter-dkl9r                                      2/2     Running     0             70m   192.168.122.233   hks-worker-3   <none>           <none>
+monitoring        node-exporter-ljq2h                                      2/2     Running     0             70m   192.168.122.232   hks-worker-2   <none>           <none>
+monitoring        prometheus-adapter-6458876f77-9srzf                      1/1     Running     0             70m   172.20.30.4       hks-worker-1   <none>           <none>
+monitoring        prometheus-adapter-6458876f77-vw466                      1/1     Running     0             70m   172.20.67.3       hks-worker-2   <none>           <none>
+monitoring        prometheus-k8s-0                                         2/2     Running     0             68m   172.20.230.207    hks-worker-3   <none>           <none>
+monitoring        prometheus-k8s-1                                         2/2     Running     0             68m   172.20.67.10      hks-worker-2   <none>           <none>
+monitoring        prometheus-operator-588fb6c996-bc2d7                     2/2     Running     0             71m   172.20.230.201    hks-worker-3   <none>           <none>
+rook-ceph         csi-cephfsplugin-dj8d2                                   3/3     Running     1 (67m ago)   68m   192.168.122.232   hks-worker-2   <none>           <none>
+rook-ceph         csi-cephfsplugin-provisioner-58584ccfd4-q8pc7            6/6     Running     1 (66m ago)   68m   172.20.67.7       hks-worker-2   <none>           <none>
+rook-ceph         csi-cephfsplugin-provisioner-58584ccfd4-s7b2k            6/6     Running     3 (62m ago)   68m   172.20.230.205    hks-worker-3   <none>           <none>
+rook-ceph         csi-cephfsplugin-sbblc                                   3/3     Running     1 (65m ago)   68m   192.168.122.233   hks-worker-3   <none>           <none>
+rook-ceph         csi-cephfsplugin-t6gh7                                   3/3     Running     1 (67m ago)   68m   192.168.122.231   hks-worker-1   <none>           <none>
+rook-ceph         csi-rbdplugin-provisioner-5fc7c8f57b-66h64               6/6     Running     3 (62m ago)   68m   172.20.30.6       hks-worker-1   <none>           <none>
+rook-ceph         csi-rbdplugin-provisioner-5fc7c8f57b-m45cn               6/6     Running     3 (62m ago)   68m   172.20.67.6       hks-worker-2   <none>           <none>
+rook-ceph         csi-rbdplugin-rqq2l                                      3/3     Running     1 (65m ago)   68m   192.168.122.233   hks-worker-3   <none>           <none>
+rook-ceph         csi-rbdplugin-v5hfb                                      3/3     Running     1 (67m ago)   68m   192.168.122.231   hks-worker-1   <none>           <none>
+rook-ceph         csi-rbdplugin-wzjlp                                      3/3     Running     1 (67m ago)   68m   192.168.122.232   hks-worker-2   <none>           <none>
+rook-ceph         rook-ceph-crashcollector-hks-worker-1-66b67fd8bc-wgrd4   1/1     Running     0             53m   172.20.30.10      hks-worker-1   <none>           <none>
+rook-ceph         rook-ceph-crashcollector-hks-worker-2-647549664d-777hx   1/1     Running     0             53m   172.20.67.18      hks-worker-2   <none>           <none>
+rook-ceph         rook-ceph-crashcollector-hks-worker-3-74df44bc8f-xxbmh   1/1     Running     0             53m   172.20.230.215    hks-worker-3   <none>           <none>
+rook-ceph         rook-ceph-exporter-hks-worker-1-74d57c7b95-7pqpq         2/2     Running     0             53m   172.20.30.11      hks-worker-1   <none>           <none>
+rook-ceph         rook-ceph-exporter-hks-worker-2-59c8d57778-ss65m         2/2     Running     0             53m   172.20.67.19      hks-worker-2   <none>           <none>
+rook-ceph         rook-ceph-exporter-hks-worker-3-69d98cf477-7pjxc         2/2     Running     0             53m   172.20.230.216    hks-worker-3   <none>           <none>
+rook-ceph         rook-ceph-mgr-a-6594545875-xzlpv                         3/3     Running     0             54m   172.20.67.13      hks-worker-2   <none>           <none>
+rook-ceph         rook-ceph-mgr-b-ccc554489-sdsr6                          3/3     Running     0             54m   172.20.230.210    hks-worker-3   <none>           <none>
+rook-ceph         rook-ceph-mon-a-778fb5447-dt4zb                          2/2     Running     0             55m   172.20.230.209    hks-worker-3   <none>           <none>
+rook-ceph         rook-ceph-mon-b-5f549448c-tnjqm                          2/2     Running     0             54m   172.20.67.12      hks-worker-2   <none>           <none>
+rook-ceph         rook-ceph-mon-c-6c65994559-7dphq                         2/2     Running     0             54m   172.20.30.9       hks-worker-1   <none>           <none>
+rook-ceph         rook-ceph-operator-7f854d8f6b-fvbpz                      1/1     Running     0             72m   172.20.230.200    hks-worker-3   <none>           <none>
+rook-ceph         rook-ceph-osd-0-8467854678-f8mvg                         2/2     Running     0             53m   172.20.30.13      hks-worker-1   <none>           <none>
+rook-ceph         rook-ceph-osd-1-554c6d5cf9-lh42d                         2/2     Running     0             53m   172.20.67.17      hks-worker-2   <none>           <none>
+rook-ceph         rook-ceph-osd-2-69bc4d9db-tch8w                          2/2     Running     0             53m   172.20.230.214    hks-worker-3   <none>           <none>
+rook-ceph         rook-ceph-osd-prepare-hks-worker-1-kn9nc                 0/1     Completed   0             53m   172.20.30.12      hks-worker-1   <none>           <none>
+rook-ceph         rook-ceph-osd-prepare-hks-worker-2-k5g2p                 0/1     Completed   0             53m   172.20.67.16      hks-worker-2   <none>           <none>
+rook-ceph         rook-ceph-osd-prepare-hks-worker-3-vkbkp                 0/1     Completed   0             53m   172.20.230.213    hks-worker-3   <none>           <none>
+tigera-operator   tigera-operator-87789c8c8-frvtw                          1/1     Running     0             73m   192.168.122.231   hks-worker-1   <none>           <none>

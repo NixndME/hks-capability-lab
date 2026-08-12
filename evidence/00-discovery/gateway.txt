@@ -1,0 +1,2 @@
+=== gateway -A ===
+error: the server doesn't have a resource type "gateway"

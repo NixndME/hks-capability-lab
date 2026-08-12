@@ -1,0 +1,89 @@
+- id: SCHED-001
+  name: Soft anti-affinity / topology spread
+  category: Scheduling
+  description: Preferred (soft) pod anti-affinity and topologySpreadConstraints influence pod placement.
+  prerequisites: [APP-001]
+  deployment_modes: [yaml]
+  artifacts: [hks-capability-lab.yaml]
+  commands:
+    - "kubectl -n hks-capability-lab get pods -o custom-columns=NAME:.metadata.name,NODE:.spec.nodeName"
+  success_conditions:
+    - pods_spread_across_nodes_where_capacity_allows
+  result: PASS
+  result_notes: >
+    PASS WITH CAVEAT: soft (preferred) anti-affinity/topology-spread
+    constraints influenced but did not guarantee perfectly even distribution
+    under node contention. This is expected Kubernetes behavior for
+    "preferred" (as opposed to "required") constraints, not a defect.
+  evidence: [evidence/scheduling/scheduling.txt]
+  docs: [SCHEDULING_VALIDATION.md]
+  last_validated: "2026-08-12"
+
+- id: SCHED-002
+  name: nodeSelector
+  category: Scheduling
+  description: Pod with a nodeSelector only schedules onto matching-labeled nodes.
+  prerequisites: [APP-001]
+  deployment_modes: [yaml]
+  artifacts: []
+  commands:
+    - "kubectl get nodes --show-labels"
+  success_conditions:
+    - pod_scheduled_only_on_matching_node
+  result: PASS
+  result_notes: "See SCHEDULING_VALIDATION.md for the probe manifest and observed placement."
+  evidence: [evidence/00-discovery/node-labels.txt]
+  docs: [SCHEDULING_VALIDATION.md]
+  last_validated: "2026-08-12"
+
+- id: SCHED-003
+  name: Required node affinity
+  category: Scheduling
+  description: requiredDuringSchedulingIgnoredDuringExecution node affinity pins a pod to an exact node.
+  prerequisites: [APP-001]
+  deployment_modes: [yaml]
+  artifacts: []
+  commands: []
+  success_conditions:
+    - pod_scheduled_only_on_required_node
+  result: PASS
+  result_notes: "Required affinity pinned the pod to the exact target node."
+  evidence: []
+  docs: [SCHEDULING_VALIDATION.md]
+  last_validated: "2026-08-12"
+
+- id: SCHED-004
+  name: Taints and tolerations
+  category: Scheduling
+  description: Untainted-workload pod stays Pending on a tainted node; a pod with a matching toleration schedules there.
+  prerequisites: [APP-001]
+  deployment_modes: [yaml]
+  artifacts: []
+  commands:
+    - "kubectl describe node <control-plane-node> | grep Taints"
+  success_conditions:
+    - untolerated_pod_stays_pending_on_tainted_node
+    - tolerated_pod_schedules_on_tainted_node
+  result: PASS
+  result_notes: "Untainted-pod stayed Pending on the control-plane node; a pod with the matching toleration scheduled there successfully."
+  evidence: []
+  docs: [SCHEDULING_VALIDATION.md]
+  last_validated: "2026-08-12"
+
+- id: SCHED-005
+  name: Resource-request-driven scheduling
+  category: Scheduling
+  description: A pod requesting more CPU/memory than any node can satisfy correctly stays Pending with an Insufficient cpu/memory event.
+  prerequisites: [APP-001]
+  deployment_modes: [yaml]
+  artifacts: []
+  commands:
+    - "kubectl get events --sort-by=.lastTimestamp"
+  success_conditions:
+    - oversized_pod_blocked_from_scheduling
+    - insufficient_resource_event_recorded
+  result: PASS
+  result_notes: "Insufficient cpu correctly blocked scheduling."
+  evidence: [evidence/00-discovery/events.txt]
+  docs: [SCHEDULING_VALIDATION.md]
+  last_validated: "2026-08-12"

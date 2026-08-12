@@ -1,0 +1,21 @@
+[34mINFO[0m  Resolved Prometheus ServiceAccount -> monitoring/prometheus-k8s
+
+[1m== NET-001: Port-forward ==[0m
+[32mPASS[0m  NET-001 port-forward -> http://localhost:18080/ (scope: Local machine only)
+
+[1m== NET-002: ClusterIP / in-cluster DNS ==[0m
+[32mPASS[0m  NET-002 ClusterIP DNS (hks-lab-app.hks-capability-lab.svc.cluster.local) reachable from within cluster (scope: Private/in-cluster)
+
+[1m== NET-003: NodePort ==[0m
+[32mPASS[0m  NET-003 NodePort http://192.168.122.230:31539/ -> HTTP 200 (scope: PRIVATE (RFC1918/loopback/link-local))
+[32mPASS[0m  NET-003 NodePort http://192.168.122.231:31539/ -> HTTP 200 (scope: PRIVATE (RFC1918/loopback/link-local))
+[32mPASS[0m  NET-003 NodePort http://192.168.122.232:31539/ -> HTTP 200 (scope: PRIVATE (RFC1918/loopback/link-local))
+[32mPASS[0m  NET-003 NodePort http://192.168.122.233:31539/ -> HTTP 200 (scope: PRIVATE (RFC1918/loopback/link-local))
+
+[1m== NET-004: LoadBalancer (API support vs infrastructure) ==[0m
+[34mINFO[0m  NET-004 LOADBALANCER = API SUPPORTED / INFRASTRUCTURE = NOT AVAILABLE (external address stayed <pending>)
+
+[1m== NET-005: Ingress ==[0m
+[32mPASS[0m  NET-005 Ingress routed correctly via http://192.168.122.232:31992/ (Host: hks-demo.lab.local)
+[34mINFO[0m  DNS required for real use: hks-demo.lab.local -> 192.168.122.232 (or a real external LB/IP once available)
+[34mINFO[0m  Evidence directory: /home/nixndme/Desktop/Sync/hks-capability-lab/evidence/access-modes-20260812T123254Z

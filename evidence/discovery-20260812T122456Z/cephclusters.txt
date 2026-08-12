@@ -1,0 +1,2 @@
+NAMESPACE   NAME        DATADIRHOSTPATH   MONCOUNT   AGE    PHASE   MESSAGE                        HEALTH      EXTERNAL   FSID
+rook-ceph   rook-ceph   /var/lib/rook     3          131m   Ready   Cluster created successfully   HEALTH_OK              77ad2059-6c2b-4146-891a-fe75a9724608

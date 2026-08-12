@@ -1,0 +1,111 @@
+# Deploys the HKS Capability Portal ITSELF (frontend + backend, one
+# container -- see ../../Containerfile) into a Kubernetes cluster, e.g. to
+# serve it at https://hks.nixndme.com.
+#
+# This is deliberately separate from ../../manifests/ and
+# ../../hks-capability-lab.yaml, which deploy the *sample workload the
+# portal validates* into a customer's HKS cluster -- two different things
+# living in the same repo. Portal mode is always PORTAL_MODE=hosted here:
+# the hosted portal never mounts a kubeconfig and never touches a cluster
+# (see backend/app/k8s.py) -- this Deployment does not request any
+# ServiceAccount permissions beyond what's needed to run.
+#
+# Apply with:
+#   cp portal.env.example portal.env && edit it
+#   set -a && source portal.env && set +a
+#   envsubst < portal.yaml | kubectl apply -f -
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: ${PORTAL_NAMESPACE}
+  labels:
+    app.kubernetes.io/part-of: hks-capability-lab
+    hks-capability-lab/component: portal
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: hks-portal
+  namespace: ${PORTAL_NAMESPACE}
+  labels:
+    app.kubernetes.io/name: hks-portal
+    app.kubernetes.io/part-of: hks-capability-lab
+spec:
+  replicas: ${PORTAL_REPLICAS}
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: hks-portal
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: hks-portal
+    spec:
+      automountServiceAccountToken: false
+      containers:
+        - name: portal
+          image: ${PORTAL_IMAGE}
+          ports:
+            - name: http
+              containerPort: 8080
+          env:
+            - name: PORTAL_MODE
+              value: "hosted"
+            - name: PUBLIC_BASE_URL
+              value: "https://${PORTAL_DOMAIN}"
+            - name: PORTAL_DOMAIN
+              value: "${PORTAL_DOMAIN}"
+          resources:
+            requests:
+              cpu: 100m
+              memory: 128Mi
+            limits:
+              cpu: 500m
+              memory: 256Mi
+          readinessProbe:
+            httpGet: { path: /ready, port: 8080 }
+            initialDelaySeconds: 3
+            periodSeconds: 5
+          livenessProbe:
+            httpGet: { path: /health, port: 8080 }
+            initialDelaySeconds: 5
+            periodSeconds: 10
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: hks-portal
+  namespace: ${PORTAL_NAMESPACE}
+  labels:
+    app.kubernetes.io/name: hks-portal
+    app.kubernetes.io/part-of: hks-capability-lab
+spec:
+  type: ClusterIP
+  selector:
+    app.kubernetes.io/name: hks-portal
+  ports:
+    - name: http
+      port: 80
+      targetPort: 8080
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: hks-portal
+  namespace: ${PORTAL_NAMESPACE}
+  labels:
+    app.kubernetes.io/name: hks-portal
+    app.kubernetes.io/part-of: hks-capability-lab
+spec:
+  ingressClassName: ${PORTAL_INGRESS_CLASS}
+  rules:
+    - host: ${PORTAL_DOMAIN}
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: hks-portal
+                port:
+                  number: 80

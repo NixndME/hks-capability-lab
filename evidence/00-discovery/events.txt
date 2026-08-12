@@ -1,0 +1,319 @@
+=== events -A (recent) ===
+NAMESPACE   LAST SEEN   TYPE      REASON                    OBJECT                                                        MESSAGE
+rook-ceph   53m         Normal    ReconcileRequeuing        cephblockpool/replicapool                                     requeuing CephBlockPool "rook-ceph/replicapool"
+rook-ceph   53m         Normal    ReconcileSucceeded        cephblockpool/replicapool                                     successfully configured CephBlockPool "rook-ceph/replicapool"
+rook-ceph   53m         Normal    ReconcileSucceeded        cephcluster/rook-ceph                                         successfully configured CephCluster "rook-ceph/rook-ceph"
+default     54m         Warning   IPAddressWrongReference   ipaddress/172.30.97.83                                        IPAddress: 172.30.97.83 for Service rook-ceph/rook-ceph-exporter has a wrong reference; cleaning up
+rook-ceph   60m         Normal    Killing                   pod/rook-ceph-mon-b-canary-564c4f9fbd-n2gtn                   Stopping container log-collector
+rook-ceph   60m         Normal    Killing                   pod/rook-ceph-mon-b-canary-564c4f9fbd-n2gtn                   Stopping container mon
+rook-ceph   59m         Normal    Created                   pod/rook-ceph-mon-c-canary-757b56b9f7-lhvgn                   Container created
+rook-ceph   59m         Normal    Pulled                    pod/rook-ceph-mon-c-canary-757b56b9f7-lhvgn                   Successfully pulled image "quay.io/ceph/ceph:v19.2.3" in 1m42.166s (1m42.167s including waiting). Image size: 533399704 bytes.
+rook-ceph   59m         Normal    Started                   pod/rook-ceph-mon-c-canary-757b56b9f7-lhvgn                   Container started
+rook-ceph   59m         Normal    Killing                   pod/rook-ceph-mon-c-canary-757b56b9f7-lhvgn                   Stopping container log-collector
+rook-ceph   59m         Normal    Killing                   pod/rook-ceph-mon-c-canary-757b56b9f7-lhvgn                   Stopping container mon
+rook-ceph   59m         Normal    ScalingReplicaSet         deployment/rook-ceph-mon-a                                    Scaled up replica set rook-ceph-mon-a-778fb5447 from 0 to 1
+rook-ceph   59m         Warning   FailedScheduling          pod/rook-ceph-mon-a-778fb5447-qtdgv                           0/4 nodes are available: 1 node(s) didn't satisfy existing pods anti-affinity rules, 1 node(s) had untolerated taint(s), 2 node(s) didn't match Pod's node affinity/selector. no new claims to deallocate, preemption: 0/4 nodes are available: 1 node(s) didn't satisfy existing pods anti-affinity rules, 3 Preemption is not helpful for scheduling.
+rook-ceph   59m         Normal    SuccessfulCreate          replicaset/rook-ceph-mon-a-778fb5447                          Created pod: rook-ceph-mon-a-778fb5447-qtdgv
+rook-ceph   59m         Normal    Started                   pod/rook-ceph-mon-a-canary-8c6ccf57f-2bkgq                    Container started
+rook-ceph   59m         Normal    Created                   pod/rook-ceph-mon-a-canary-8c6ccf57f-2bkgq                    Container created
+rook-ceph   59m         Normal    Pulled                    pod/rook-ceph-mon-a-canary-8c6ccf57f-2bkgq                    Successfully pulled image "quay.io/ceph/ceph:v19.2.3" in 2m4.027s (2m4.027s including waiting). Image size: 533399704 bytes.
+rook-ceph   59m         Normal    Killing                   pod/rook-ceph-mon-a-canary-8c6ccf57f-2bkgq                    Stopping container log-collector
+rook-ceph   59m         Normal    Killing                   pod/rook-ceph-mon-a-canary-8c6ccf57f-2bkgq                    Stopping container mon
+rook-ceph   55m         Normal    Pulled                    pod/rook-ceph-mon-a-778fb5447-dt4zb                           Container image "quay.io/ceph/ceph:v19.2.3" already present on machine and can be accessed by the pod
+rook-ceph   55m         Normal    Scheduled                 pod/rook-ceph-mon-a-778fb5447-dt4zb                           Successfully assigned rook-ceph/rook-ceph-mon-a-778fb5447-dt4zb to hks-worker-3
+rook-ceph   55m         Normal    SuccessfulCreate          replicaset/rook-ceph-mon-a-778fb5447                          Created pod: rook-ceph-mon-a-778fb5447-dt4zb
+rook-ceph   55m         Normal    Pulled                    pod/rook-ceph-mon-a-778fb5447-dt4zb                           Container image "quay.io/ceph/ceph:v19.2.3" already present on machine and can be accessed by the pod
+rook-ceph   55m         Normal    Started                   pod/rook-ceph-mon-a-778fb5447-dt4zb                           Container started
+rook-ceph   55m         Normal    Created                   pod/rook-ceph-mon-a-778fb5447-dt4zb                           Container created
+rook-ceph   55m         Normal    Started                   pod/rook-ceph-mon-a-778fb5447-dt4zb                           Container started
+rook-ceph   55m         Normal    Created                   pod/rook-ceph-mon-a-778fb5447-dt4zb                           Container created
+rook-ceph   55m         Normal    Started                   pod/rook-ceph-mon-a-778fb5447-dt4zb                           Container started
+rook-ceph   55m         Normal    Created                   pod/rook-ceph-mon-a-778fb5447-dt4zb                           Container created
+rook-ceph   55m         Normal    Pulled                    pod/rook-ceph-mon-a-778fb5447-dt4zb                           Container image "quay.io/ceph/ceph:v19.2.3" already present on machine and can be accessed by the pod
+rook-ceph   55m         Normal    Started                   pod/rook-ceph-mon-a-778fb5447-dt4zb                           Container started
+rook-ceph   55m         Normal    Created                   pod/rook-ceph-mon-a-778fb5447-dt4zb                           Container created
+rook-ceph   55m         Normal    Pulled                    pod/rook-ceph-mon-a-778fb5447-dt4zb                           Container image "quay.io/ceph/ceph:v19.2.3" already present on machine and can be accessed by the pod
+rook-ceph   54m         Normal    ScalingReplicaSet         deployment/rook-ceph-mon-b                                    Scaled up replica set rook-ceph-mon-b-5f549448c from 0 to 1
+rook-ceph   54m         Normal    Scheduled                 pod/rook-ceph-mon-b-5f549448c-tnjqm                           Successfully assigned rook-ceph/rook-ceph-mon-b-5f549448c-tnjqm to hks-worker-2
+rook-ceph   54m         Normal    SuccessfulCreate          replicaset/rook-ceph-mon-b-5f549448c                          Created pod: rook-ceph-mon-b-5f549448c-tnjqm
+rook-ceph   54m         Normal    Pulled                    pod/rook-ceph-mon-b-5f549448c-tnjqm                           Container image "quay.io/ceph/ceph:v19.2.3" already present on machine and can be accessed by the pod
+rook-ceph   54m         Normal    Created                   pod/rook-ceph-mon-b-5f549448c-tnjqm                           Container created
+rook-ceph   54m         Normal    Started                   pod/rook-ceph-mon-b-5f549448c-tnjqm                           Container started
+rook-ceph   54m         Normal    Started                   pod/rook-ceph-mon-b-5f549448c-tnjqm                           Container started
+rook-ceph   54m         Normal    Pulled                    pod/rook-ceph-mon-b-5f549448c-tnjqm                           Container image "quay.io/ceph/ceph:v19.2.3" already present on machine and can be accessed by the pod
+rook-ceph   54m         Normal    Created                   pod/rook-ceph-mon-b-5f549448c-tnjqm                           Container created
+rook-ceph   54m         Normal    Started                   pod/rook-ceph-mon-b-5f549448c-tnjqm                           Container started
+rook-ceph   54m         Normal    Started                   pod/rook-ceph-mon-b-5f549448c-tnjqm                           Container started
+rook-ceph   54m         Normal    Created                   pod/rook-ceph-mon-b-5f549448c-tnjqm                           Container created
+rook-ceph   54m         Normal    Pulled                    pod/rook-ceph-mon-b-5f549448c-tnjqm                           Container image "quay.io/ceph/ceph:v19.2.3" already present on machine and can be accessed by the pod
+rook-ceph   54m         Normal    Pulled                    pod/rook-ceph-mon-b-5f549448c-tnjqm                           Container image "quay.io/ceph/ceph:v19.2.3" already present on machine and can be accessed by the pod
+rook-ceph   54m         Normal    Created                   pod/rook-ceph-mon-b-5f549448c-tnjqm                           Container created
+rook-ceph   54m         Normal    SuccessfulCreate          replicaset/rook-ceph-mon-c-6c65994559                         Created pod: rook-ceph-mon-c-6c65994559-7dphq
+rook-ceph   54m         Normal    ScalingReplicaSet         deployment/rook-ceph-mon-c                                    Scaled up replica set rook-ceph-mon-c-6c65994559 from 0 to 1
+rook-ceph   54m         Normal    Scheduled                 pod/rook-ceph-mon-c-6c65994559-7dphq                          Successfully assigned rook-ceph/rook-ceph-mon-c-6c65994559-7dphq to hks-worker-1
+rook-ceph   54m         Normal    Created                   pod/rook-ceph-mon-c-6c65994559-7dphq                          Container created
+rook-ceph   54m         Normal    Pulled                    pod/rook-ceph-mon-c-6c65994559-7dphq                          Container image "quay.io/ceph/ceph:v19.2.3" already present on machine and can be accessed by the pod
+rook-ceph   54m         Normal    Started                   pod/rook-ceph-mon-c-6c65994559-7dphq                          Container started
+rook-ceph   54m         Normal    Started                   pod/rook-ceph-mon-c-6c65994559-7dphq                          Container started
+rook-ceph   54m         Normal    Pulled                    pod/rook-ceph-mon-c-6c65994559-7dphq                          Container image "quay.io/ceph/ceph:v19.2.3" already present on machine and can be accessed by the pod
+rook-ceph   54m         Normal    Created                   pod/rook-ceph-mon-c-6c65994559-7dphq                          Container created
+rook-ceph   54m         Normal    Started                   pod/rook-ceph-mon-c-6c65994559-7dphq                          Container started
+rook-ceph   54m         Normal    Pulled                    pod/rook-ceph-mon-c-6c65994559-7dphq                          Container image "quay.io/ceph/ceph:v19.2.3" already present on machine and can be accessed by the pod
+rook-ceph   54m         Normal    Created                   pod/rook-ceph-mon-c-6c65994559-7dphq                          Container created
+rook-ceph   54m         Normal    Started                   pod/rook-ceph-mon-c-6c65994559-7dphq                          Container started
+rook-ceph   54m         Normal    Created                   pod/rook-ceph-mon-c-6c65994559-7dphq                          Container created
+rook-ceph   54m         Normal    Pulled                    pod/rook-ceph-mon-c-6c65994559-7dphq                          Container image "quay.io/ceph/ceph:v19.2.3" already present on machine and can be accessed by the pod
+rook-ceph   54m         Normal    Scheduled                 pod/rook-ceph-mgr-b-ccc554489-sdsr6                           Successfully assigned rook-ceph/rook-ceph-mgr-b-ccc554489-sdsr6 to hks-worker-3
+rook-ceph   54m         Normal    Scheduled                 pod/rook-ceph-crashcollector-hks-worker-2-559dd7dcc4-m4dxf    Successfully assigned rook-ceph/rook-ceph-crashcollector-hks-worker-2-559dd7dcc4-m4dxf to hks-worker-2
+rook-ceph   54m         Normal    ScalingReplicaSet         deployment/rook-ceph-mgr-b                                    Scaled up replica set rook-ceph-mgr-b-ccc554489 from 0 to 1
+rook-ceph   54m         Normal    SuccessfulCreate          replicaset/rook-ceph-mgr-b-ccc554489                          Created pod: rook-ceph-mgr-b-ccc554489-sdsr6
+rook-ceph   54m         Normal    Scheduled                 pod/rook-ceph-exporter-hks-worker-2-7b79688968-v7686          Successfully assigned rook-ceph/rook-ceph-exporter-hks-worker-2-7b79688968-v7686 to hks-worker-2
+rook-ceph   54m         Normal    SuccessfulCreate          replicaset/rook-ceph-exporter-hks-worker-2-7b79688968         Created pod: rook-ceph-exporter-hks-worker-2-7b79688968-v7686
+rook-ceph   54m         Normal    ScalingReplicaSet         deployment/rook-ceph-exporter-hks-worker-2                    Scaled up replica set rook-ceph-exporter-hks-worker-2-7b79688968 from 0 to 1
+rook-ceph   54m         Normal    SuccessfulCreate          replicaset/rook-ceph-crashcollector-hks-worker-2-559dd7dcc4   Created pod: rook-ceph-crashcollector-hks-worker-2-559dd7dcc4-m4dxf
+rook-ceph   54m         Normal    ScalingReplicaSet         deployment/rook-ceph-crashcollector-hks-worker-2              Scaled up replica set rook-ceph-crashcollector-hks-worker-2-559dd7dcc4 from 0 to 1
+rook-ceph   54m         Normal    ScalingReplicaSet         deployment/rook-ceph-mgr-a                                    Scaled up replica set rook-ceph-mgr-a-6594545875 from 0 to 1
+rook-ceph   54m         Normal    SuccessfulCreate          replicaset/rook-ceph-mgr-a-6594545875                         Created pod: rook-ceph-mgr-a-6594545875-xzlpv
+rook-ceph   54m         Normal    Scheduled                 pod/rook-ceph-mgr-a-6594545875-xzlpv                          Successfully assigned rook-ceph/rook-ceph-mgr-a-6594545875-xzlpv to hks-worker-2
+rook-ceph   54m         Normal    Pulled                    pod/rook-ceph-mgr-b-ccc554489-sdsr6                           Container image "quay.io/ceph/ceph:v19.2.3" already present on machine and can be accessed by the pod
+rook-ceph   54m         Normal    Pulled                    pod/rook-ceph-exporter-hks-worker-2-7b79688968-v7686          Container image "quay.io/ceph/ceph:v19.2.3" already present on machine and can be accessed by the pod
+rook-ceph   54m         Normal    Started                   pod/rook-ceph-mgr-a-6594545875-xzlpv                          Container started
+rook-ceph   54m         Normal    Started                   pod/rook-ceph-crashcollector-hks-worker-2-559dd7dcc4-m4dxf    Container started
+rook-ceph   54m         Normal    Created                   pod/rook-ceph-crashcollector-hks-worker-2-559dd7dcc4-m4dxf    Container created
+rook-ceph   54m         Normal    Pulled                    pod/rook-ceph-crashcollector-hks-worker-2-559dd7dcc4-m4dxf    Container image "quay.io/ceph/ceph:v19.2.3" already present on machine and can be accessed by the pod
+rook-ceph   54m         Normal    Created                   pod/rook-ceph-mgr-a-6594545875-xzlpv                          Container created
+rook-ceph   54m         Normal    Pulled                    pod/rook-ceph-mgr-a-6594545875-xzlpv                          Container image "quay.io/ceph/ceph:v19.2.3" already present on machine and can be accessed by the pod
+rook-ceph   54m         Normal    ScalingReplicaSet         deployment/rook-ceph-exporter-hks-worker-3                    Scaled up replica set rook-ceph-exporter-hks-worker-3-d8f58dfdc from 0 to 1
+rook-ceph   54m         Normal    SuccessfulCreate          replicaset/rook-ceph-exporter-hks-worker-3-d8f58dfdc          Created pod: rook-ceph-exporter-hks-worker-3-d8f58dfdc-9sb6l
+rook-ceph   54m         Normal    ScalingReplicaSet         deployment/rook-ceph-crashcollector-hks-worker-3              Scaled up replica set rook-ceph-crashcollector-hks-worker-3-86749766cf from 0 to 1
+rook-ceph   54m         Normal    SuccessfulCreate          replicaset/rook-ceph-crashcollector-hks-worker-3-86749766cf   Created pod: rook-ceph-crashcollector-hks-worker-3-86749766cf-dkxb5
+rook-ceph   54m         Normal    Scheduled                 pod/rook-ceph-exporter-hks-worker-3-d8f58dfdc-9sb6l           Successfully assigned rook-ceph/rook-ceph-exporter-hks-worker-3-d8f58dfdc-9sb6l to hks-worker-3
+rook-ceph   54m         Normal    Scheduled                 pod/rook-ceph-crashcollector-hks-worker-3-86749766cf-dkxb5    Successfully assigned rook-ceph/rook-ceph-crashcollector-hks-worker-3-86749766cf-dkxb5 to hks-worker-3
+rook-ceph   54m         Normal    Created                   pod/rook-ceph-mgr-b-ccc554489-sdsr6                           Container created
+rook-ceph   54m         Normal    Pulled                    pod/rook-ceph-exporter-hks-worker-3-d8f58dfdc-9sb6l           Container image "quay.io/ceph/ceph:v19.2.3" already present on machine and can be accessed by the pod
+rook-ceph   54m         Normal    Created                   pod/rook-ceph-mgr-a-6594545875-xzlpv                          Container created
+rook-ceph   54m         Normal    Started                   pod/rook-ceph-crashcollector-hks-worker-3-86749766cf-dkxb5    Container started
+rook-ceph   54m         Normal    Pulled                    pod/rook-ceph-crashcollector-hks-worker-2-559dd7dcc4-m4dxf    Container image "quay.io/ceph/ceph:v19.2.3" already present on machine and can be accessed by the pod
+rook-ceph   54m         Normal    Created                   pod/rook-ceph-exporter-hks-worker-2-7b79688968-v7686          Container created
+rook-ceph   54m         Normal    Started                   pod/rook-ceph-exporter-hks-worker-2-7b79688968-v7686          Container started
+rook-ceph   54m         Normal    Pulled                    pod/rook-ceph-exporter-hks-worker-2-7b79688968-v7686          Container image "quay.io/ceph/ceph:v19.2.3" already present on machine and can be accessed by the pod
+rook-ceph   54m         Normal    Created                   pod/rook-ceph-exporter-hks-worker-2-7b79688968-v7686          Container created
+rook-ceph   54m         Normal    Started                   pod/rook-ceph-exporter-hks-worker-2-7b79688968-v7686          Container started
+rook-ceph   54m         Normal    Pulled                    pod/rook-ceph-exporter-hks-worker-2-7b79688968-v7686          Container image "quay.io/ceph/ceph:v19.2.3" already present on machine and can be accessed by the pod
+rook-ceph   54m         Normal    Created                   pod/rook-ceph-exporter-hks-worker-2-7b79688968-v7686          Container created
+rook-ceph   54m         Normal    Started                   pod/rook-ceph-exporter-hks-worker-2-7b79688968-v7686          Container started
+rook-ceph   54m         Normal    Started                   pod/rook-ceph-crashcollector-hks-worker-2-559dd7dcc4-m4dxf    Container started
+rook-ceph   54m         Normal    Pulled                    pod/rook-ceph-mgr-a-6594545875-xzlpv                          Container image "quay.io/ceph/ceph:v19.2.3" already present on machine and can be accessed by the pod
+rook-ceph   54m         Normal    Created                   pod/rook-ceph-crashcollector-hks-worker-3-86749766cf-dkxb5    Container created
+rook-ceph   54m         Normal    Created                   pod/rook-ceph-exporter-hks-worker-3-d8f58dfdc-9sb6l           Container created
+rook-ceph   54m         Normal    Pulled                    pod/rook-ceph-crashcollector-hks-worker-3-86749766cf-dkxb5    Container image "quay.io/ceph/ceph:v19.2.3" already present on machine and can be accessed by the pod
+rook-ceph   54m         Normal    Started                   pod/rook-ceph-mgr-a-6594545875-xzlpv                          Container started
+rook-ceph   54m         Normal    Pulled                    pod/rook-ceph-mgr-a-6594545875-xzlpv                          Container image "docker.io/rook/ceph:v1.19.3" already present on machine and can be accessed by the pod
+rook-ceph   54m         Normal    Created                   pod/rook-ceph-mgr-b-ccc554489-sdsr6                           Container created
+rook-ceph   54m         Normal    Pulled                    pod/rook-ceph-mgr-b-ccc554489-sdsr6                           Container image "quay.io/ceph/ceph:v19.2.3" already present on machine and can be accessed by the pod
+rook-ceph   54m         Normal    Started                   pod/rook-ceph-mgr-b-ccc554489-sdsr6                           Container started
+rook-ceph   54m         Normal    Created                   pod/rook-ceph-mgr-a-6594545875-xzlpv                          Container created
+rook-ceph   54m         Normal    Started                   pod/rook-ceph-crashcollector-hks-worker-3-86749766cf-dkxb5    Container started
+rook-ceph   54m         Normal    Created                   pod/rook-ceph-crashcollector-hks-worker-3-86749766cf-dkxb5    Container created
+rook-ceph   54m         Normal    Pulled                    pod/rook-ceph-crashcollector-hks-worker-3-86749766cf-dkxb5    Container image "quay.io/ceph/ceph:v19.2.3" already present on machine and can be accessed by the pod
+rook-ceph   54m         Normal    Started                   pod/rook-ceph-mgr-a-6594545875-xzlpv                          Container started
+rook-ceph   54m         Normal    Created                   pod/rook-ceph-exporter-hks-worker-3-d8f58dfdc-9sb6l           Container created
+rook-ceph   54m         Normal    Created                   pod/rook-ceph-crashcollector-hks-worker-2-559dd7dcc4-m4dxf    Container created
+rook-ceph   54m         Normal    Pulled                    pod/rook-ceph-mgr-a-6594545875-xzlpv                          Container image "quay.io/ceph/ceph:v19.2.3" already present on machine and can be accessed by the pod
+rook-ceph   54m         Normal    Started                   pod/rook-ceph-exporter-hks-worker-3-d8f58dfdc-9sb6l           Container started
+rook-ceph   54m         Normal    Pulled                    pod/rook-ceph-exporter-hks-worker-3-d8f58dfdc-9sb6l           Container image "quay.io/ceph/ceph:v19.2.3" already present on machine and can be accessed by the pod
+rook-ceph   54m         Normal    Pulled                    pod/rook-ceph-mgr-b-ccc554489-sdsr6                           Container image "quay.io/ceph/ceph:v19.2.3" already present on machine and can be accessed by the pod
+rook-ceph   54m         Normal    Started                   pod/rook-ceph-crashcollector-hks-worker-3-86749766cf-dkxb5    Container started
+rook-ceph   54m         Normal    Created                   pod/rook-ceph-mgr-a-6594545875-xzlpv                          Container created
+rook-ceph   54m         Normal    Started                   pod/rook-ceph-mgr-a-6594545875-xzlpv                          Container started
+rook-ceph   54m         Normal    Started                   pod/rook-ceph-exporter-hks-worker-3-d8f58dfdc-9sb6l           Container started
+rook-ceph   54m         Normal    Pulled                    pod/rook-ceph-exporter-hks-worker-3-d8f58dfdc-9sb6l           Container image "quay.io/ceph/ceph:v19.2.3" already present on machine and can be accessed by the pod
+rook-ceph   54m         Normal    Created                   pod/rook-ceph-exporter-hks-worker-3-d8f58dfdc-9sb6l           Container created
+rook-ceph   54m         Normal    Started                   pod/rook-ceph-exporter-hks-worker-3-d8f58dfdc-9sb6l           Container started
+rook-ceph   54m         Normal    Created                   pod/rook-ceph-crashcollector-hks-worker-3-86749766cf-dkxb5    Container created
+rook-ceph   54m         Normal    Pulled                    pod/rook-ceph-crashcollector-hks-worker-3-86749766cf-dkxb5    Container image "quay.io/ceph/ceph:v19.2.3" already present on machine and can be accessed by the pod
+rook-ceph   54m         Normal    Started                   pod/rook-ceph-crashcollector-hks-worker-2-559dd7dcc4-m4dxf    Container started
+rook-ceph   54m         Normal    Started                   pod/rook-ceph-mgr-b-ccc554489-sdsr6                           Container started
+rook-ceph   54m         Normal    Created                   pod/rook-ceph-crashcollector-hks-worker-2-559dd7dcc4-m4dxf    Container created
+rook-ceph   54m         Normal    Pulled                    pod/rook-ceph-mgr-b-ccc554489-sdsr6                           Container image "docker.io/rook/ceph:v1.19.3" already present on machine and can be accessed by the pod
+rook-ceph   54m         Normal    Created                   pod/rook-ceph-mgr-b-ccc554489-sdsr6                           Container created
+rook-ceph   54m         Normal    Started                   pod/rook-ceph-mgr-b-ccc554489-sdsr6                           Container started
+rook-ceph   54m         Normal    Pulled                    pod/rook-ceph-crashcollector-hks-worker-2-559dd7dcc4-m4dxf    Container image "quay.io/ceph/ceph:v19.2.3" already present on machine and can be accessed by the pod
+rook-ceph   54m         Normal    Created                   pod/rook-ceph-mgr-b-ccc554489-sdsr6                           Container created
+rook-ceph   54m         Normal    Started                   pod/rook-ceph-mgr-b-ccc554489-sdsr6                           Container started
+rook-ceph   53m         Normal    ScalingReplicaSet         deployment/rook-ceph-exporter-hks-worker-1                    Scaled up replica set rook-ceph-exporter-hks-worker-1-74d57c7b95 from 0 to 1
+rook-ceph   53m         Normal    Scheduled                 pod/rook-ceph-crashcollector-hks-worker-1-66b67fd8bc-wgrd4    Successfully assigned rook-ceph/rook-ceph-crashcollector-hks-worker-1-66b67fd8bc-wgrd4 to hks-worker-1
+rook-ceph   53m         Normal    ScalingReplicaSet         deployment/rook-ceph-crashcollector-hks-worker-1              Scaled up replica set rook-ceph-crashcollector-hks-worker-1-66b67fd8bc from 0 to 1
+rook-ceph   53m         Normal    SuccessfulCreate          replicaset/rook-ceph-crashcollector-hks-worker-1-66b67fd8bc   Created pod: rook-ceph-crashcollector-hks-worker-1-66b67fd8bc-wgrd4
+rook-ceph   53m         Normal    SuccessfulCreate          replicaset/rook-ceph-exporter-hks-worker-1-74d57c7b95         Created pod: rook-ceph-exporter-hks-worker-1-74d57c7b95-7pqpq
+rook-ceph   53m         Normal    Scheduled                 pod/rook-ceph-exporter-hks-worker-1-74d57c7b95-7pqpq          Successfully assigned rook-ceph/rook-ceph-exporter-hks-worker-1-74d57c7b95-7pqpq to hks-worker-1
+rook-ceph   53m         Normal    Started                   pod/rook-ceph-crashcollector-hks-worker-1-66b67fd8bc-wgrd4    Container started
+rook-ceph   53m         Normal    Started                   pod/rook-ceph-exporter-hks-worker-1-74d57c7b95-7pqpq          Container started
+rook-ceph   53m         Normal    Created                   pod/rook-ceph-exporter-hks-worker-1-74d57c7b95-7pqpq          Container created
+rook-ceph   53m         Normal    Pulled                    pod/rook-ceph-exporter-hks-worker-1-74d57c7b95-7pqpq          Container image "quay.io/ceph/ceph:v19.2.3" already present on machine and can be accessed by the pod
+rook-ceph   53m         Normal    Pulled                    pod/rook-ceph-crashcollector-hks-worker-1-66b67fd8bc-wgrd4    Container image "quay.io/ceph/ceph:v19.2.3" already present on machine and can be accessed by the pod
+rook-ceph   53m         Normal    Created                   pod/rook-ceph-crashcollector-hks-worker-1-66b67fd8bc-wgrd4    Container created
+rook-ceph   53m         Normal    Pulled                    pod/rook-ceph-exporter-hks-worker-1-74d57c7b95-7pqpq          Container image "quay.io/ceph/ceph:v19.2.3" already present on machine and can be accessed by the pod
+rook-ceph   53m         Normal    Created                   pod/rook-ceph-exporter-hks-worker-1-74d57c7b95-7pqpq          Container created
+rook-ceph   53m         Normal    Pulled                    pod/rook-ceph-crashcollector-hks-worker-1-66b67fd8bc-wgrd4    Container image "quay.io/ceph/ceph:v19.2.3" already present on machine and can be accessed by the pod
+rook-ceph   53m         Normal    Created                   pod/rook-ceph-crashcollector-hks-worker-1-66b67fd8bc-wgrd4    Container created
+rook-ceph   53m         Normal    Started                   pod/rook-ceph-crashcollector-hks-worker-1-66b67fd8bc-wgrd4    Container started
+rook-ceph   53m         Normal    Created                   pod/rook-ceph-exporter-hks-worker-1-74d57c7b95-7pqpq          Container created
+rook-ceph   53m         Normal    Started                   pod/rook-ceph-exporter-hks-worker-1-74d57c7b95-7pqpq          Container started
+rook-ceph   53m         Normal    Started                   pod/rook-ceph-exporter-hks-worker-1-74d57c7b95-7pqpq          Container started
+rook-ceph   53m         Normal    Pulled                    pod/rook-ceph-exporter-hks-worker-1-74d57c7b95-7pqpq          Container image "quay.io/ceph/ceph:v19.2.3" already present on machine and can be accessed by the pod
+rook-ceph   53m         Normal    Pulled                    pod/rook-ceph-crashcollector-hks-worker-1-66b67fd8bc-wgrd4    Container image "quay.io/ceph/ceph:v19.2.3" already present on machine and can be accessed by the pod
+rook-ceph   53m         Normal    Created                   pod/rook-ceph-crashcollector-hks-worker-1-66b67fd8bc-wgrd4    Container created
+rook-ceph   53m         Normal    Started                   pod/rook-ceph-crashcollector-hks-worker-1-66b67fd8bc-wgrd4    Container started
+rook-ceph   53m         Normal    Scheduled                 pod/rook-ceph-osd-prepare-hks-worker-1-kn9nc                  Successfully assigned rook-ceph/rook-ceph-osd-prepare-hks-worker-1-kn9nc to hks-worker-1
+rook-ceph   53m         Normal    SuccessfulCreate          job/rook-ceph-osd-prepare-hks-worker-1                        Created pod: rook-ceph-osd-prepare-hks-worker-1-kn9nc
+rook-ceph   53m         Normal    Scheduled                 pod/rook-ceph-osd-prepare-hks-worker-2-k5g2p                  Successfully assigned rook-ceph/rook-ceph-osd-prepare-hks-worker-2-k5g2p to hks-worker-2
+rook-ceph   53m         Normal    SuccessfulCreate          job/rook-ceph-osd-prepare-hks-worker-2                        Created pod: rook-ceph-osd-prepare-hks-worker-2-k5g2p
+rook-ceph   53m         Normal    Pulled                    pod/rook-ceph-osd-prepare-hks-worker-2-k5g2p                  Container image "docker.io/rook/ceph:v1.19.3" already present on machine and can be accessed by the pod
+rook-ceph   53m         Normal    Created                   pod/rook-ceph-osd-prepare-hks-worker-2-k5g2p                  Container created
+rook-ceph   53m         Normal    Pulled                    pod/rook-ceph-osd-prepare-hks-worker-1-kn9nc                  Container image "docker.io/rook/ceph:v1.19.3" already present on machine and can be accessed by the pod
+rook-ceph   53m         Normal    Started                   pod/rook-ceph-osd-prepare-hks-worker-1-kn9nc                  Container started
+rook-ceph   53m         Normal    SuccessfulCreate          job/rook-ceph-osd-prepare-hks-worker-3                        Created pod: rook-ceph-osd-prepare-hks-worker-3-vkbkp
+rook-ceph   53m         Normal    Pulled                    pod/rook-ceph-osd-prepare-hks-worker-1-kn9nc                  Container image "quay.io/ceph/ceph:v19.2.3" already present on machine and can be accessed by the pod
+rook-ceph   53m         Normal    Created                   pod/rook-ceph-osd-prepare-hks-worker-1-kn9nc                  Container created
+rook-ceph   53m         Normal    Started                   pod/rook-ceph-osd-prepare-hks-worker-1-kn9nc                  Container started
+rook-ceph   53m         Normal    Created                   pod/rook-ceph-osd-prepare-hks-worker-1-kn9nc                  Container created
+rook-ceph   53m         Normal    Scheduled                 pod/rook-ceph-osd-prepare-hks-worker-3-vkbkp                  Successfully assigned rook-ceph/rook-ceph-osd-prepare-hks-worker-3-vkbkp to hks-worker-3
+rook-ceph   53m         Normal    Started                   pod/rook-ceph-osd-prepare-hks-worker-2-k5g2p                  Container started
+rook-ceph   53m         Normal    Created                   pod/rook-ceph-osd-prepare-hks-worker-3-vkbkp                  Container created
+rook-ceph   53m         Normal    Created                   pod/rook-ceph-osd-prepare-hks-worker-3-vkbkp                  Container created
+rook-ceph   53m         Normal    Pulled                    pod/rook-ceph-osd-prepare-hks-worker-3-vkbkp                  Container image "docker.io/rook/ceph:v1.19.3" already present on machine and can be accessed by the pod
+rook-ceph   53m         Normal    Started                   pod/rook-ceph-osd-prepare-hks-worker-3-vkbkp                  Container started
+rook-ceph   53m         Normal    Pulled                    pod/rook-ceph-osd-prepare-hks-worker-3-vkbkp                  Container image "quay.io/ceph/ceph:v19.2.3" already present on machine and can be accessed by the pod
+rook-ceph   53m         Normal    Pulled                    pod/rook-ceph-osd-prepare-hks-worker-2-k5g2p                  Container image "quay.io/ceph/ceph:v19.2.3" already present on machine and can be accessed by the pod
+rook-ceph   53m         Normal    Started                   pod/rook-ceph-osd-prepare-hks-worker-2-k5g2p                  Container started
+rook-ceph   53m         Normal    Created                   pod/rook-ceph-osd-prepare-hks-worker-2-k5g2p                  Container created
+rook-ceph   53m         Normal    Started                   pod/rook-ceph-osd-prepare-hks-worker-3-vkbkp                  Container started
+rook-ceph   53m         Normal    SuccessfulCreate          replicaset/rook-ceph-osd-0-8467854678                         Created pod: rook-ceph-osd-0-8467854678-f8mvg
+rook-ceph   53m         Normal    Scheduled                 pod/rook-ceph-osd-0-8467854678-f8mvg                          Successfully assigned rook-ceph/rook-ceph-osd-0-8467854678-f8mvg to hks-worker-1
+rook-ceph   53m         Normal    ScalingReplicaSet         deployment/rook-ceph-osd-0                                    Scaled up replica set rook-ceph-osd-0-8467854678 from 0 to 1
+rook-ceph   53m         Normal    Started                   pod/rook-ceph-osd-0-8467854678-f8mvg                          Container started
+rook-ceph   53m         Normal    Created                   pod/rook-ceph-osd-0-8467854678-f8mvg                          Container created
+rook-ceph   53m         Normal    Pulled                    pod/rook-ceph-osd-0-8467854678-f8mvg                          Container image "quay.io/ceph/ceph:v19.2.3" already present on machine and can be accessed by the pod
+rook-ceph   53m         Normal    Scheduled                 pod/rook-ceph-osd-1-554c6d5cf9-lh42d                          Successfully assigned rook-ceph/rook-ceph-osd-1-554c6d5cf9-lh42d to hks-worker-2
+rook-ceph   53m         Normal    SuccessfulCreate          replicaset/rook-ceph-crashcollector-hks-worker-2-647549664d   Created pod: rook-ceph-crashcollector-hks-worker-2-647549664d-777hx
+rook-ceph   53m         Normal    Pulled                    pod/rook-ceph-osd-0-8467854678-f8mvg                          Container image "quay.io/ceph/ceph:v19.2.3" already present on machine and can be accessed by the pod
+rook-ceph   53m         Normal    Created                   pod/rook-ceph-osd-0-8467854678-f8mvg                          Container created
+rook-ceph   53m         Normal    SuccessfulCreate          replicaset/rook-ceph-osd-1-554c6d5cf9                         Created pod: rook-ceph-osd-1-554c6d5cf9-lh42d
+rook-ceph   53m         Normal    Scheduled                 pod/rook-ceph-crashcollector-hks-worker-2-647549664d-777hx    Successfully assigned rook-ceph/rook-ceph-crashcollector-hks-worker-2-647549664d-777hx to hks-worker-2
+rook-ceph   53m         Normal    ScalingReplicaSet         deployment/rook-ceph-crashcollector-hks-worker-2              Scaled up replica set rook-ceph-crashcollector-hks-worker-2-647549664d from 0 to 1
+rook-ceph   53m         Normal    Started                   pod/rook-ceph-osd-0-8467854678-f8mvg                          Container started
+rook-ceph   53m         Normal    ScalingReplicaSet         deployment/rook-ceph-exporter-hks-worker-2                    Scaled down replica set rook-ceph-exporter-hks-worker-2-7b79688968 from 1 to 0
+rook-ceph   53m         Normal    SuccessfulDelete          replicaset/rook-ceph-exporter-hks-worker-2-7b79688968         Deleted pod: rook-ceph-exporter-hks-worker-2-7b79688968-v7686
+rook-ceph   53m         Normal    Killing                   pod/rook-ceph-exporter-hks-worker-2-7b79688968-v7686          Stopping container log-collector
+rook-ceph   53m         Normal    Killing                   pod/rook-ceph-exporter-hks-worker-2-7b79688968-v7686          Stopping container ceph-exporter
+rook-ceph   53m         Normal    Completed                 job/rook-ceph-osd-prepare-hks-worker-1                        Job completed
+rook-ceph   53m         Normal    ScalingReplicaSet         deployment/rook-ceph-osd-1                                    Scaled up replica set rook-ceph-osd-1-554c6d5cf9 from 0 to 1
+rook-ceph   53m         Normal    ScalingReplicaSet         deployment/rook-ceph-crashcollector-hks-worker-3              Scaled up replica set rook-ceph-crashcollector-hks-worker-3-74df44bc8f from 0 to 1
+rook-ceph   53m         Normal    Killing                   pod/rook-ceph-exporter-hks-worker-3-d8f58dfdc-9sb6l           Stopping container log-collector
+rook-ceph   53m         Normal    Pulled                    pod/rook-ceph-crashcollector-hks-worker-2-647549664d-777hx    Container image "quay.io/ceph/ceph:v19.2.3" already present on machine and can be accessed by the pod
+rook-ceph   53m         Normal    Created                   pod/rook-ceph-osd-1-554c6d5cf9-lh42d                          Container created
+rook-ceph   53m         Normal    ScalingReplicaSet         deployment/rook-ceph-exporter-hks-worker-3                    Scaled down replica set rook-ceph-exporter-hks-worker-3-d8f58dfdc from 1 to 0
+rook-ceph   53m         Normal    SuccessfulDelete          replicaset/rook-ceph-exporter-hks-worker-3-d8f58dfdc          Deleted pod: rook-ceph-exporter-hks-worker-3-d8f58dfdc-9sb6l
+rook-ceph   53m         Normal    Started                   pod/rook-ceph-osd-1-554c6d5cf9-lh42d                          Container started
+rook-ceph   53m         Normal    Scheduled                 pod/rook-ceph-exporter-hks-worker-2-59c8d57778-ss65m          Successfully assigned rook-ceph/rook-ceph-exporter-hks-worker-2-59c8d57778-ss65m to hks-worker-2
+rook-ceph   53m         Normal    Scheduled                 pod/rook-ceph-osd-2-69bc4d9db-tch8w                           Successfully assigned rook-ceph/rook-ceph-osd-2-69bc4d9db-tch8w to hks-worker-3
+rook-ceph   53m         Normal    ScalingReplicaSet         deployment/rook-ceph-osd-2                                    Scaled up replica set rook-ceph-osd-2-69bc4d9db from 0 to 1
+rook-ceph   53m         Normal    Killing                   pod/rook-ceph-exporter-hks-worker-3-d8f58dfdc-9sb6l           Stopping container ceph-exporter
+rook-ceph   53m         Normal    ScalingReplicaSet         deployment/rook-ceph-exporter-hks-worker-2                    Scaled up replica set rook-ceph-exporter-hks-worker-2-59c8d57778 from 0 to 1
+rook-ceph   53m         Normal    SuccessfulCreate          replicaset/rook-ceph-exporter-hks-worker-2-59c8d57778         Created pod: rook-ceph-exporter-hks-worker-2-59c8d57778-ss65m
+rook-ceph   53m         Normal    Scheduled                 pod/rook-ceph-crashcollector-hks-worker-3-74df44bc8f-xxbmh    Successfully assigned rook-ceph/rook-ceph-crashcollector-hks-worker-3-74df44bc8f-xxbmh to hks-worker-3
+rook-ceph   53m         Normal    Created                   pod/rook-ceph-crashcollector-hks-worker-2-647549664d-777hx    Container created
+rook-ceph   53m         Normal    SuccessfulCreate          replicaset/rook-ceph-crashcollector-hks-worker-3-74df44bc8f   Created pod: rook-ceph-crashcollector-hks-worker-3-74df44bc8f-xxbmh
+rook-ceph   53m         Normal    SuccessfulCreate          replicaset/rook-ceph-osd-2-69bc4d9db                          Created pod: rook-ceph-osd-2-69bc4d9db-tch8w
+rook-ceph   53m         Normal    Pulled                    pod/rook-ceph-osd-1-554c6d5cf9-lh42d                          Container image "quay.io/ceph/ceph:v19.2.3" already present on machine and can be accessed by the pod
+rook-ceph   53m         Normal    Pulled                    pod/rook-ceph-exporter-hks-worker-2-59c8d57778-ss65m          Container image "quay.io/ceph/ceph:v19.2.3" already present on machine and can be accessed by the pod
+rook-ceph   53m         Normal    Created                   pod/rook-ceph-exporter-hks-worker-2-59c8d57778-ss65m          Container created
+rook-ceph   53m         Normal    Pulled                    pod/rook-ceph-exporter-hks-worker-2-59c8d57778-ss65m          Container image "quay.io/ceph/ceph:v19.2.3" already present on machine and can be accessed by the pod
+rook-ceph   53m         Normal    Started                   pod/rook-ceph-exporter-hks-worker-2-59c8d57778-ss65m          Container started
+rook-ceph   53m         Normal    Created                   pod/rook-ceph-exporter-hks-worker-2-59c8d57778-ss65m          Container created
+rook-ceph   53m         Normal    Started                   pod/rook-ceph-exporter-hks-worker-2-59c8d57778-ss65m          Container started
+rook-ceph   53m         Normal    Pulled                    pod/rook-ceph-osd-0-8467854678-f8mvg                          Container image "quay.io/ceph/ceph:v19.2.3" already present on machine and can be accessed by the pod
+rook-ceph   53m         Normal    Created                   pod/rook-ceph-osd-0-8467854678-f8mvg                          Container created
+rook-ceph   53m         Normal    Started                   pod/rook-ceph-osd-0-8467854678-f8mvg                          Container started
+rook-ceph   53m         Normal    Pulled                    pod/rook-ceph-exporter-hks-worker-2-59c8d57778-ss65m          Container image "quay.io/ceph/ceph:v19.2.3" already present on machine and can be accessed by the pod
+rook-ceph   53m         Normal    Pulled                    pod/rook-ceph-osd-2-69bc4d9db-tch8w                           Container image "quay.io/ceph/ceph:v19.2.3" already present on machine and can be accessed by the pod
+rook-ceph   53m         Normal    Started                   pod/rook-ceph-crashcollector-hks-worker-2-647549664d-777hx    Container started
+rook-ceph   53m         Normal    Created                   pod/rook-ceph-crashcollector-hks-worker-2-647549664d-777hx    Container created
+rook-ceph   53m         Normal    Pulled                    pod/rook-ceph-crashcollector-hks-worker-2-647549664d-777hx    Container image "quay.io/ceph/ceph:v19.2.3" already present on machine and can be accessed by the pod
+rook-ceph   53m         Normal    Started                   pod/rook-ceph-crashcollector-hks-worker-2-647549664d-777hx    Container started
+rook-ceph   53m         Normal    Pulled                    pod/rook-ceph-osd-0-8467854678-f8mvg                          Container image "quay.io/ceph/ceph:v19.2.3" already present on machine and can be accessed by the pod
+rook-ceph   53m         Normal    Pulled                    pod/rook-ceph-crashcollector-hks-worker-2-647549664d-777hx    Container image "quay.io/ceph/ceph:v19.2.3" already present on machine and can be accessed by the pod
+rook-ceph   53m         Normal    Started                   pod/rook-ceph-exporter-hks-worker-2-59c8d57778-ss65m          Container started
+rook-ceph   53m         Normal    Created                   pod/rook-ceph-exporter-hks-worker-2-59c8d57778-ss65m          Container created
+rook-ceph   53m         Normal    Pulled                    pod/rook-ceph-crashcollector-hks-worker-3-74df44bc8f-xxbmh    Container image "quay.io/ceph/ceph:v19.2.3" already present on machine and can be accessed by the pod
+rook-ceph   53m         Normal    ScalingReplicaSet         deployment/rook-ceph-exporter-hks-worker-3                    Scaled up replica set rook-ceph-exporter-hks-worker-3-69d98cf477 from 0 to 1
+rook-ceph   53m         Normal    Created                   pod/rook-ceph-crashcollector-hks-worker-3-74df44bc8f-xxbmh    Container created
+rook-ceph   53m         Normal    Started                   pod/rook-ceph-crashcollector-hks-worker-3-74df44bc8f-xxbmh    Container started
+rook-ceph   53m         Normal    Scheduled                 pod/rook-ceph-exporter-hks-worker-3-69d98cf477-7pjxc          Successfully assigned rook-ceph/rook-ceph-exporter-hks-worker-3-69d98cf477-7pjxc to hks-worker-3
+rook-ceph   53m         Normal    Pulled                    pod/rook-ceph-osd-1-554c6d5cf9-lh42d                          Container image "quay.io/ceph/ceph:v19.2.3" already present on machine and can be accessed by the pod
+rook-ceph   53m         Normal    Created                   pod/rook-ceph-osd-1-554c6d5cf9-lh42d                          Container created
+rook-ceph   53m         Normal    Started                   pod/rook-ceph-osd-1-554c6d5cf9-lh42d                          Container started
+rook-ceph   53m         Normal    Started                   pod/rook-ceph-crashcollector-hks-worker-2-647549664d-777hx    Container started
+rook-ceph   53m         Normal    Completed                 job/rook-ceph-osd-prepare-hks-worker-2                        Job completed
+rook-ceph   53m         Normal    SuccessfulCreate          replicaset/rook-ceph-exporter-hks-worker-3-69d98cf477         Created pod: rook-ceph-exporter-hks-worker-3-69d98cf477-7pjxc
+rook-ceph   53m         Normal    Started                   pod/rook-ceph-osd-2-69bc4d9db-tch8w                           Container started
+rook-ceph   53m         Normal    Created                   pod/rook-ceph-osd-2-69bc4d9db-tch8w                           Container created
+rook-ceph   53m         Normal    Created                   pod/rook-ceph-osd-0-8467854678-f8mvg                          Container created
+rook-ceph   53m         Normal    Started                   pod/rook-ceph-osd-0-8467854678-f8mvg                          Container started
+rook-ceph   53m         Normal    Created                   pod/rook-ceph-crashcollector-hks-worker-2-647549664d-777hx    Container created
+rook-ceph   53m         Normal    Created                   pod/rook-ceph-exporter-hks-worker-3-69d98cf477-7pjxc          Container created
+rook-ceph   53m         Normal    Killing                   pod/rook-ceph-crashcollector-hks-worker-2-559dd7dcc4-m4dxf    Stopping container ceph-crash
+rook-ceph   53m         Normal    Completed                 job/rook-ceph-osd-prepare-hks-worker-3                        Job completed
+rook-ceph   53m         Normal    Created                   pod/rook-ceph-osd-0-8467854678-f8mvg                          Container created
+rook-ceph   53m         Normal    ScalingReplicaSet         deployment/rook-ceph-crashcollector-hks-worker-2              Scaled down replica set rook-ceph-crashcollector-hks-worker-2-559dd7dcc4 from 1 to 0
+rook-ceph   53m         Normal    Pulled                    pod/rook-ceph-osd-0-8467854678-f8mvg                          Container image "quay.io/ceph/ceph:v19.2.3" already present on machine and can be accessed by the pod
+rook-ceph   53m         Normal    SuccessfulDelete          replicaset/rook-ceph-crashcollector-hks-worker-2-559dd7dcc4   Deleted pod: rook-ceph-crashcollector-hks-worker-2-559dd7dcc4-m4dxf
+rook-ceph   53m         Normal    Started                   pod/rook-ceph-osd-0-8467854678-f8mvg                          Container started
+rook-ceph   53m         Normal    Pulled                    pod/rook-ceph-osd-0-8467854678-f8mvg                          Container image "quay.io/ceph/ceph:v19.2.3" already present on machine and can be accessed by the pod
+rook-ceph   53m         Normal    Started                   pod/rook-ceph-osd-0-8467854678-f8mvg                          Container started
+rook-ceph   53m         Normal    Pulled                    pod/rook-ceph-crashcollector-hks-worker-3-74df44bc8f-xxbmh    Container image "quay.io/ceph/ceph:v19.2.3" already present on machine and can be accessed by the pod
+rook-ceph   53m         Normal    Created                   pod/rook-ceph-crashcollector-hks-worker-3-74df44bc8f-xxbmh    Container created
+rook-ceph   53m         Normal    Started                   pod/rook-ceph-crashcollector-hks-worker-3-74df44bc8f-xxbmh    Container started
+rook-ceph   53m         Normal    Created                   pod/rook-ceph-osd-0-8467854678-f8mvg                          Container created
+rook-ceph   53m         Normal    Pulled                    pod/rook-ceph-exporter-hks-worker-3-69d98cf477-7pjxc          Container image "quay.io/ceph/ceph:v19.2.3" already present on machine and can be accessed by the pod
+rook-ceph   53m         Normal    Started                   pod/rook-ceph-exporter-hks-worker-3-69d98cf477-7pjxc          Container started
+rook-ceph   53m         Normal    Created                   pod/rook-ceph-exporter-hks-worker-3-69d98cf477-7pjxc          Container created
+rook-ceph   53m         Normal    Pulled                    pod/rook-ceph-crashcollector-hks-worker-3-74df44bc8f-xxbmh    Container image "quay.io/ceph/ceph:v19.2.3" already present on machine and can be accessed by the pod
+rook-ceph   53m         Normal    Created                   pod/rook-ceph-osd-1-554c6d5cf9-lh42d                          Container created
+rook-ceph   53m         Normal    Pulled                    pod/rook-ceph-exporter-hks-worker-3-69d98cf477-7pjxc          Container image "quay.io/ceph/ceph:v19.2.3" already present on machine and can be accessed by the pod
+rook-ceph   53m         Normal    Pulled                    pod/rook-ceph-exporter-hks-worker-3-69d98cf477-7pjxc          Container image "quay.io/ceph/ceph:v19.2.3" already present on machine and can be accessed by the pod
+rook-ceph   53m         Normal    Created                   pod/rook-ceph-exporter-hks-worker-3-69d98cf477-7pjxc          Container created
+rook-ceph   53m         Normal    Pulled                    pod/rook-ceph-osd-1-554c6d5cf9-lh42d                          Container image "quay.io/ceph/ceph:v19.2.3" already present on machine and can be accessed by the pod
+rook-ceph   53m         Normal    Started                   pod/rook-ceph-exporter-hks-worker-3-69d98cf477-7pjxc          Container started
+rook-ceph   53m         Normal    Started                   pod/rook-ceph-osd-1-554c6d5cf9-lh42d                          Container started
+rook-ceph   53m         Normal    Started                   pod/rook-ceph-crashcollector-hks-worker-3-74df44bc8f-xxbmh    Container started
+rook-ceph   53m         Normal    Created                   pod/rook-ceph-crashcollector-hks-worker-3-74df44bc8f-xxbmh    Container created
+rook-ceph   53m         Normal    Started                   pod/rook-ceph-exporter-hks-worker-3-69d98cf477-7pjxc          Container started
+rook-ceph   53m         Normal    Started                   pod/rook-ceph-osd-2-69bc4d9db-tch8w                           Container started
+rook-ceph   53m         Normal    Created                   pod/rook-ceph-osd-2-69bc4d9db-tch8w                           Container created
+rook-ceph   53m         Normal    Pulled                    pod/rook-ceph-osd-2-69bc4d9db-tch8w                           Container image "quay.io/ceph/ceph:v19.2.3" already present on machine and can be accessed by the pod
+rook-ceph   53m         Normal    Pulled                    pod/rook-ceph-osd-1-554c6d5cf9-lh42d                          Container image "quay.io/ceph/ceph:v19.2.3" already present on machine and can be accessed by the pod
+rook-ceph   53m         Normal    Created                   pod/rook-ceph-osd-1-554c6d5cf9-lh42d                          Container created
+rook-ceph   53m         Normal    SuccessfulDelete          replicaset/rook-ceph-crashcollector-hks-worker-3-86749766cf   Deleted pod: rook-ceph-crashcollector-hks-worker-3-86749766cf-dkxb5
+rook-ceph   53m         Normal    Killing                   pod/rook-ceph-crashcollector-hks-worker-3-86749766cf-dkxb5    Stopping container ceph-crash
+rook-ceph   53m         Normal    Started                   pod/rook-ceph-osd-1-554c6d5cf9-lh42d                          Container started
+rook-ceph   53m         Normal    ScalingReplicaSet         deployment/rook-ceph-crashcollector-hks-worker-3              Scaled down replica set rook-ceph-crashcollector-hks-worker-3-86749766cf from 1 to 0
+rook-ceph   53m         Normal    Created                   pod/rook-ceph-osd-1-554c6d5cf9-lh42d                          Container created
+rook-ceph   53m         Normal    Pulled                    pod/rook-ceph-osd-1-554c6d5cf9-lh42d                          Container image "quay.io/ceph/ceph:v19.2.3" already present on machine and can be accessed by the pod
+rook-ceph   53m         Normal    Started                   pod/rook-ceph-osd-1-554c6d5cf9-lh42d                          Container started
+rook-ceph   53m         Normal    Pulled                    pod/rook-ceph-osd-1-554c6d5cf9-lh42d                          Container image "quay.io/ceph/ceph:v19.2.3" already present on machine and can be accessed by the pod
+rook-ceph   53m         Normal    Created                   pod/rook-ceph-osd-1-554c6d5cf9-lh42d                          Container created
+rook-ceph   53m         Normal    Started                   pod/rook-ceph-osd-1-554c6d5cf9-lh42d                          Container started
+rook-ceph   53m         Normal    Started                   pod/rook-ceph-osd-2-69bc4d9db-tch8w                           Container started
+rook-ceph   53m         Normal    Pulled                    pod/rook-ceph-osd-2-69bc4d9db-tch8w                           Container image "quay.io/ceph/ceph:v19.2.3" already present on machine and can be accessed by the pod
+rook-ceph   53m         Normal    Created                   pod/rook-ceph-osd-2-69bc4d9db-tch8w                           Container created
+rook-ceph   53m         Normal    Pulled                    pod/rook-ceph-osd-2-69bc4d9db-tch8w                           Container image "quay.io/ceph/ceph:v19.2.3" already present on machine and can be accessed by the pod
+rook-ceph   53m         Normal    Created                   pod/rook-ceph-osd-2-69bc4d9db-tch8w                           Container created
+rook-ceph   53m         Normal    Started                   pod/rook-ceph-osd-2-69bc4d9db-tch8w                           Container started
+rook-ceph   53m         Normal    Started                   pod/rook-ceph-osd-2-69bc4d9db-tch8w                           Container started
+rook-ceph   53m         Normal    Pulled                    pod/rook-ceph-osd-2-69bc4d9db-tch8w                           Container image "quay.io/ceph/ceph:v19.2.3" already present on machine and can be accessed by the pod
+rook-ceph   53m         Normal    Created                   pod/rook-ceph-osd-2-69bc4d9db-tch8w                           Container created
+rook-ceph   53m         Normal    Started                   pod/rook-ceph-osd-2-69bc4d9db-tch8w                           Container started
+rook-ceph   53m         Normal    Pulled                    pod/rook-ceph-osd-2-69bc4d9db-tch8w                           Container image "quay.io/ceph/ceph:v19.2.3" already present on machine and can be accessed by the pod
+rook-ceph   53m         Normal    Created                   pod/rook-ceph-osd-2-69bc4d9db-tch8w                           Container created

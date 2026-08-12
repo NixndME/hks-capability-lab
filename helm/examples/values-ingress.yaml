@@ -1,0 +1,11 @@
+# Ingress through a specific, already-installed IngressClass (this cluster's
+# validated run used ingress-nginx -- see NETWORKING_DECISION.md). Does not
+# install an ingress controller.
+# helm install hks-lab helm/hks-capability-lab -f helm/examples/values-ingress.yaml
+ingress:
+  enabled: true
+  className: nginx
+  host: hks-demo.example.com
+  tls:
+    enabled: true
+    secretName: "" # set to an existing TLS secret, or leave "" to rely on the controller's default cert

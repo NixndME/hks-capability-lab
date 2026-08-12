@@ -1,0 +1,9 @@
+# NodePort-only access: disable Ingress, keep the dedicated NodePort Service.
+# helm install hks-lab helm/hks-capability-lab -f helm/examples/values-nodeport.yaml
+ingress:
+  enabled: false
+service:
+  nodePort:
+    enabled: true
+    port: 80
+    # nodePort: 30080   # uncomment to pin a specific port instead of an auto-assigned one

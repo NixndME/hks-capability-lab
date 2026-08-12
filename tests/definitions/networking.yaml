@@ -1,0 +1,143 @@
+- id: NET-001
+  name: Port-forward access
+  category: Networking
+  description: Confirm the most basic access path works before testing anything else.
+  prerequisites: [APP-001]
+  deployment_modes: [yaml]
+  artifacts: [hks-capability-lab.yaml]
+  commands:
+    - "kubectl -n hks-capability-lab port-forward svc/hks-lab-app 18080:80"
+    - "curl -s http://localhost:18080/api/info"
+  success_conditions:
+    - http_200_on_root
+    - api_info_returns_valid_json
+  result: PASS
+  result_notes: "HTTP 200, /api/info returned valid JSON."
+  evidence: [evidence/access-modes/portforward.txt]
+  docs: [TEST_RESULTS.md]
+  last_validated: "2026-08-12"
+
+- id: NET-002
+  name: ClusterIP / in-cluster Service DNS
+  category: Networking
+  description: Validate all four Service DNS resolution forms from inside the cluster.
+  prerequisites: [APP-001]
+  deployment_modes: [yaml]
+  artifacts: [hks-capability-lab.yaml]
+  commands:
+    - "kubectl -n hks-capability-lab exec <pod> -- curl -s http://hks-lab-app/"
+    - "kubectl -n hks-capability-lab exec <pod> -- curl -s http://hks-lab-app.hks-capability-lab.svc.cluster.local/"
+  success_conditions:
+    - short_name_resolves
+    - namespace_qualified_resolves
+    - svc_qualified_resolves
+    - fqdn_resolves
+    - all_return_http_200
+  result: PASS
+  result_notes: "All 4 DNS forms resolved and returned HTTP 200."
+  evidence: []
+  docs: [TEST_RESULTS.md]
+  last_validated: "2026-08-12"
+
+- id: NET-003
+  name: NodePort
+  category: Networking
+  description: Confirm NodePort answers from every node, not just the one running a pod.
+  prerequisites: [APP-001]
+  deployment_modes: [yaml]
+  artifacts: [hks-capability-lab.yaml]
+  commands:
+    - "curl -s http://<node-ip>:<nodeport>/"
+  success_conditions:
+    - http_200_from_all_node_ips
+  result: PASS
+  result_notes: "HTTP 200 from all 4 node IPs (externalTrafficPolicy: Cluster, the default). Node IPs are RFC1918 private -- no public path from this cluster."
+  evidence: [evidence/access-modes/nodeport.txt]
+  docs: [TEST_RESULTS.md]
+  last_validated: "2026-08-12"
+
+- id: NET-004
+  name: LoadBalancer
+  category: Networking
+  description: >
+    Distinguish "LoadBalancer API accepted" from "an actual external IP got
+    assigned" -- these are different claims and must be reported separately.
+  prerequisites: [APP-001]
+  deployment_modes: [yaml]
+  artifacts: []
+  commands:
+    - "kubectl expose deployment hks-lab-app --type=LoadBalancer"
+  success_conditions:
+    - service_type_loadbalancer_accepted
+    - external_ip_assigned
+  result: NOT_AVAILABLE
+  result_notes: >
+    Service type LoadBalancer was accepted by the API but EXTERNAL-IP stayed
+    <pending> indefinitely -- identical behavior to the pre-existing
+    ingress-nginx-controller LoadBalancer Service. No MetalLB or cloud LB
+    controller exists on this cluster. This is an infrastructure gap, not a
+    Kubernetes defect. API SUPPORTED / INFRASTRUCTURE NOT AVAILABLE.
+  evidence: [evidence/access-modes/loadbalancer.txt]
+  docs: [TEST_RESULTS.md]
+  last_validated: "2026-08-12"
+
+- id: NET-005
+  name: Gateway API
+  category: Networking
+  description: Gateway/GatewayClass/HTTPRoute support.
+  prerequisites: [APP-001]
+  deployment_modes: [yaml]
+  artifacts: []
+  commands: []
+  success_conditions:
+    - gatewayclass_exists
+    - gateway_admitted
+    - httproute_routes_traffic
+  result: NOT_VALIDATED
+  result_notes: >
+    Calico on this cluster is latently capable of Gateway API, but enabling
+    it is a cluster-scoped change and was deliberately not made for this
+    test run. See NETWORKING_DECISION.md.
+  evidence: []
+  docs: [NETWORKING_DECISION.md]
+  last_validated: "2026-08-12"
+
+- id: NET-006
+  name: Ingress
+  category: Networking
+  description: Validate Ingress routing through the cluster's existing ingress-nginx install.
+  prerequisites: [APP-001]
+  deployment_modes: [yaml]
+  artifacts: [hks-capability-lab.yaml]
+  commands:
+    - "curl -H \"Host: ${TEST_HOST}\" http://<node-ip>:<http-nodeport>/"
+  success_conditions:
+    - http_200_via_ingress_host_header
+  result: PASS
+  result_notes: >
+    Two of four node IPs initially timed out -- root cause: ingress-nginx's
+    Service has externalTrafficPolicy: Local (the ingress-nginx default,
+    preserves client source IP), so its NodePort only answers on the node
+    actually running the controller pod. Expected behavior, not a bug, once
+    identified. Retested against the correct node: HTTP 200. HTTPS via the
+    controller's default self-signed cert also validated.
+  evidence: [evidence/access-modes/ingress.txt]
+  docs: [TEST_RESULTS.md, NETWORKING_DECISION.md]
+  last_validated: "2026-08-12"
+
+- id: NET-007
+  name: TLS via Ingress
+  category: Networking
+  description: HTTPS reachability through the Ingress controller's default cert.
+  prerequisites: [NET-006]
+  deployment_modes: [yaml]
+  artifacts: [hks-capability-lab.yaml]
+  commands:
+    - "curl -sk -H \"Host: ${TEST_HOST}\" https://<node-ip>:<https-nodeport>/"
+  success_conditions:
+    - https_200_response
+  result: PASS
+  result_notes: "HTTPS NodePort 30337, self-signed default cert, HTTP 200."
+  evidence: [evidence/access-modes/ingress.txt]
+  docs: [TEST_RESULTS.md]
+  last_validated: "2026-08-12"

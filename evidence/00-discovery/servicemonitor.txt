@@ -1,0 +1,15 @@
+=== servicemonitor -A ===
+NAMESPACE    NAME                      AGE
+monitoring   alertmanager-main         71m
+monitoring   blackbox-exporter         71m
+monitoring   coredns                   70m
+monitoring   grafana                   71m
+monitoring   kube-apiserver            70m
+monitoring   kube-controller-manager   70m
+monitoring   kube-scheduler            70m
+monitoring   kube-state-metrics        70m
+monitoring   kubelet                   70m
+monitoring   node-exporter             70m
+monitoring   prometheus-adapter        70m
+monitoring   prometheus-k8s            71m
+monitoring   prometheus-operator       71m

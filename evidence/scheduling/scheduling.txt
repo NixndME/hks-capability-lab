@@ -1,0 +1,28 @@
+=== Scheduling Validation Evidence ===
+--- 1. Pod anti-affinity + topology spread (main app, 3 replicas) ---
+NAME                                  NODE
+hks-lab-app-7cd694d464-6gqnr          hks-worker-3
+hks-lab-app-7cd694d464-gstjd          hks-worker-1
+hks-lab-app-7cd694d464-nq9h5          hks-worker-3
+hks-lab-app-blue-cdfd6c646-hg59m      hks-worker-2
+hks-lab-app-blue-cdfd6c646-wjvnc      hks-worker-2
+hks-lab-app-canary-598695779b-8bqts   hks-worker-2
+hks-lab-app-green-654dcc5745-5hbmx    hks-worker-2
+hks-lab-app-green-654dcc5745-j79k7    hks-worker-2
+--- 2. nodeSelector (ceph-storage=enabled, excludes master) ---
+NAME                      NODE
+sched-test-nodeselector   hks-worker-3
+--- 3. Required node affinity (pin to hks-worker-2) ---
+NAME                  NODE
+sched-test-affinity   hks-worker-2
+--- 4. Taint/toleration: pod WITHOUT toleration for control-plane taint ---
+NAME                       READY   STATUS    RESTARTS   AGE
+sched-test-no-toleration   0/1     Pending   0          5s
+Events:
+  Type     Reason            Age   From               Message
+  ----     ------            ----  ----               -------
+LAST SEEN   TYPE      REASON             OBJECT                         MESSAGE
+35s         Warning   FailedScheduling   pod/sched-test-no-toleration   0/4 nodes are available: 1 node(s) had untolerated taint(s), 3 node(s) didn't match Pod's node affinity/selector. no new claims to deallocate, preemption: 0/4 nodes are available: 4 Preemption is not helpful for scheduling.
+--- 5. Taint/toleration: pod WITH toleration for control-plane taint ---
+NAME                         NODE
+sched-test-with-toleration   hks-master

@@ -1,0 +1,4 @@
+=== statefulsets -A ===
+NAMESPACE    NAME                READY   AGE
+monitoring   alertmanager-main   3/3     68m
+monitoring   prometheus-k8s      2/2     68m

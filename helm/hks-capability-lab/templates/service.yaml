@@ -1,0 +1,59 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "hks.fullname" . }}
+  namespace: {{ include "hks.namespace" . }}
+  labels:
+    {{- include "hks.labels" . | nindent 4 }}
+    hks-capability-lab/metrics: primary
+spec:
+  type: ClusterIP
+  selector:
+    {{- include "hks.selectorLabels" . | nindent 4 }}
+  ports:
+    - name: http
+      port: {{ .Values.service.clusterIP.port }}
+      targetPort: 8080
+---
+{{- if .Values.service.nodePort.enabled }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "hks.fullname" . }}-nodeport
+  namespace: {{ include "hks.namespace" . }}
+  labels:
+    {{- include "hks.labels" . | nindent 4 }}
+  annotations:
+    hks-capability-lab/note: "Dedicated NodePort service for explicit NodePort access testing; primary Service stays ClusterIP."
+spec:
+  type: NodePort
+  selector:
+    {{- include "hks.selectorLabels" . | nindent 4 }}
+  ports:
+    - name: http
+      port: {{ .Values.service.nodePort.port }}
+      targetPort: 8080
+      {{- if .Values.service.nodePort.nodePort }}
+      nodePort: {{ .Values.service.nodePort.nodePort }}
+      {{- end }}
+{{- end }}
+---
+{{- if .Values.service.loadBalancer.enabled }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "hks.fullname" . }}-lb
+  namespace: {{ include "hks.namespace" . }}
+  labels:
+    {{- include "hks.labels" . | nindent 4 }}
+  annotations:
+    hks-capability-lab/note: "Requests a LoadBalancer Service from the API. An external IP is only assigned if the cluster has LoadBalancer infrastructure (MetalLB, cloud controller, etc) -- this chart does not provide or detect that."
+spec:
+  type: LoadBalancer
+  selector:
+    {{- include "hks.selectorLabels" . | nindent 4 }}
+  ports:
+    - name: http
+      port: {{ .Values.service.loadBalancer.port }}
+      targetPort: 8080
+{{- end }}

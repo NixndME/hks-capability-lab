@@ -1,0 +1,4 @@
+=== LoadBalancer test (temporary Service) ===
+service/hks-lab-app-lb-test exposed
+NAME                  TYPE           CLUSTER-IP      EXTERNAL-IP   PORT(S)        AGE   SELECTOR
+hks-lab-app-lb-test   LoadBalancer   172.30.57.176   <pending>     80:30915/TCP   5s    app.kubernetes.io/name=hks-lab-app,hks-capability-lab/track=stable

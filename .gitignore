@@ -1,0 +1,30 @@
+# Ignore all hidden files and folders
+.*
+!.gitignore
+
+# Claude-related files and folders
+.claude/
+.claude.json
+CLAUDE.md
+claude_output/
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+*.egg-info/
+
+# Node / frontend
+node_modules/
+frontend/dist/
+*.tsbuildinfo
+frontend/vite.config.js
+frontend/vite.config.d.ts
+
+# Helm
+helm/**/charts/
+helm/**/*.tgz
+
+# Local config
+config.env
+dist/

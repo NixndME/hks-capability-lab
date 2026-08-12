@@ -1,0 +1,27 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: {{ include "hks.fullname" . }}-readonly
+  namespace: {{ include "hks.namespace" . }}
+  labels:
+    {{- include "hks.labels" . | nindent 4 }}
+rules:
+  - apiGroups: [""]
+    resources: ["pods", "configmaps", "services"]
+    verbs: ["get", "list", "watch"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: {{ include "hks.fullname" . }}-readonly
+  namespace: {{ include "hks.namespace" . }}
+  labels:
+    {{- include "hks.labels" . | nindent 4 }}
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: {{ include "hks.fullname" . }}-readonly
+subjects:
+  - kind: ServiceAccount
+    name: {{ include "hks.serviceAccountName" . }}
+    namespace: {{ include "hks.namespace" . }}

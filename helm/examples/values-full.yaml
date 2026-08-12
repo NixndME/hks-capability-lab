@@ -1,0 +1,31 @@
+# Every optional feature enabled at once -- useful for exercising the whole
+# chart (helm template/lint/install) in one pass, e.g. in CI. Not a
+# recommended production baseline; combine only the pieces you actually
+# need for a real cluster (see the other values-*.yaml for scoped examples).
+ingress:
+  enabled: true
+  className: nginx
+  host: hks-demo.example.com
+gateway:
+  enabled: false # mutually exclusive in practice with ingress on most clusters; left off even in "full"
+service:
+  nodePort:
+    enabled: true
+  loadBalancer:
+    enabled: true
+persistence:
+  enabled: true
+  size: 1Gi
+networkPolicy:
+  enabled: true
+prometheus:
+  serviceMonitor:
+    enabled: true
+  scrapeRbac:
+    enabled: true
+    namespace: monitoring
+    serviceAccountName: prometheus-k8s
+hpa:
+  enabled: true
+pdb:
+  enabled: true

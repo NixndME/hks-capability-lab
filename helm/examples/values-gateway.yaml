@@ -1,0 +1,11 @@
+# Gateway API routing against an EXISTING GatewayClass. Enabling Gateway
+# API itself is a cluster-scoped change and out of scope for this chart --
+# see NET-005/NETWORKING_DECISION.md (NOT_VALIDATED on the reference
+# cluster: Calico is latently capable but it was never turned on).
+# helm install hks-lab helm/hks-capability-lab -f helm/examples/values-gateway.yaml
+ingress:
+  enabled: false
+gateway:
+  enabled: true
+  gatewayClassName: istio # replace with your cluster's actual GatewayClass
+  host: hks-demo.example.com

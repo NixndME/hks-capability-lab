@@ -1,0 +1,7 @@
+[34mINFO[0m  Resolved Prometheus ServiceAccount -> monitoring/prometheus-k8s
+
+[1m== STG-001: Deploy isolated PVC + pod ==[0m
+[32mPASS[0m  STG-001 PVC bound (rook-ceph-block)
+
+[1m== STG-002: Write + verify marker, delete pod, verify persistence ==[0m
+[32mPASS[0m  STG-002 data persisted across pod restart (hks-lab-storage-test-7b87d9467b-qf4cd -> hks-lab-storage-test-7b87d9467b-fhmpg): HKS_STORAGE_TEST=2026-08-12T12:33:57Z

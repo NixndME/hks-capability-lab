@@ -1,0 +1,121 @@
+# Default values for hks-capability-lab.
+# Nothing here is cluster-specific by default -- StorageClass/IngressClass/
+# GatewayClass default to "" (cluster default / not set), and no domain,
+# IP, or node name is hard-coded anywhere in templates/.
+
+namespace:
+  # Set to false to install into a namespace you already manage via -n/--namespace.
+  create: true
+  name: hks-capability-lab
+
+replicaCount: 3
+
+image:
+  # Stock, stdlib-only Python image -- the app itself is mounted from a
+  # ConfigMap (see files/app.py), not baked into the image. No custom
+  # build or private registry required.
+  repository: python
+  tag: "3.12-alpine"
+  pullPolicy: IfNotPresent
+
+app:
+  version: v1
+  color: blue
+
+serviceAccount:
+  create: true
+  name: ""
+  automountServiceAccountToken: false
+
+resources:
+  requests:
+    cpu: 100m
+    memory: 64Mi
+  limits:
+    cpu: 500m
+    memory: 128Mi
+
+service:
+  clusterIP:
+    port: 80
+  nodePort:
+    enabled: true
+    port: 80
+    # nodePort: 0   # leave unset to let Kubernetes assign one
+  loadBalancer:
+    # Off by default: this only requests a LoadBalancer-type Service from
+    # the API -- whether an external IP actually gets assigned depends on
+    # infrastructure (MetalLB, cloud LB controller) this chart cannot
+    # detect or install. See tests/definitions/networking.yaml NET-004.
+    enabled: false
+    port: 80
+
+ingress:
+  enabled: true
+  # "" = use the cluster's default IngressClass
+  className: ""
+  host: hks-demo.example.com
+  tls:
+    enabled: false
+    secretName: ""
+
+# Gateway API routing -- off by default. Enabling Gateway API itself is a
+# cluster-scoped change and out of this chart's scope; this only creates a
+# Gateway + HTTPRoute against an *existing* GatewayClass.
+gateway:
+  enabled: false
+  gatewayClassName: ""
+  host: hks-demo.example.com
+
+hpa:
+  enabled: true
+  minReplicas: 2
+  maxReplicas: 6
+  targetCPUUtilizationPercentage: 50
+  scaleDownStabilizationSeconds: 60
+
+pdb:
+  enabled: true
+  minAvailable: 1
+
+# Optional PVC-backed persistence for the sample app's /data path (used by
+# the storage validation tests). Off by default -- most capability checks
+# don't need it.
+persistence:
+  enabled: false
+  storageClassName: "" # "" = cluster default
+  size: 1Gi
+  mountPath: /data
+
+networkPolicy:
+  # Default-deny + explicit allow from pods carrying the same
+  # app.kubernetes.io/name label. Off by default since it depends on a
+  # NetworkPolicy-enforcing CNI (e.g. Calico) being present.
+  enabled: false
+
+prometheus:
+  serviceMonitor:
+    # Only enable once you've confirmed the Prometheus Operator CRDs are
+    # installed (kubectl get crd servicemonitors.monitoring.coreos.com) --
+    # this chart does not detect that for you.
+    enabled: false
+    interval: 15s
+  # Additive, namespace-scoped RBAC grant letting the cluster's existing
+  # Prometheus ServiceAccount discover scrape targets in this namespace.
+  # See PROMETHEUS_VALIDATION.md for why this is needed on clusters that
+  # scope Prometheus RBAC per-namespace. Never touches the monitoring
+  # namespace itself.
+  scrapeRbac:
+    enabled: false
+    namespace: monitoring
+    serviceAccountName: prometheus-k8s
+
+secret:
+  # Placeholder secret demonstrating Secret consumption via env var, same
+  # as hks-capability-lab.yaml. Not a real credential.
+  demoApiKey: "demo-value-not-a-real-secret"
+
+podAnnotations: {}
+nodeSelector: {}
+tolerations: []
+affinity: {}

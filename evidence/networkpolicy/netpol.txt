@@ -1,0 +1,9 @@
+=== NetworkPolicy Evidence ===
+NAME                               POD-SELECTOR                      AGE
+netpol-allow-frontend-to-backend   hks-capability-lab/role=backend   28s
+netpol-default-deny-backend        hks-capability-lab/role=backend   28s
+
+--- frontend -> backend (expect ALLOWED) ---
+HTTP 200
+--- untrusted -> backend (expect DENIED/timeout) ---
+HTTP 000

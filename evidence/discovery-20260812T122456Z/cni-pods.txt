@@ -1,0 +1,14 @@
+calico-system        calico-apiserver-6679bd5db4-2m9z4                        1/1     Running     0               131m    172.20.230.198    hks-worker-3   <none>           <none>
+calico-system        calico-apiserver-6679bd5db4-g9f9p                        1/1     Running     0               131m    172.20.230.199    hks-worker-3   <none>           <none>
+calico-system        calico-kube-controllers-6dfb4c88fb-86bst                 1/1     Running     0               131m    172.20.230.197    hks-worker-3   <none>           <none>
+calico-system        calico-node-gpmd2                                        1/1     Running     0               131m    192.168.122.232   hks-worker-2   <none>           <none>
+calico-system        calico-node-j6tcf                                        1/1     Running     0               131m    192.168.122.233   hks-worker-3   <none>           <none>
+calico-system        calico-node-z7gwb                                        1/1     Running     0               131m    192.168.122.231   hks-worker-1   <none>           <none>
+calico-system        calico-node-zcgc5                                        1/1     Running     0               131m    192.168.122.230   hks-master     <none>           <none>
+calico-system        calico-typha-54568994df-hl925                            1/1     Running     0               131m    192.168.122.232   hks-worker-2   <none>           <none>
+calico-system        calico-typha-54568994df-srkrw                            1/1     Running     0               131m    192.168.122.233   hks-worker-3   <none>           <none>
+calico-system        calicoctl                                                1/1     Running     0               132m    192.168.122.233   hks-worker-3   <none>           <none>
+calico-system        csi-node-driver-2nhmc                                    2/2     Running     0               131m    172.20.230.193    hks-worker-3   <none>           <none>
+calico-system        csi-node-driver-4h4s7                                    2/2     Running     0               131m    172.20.0.1        hks-master     <none>           <none>
+calico-system        csi-node-driver-hfcqk                                    2/2     Running     0               131m    172.20.30.1       hks-worker-1   <none>           <none>
+calico-system        csi-node-driver-t6bb7                                    2/2     Running     0               131m    172.20.67.1       hks-worker-2   <none>           <none>

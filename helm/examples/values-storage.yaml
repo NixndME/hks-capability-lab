@@ -1,0 +1,10 @@
+# Enables PVC-backed persistence at /data (used by the storage validation
+# tests, STG-001/STG-002). "" storageClassName = cluster default; set
+# explicitly (e.g. rook-ceph-block, as validated on the reference cluster)
+# if there is more than one StorageClass.
+# helm install hks-lab helm/hks-capability-lab -f helm/examples/values-storage.yaml
+persistence:
+  enabled: true
+  storageClassName: ""
+  size: 1Gi
+  mountPath: /data

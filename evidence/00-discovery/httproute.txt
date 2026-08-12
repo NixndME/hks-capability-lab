@@ -1,0 +1,2 @@
+=== httproute -A ===
+error: the server doesn't have a resource type "httproute"

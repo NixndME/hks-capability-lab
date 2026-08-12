@@ -1,0 +1,9 @@
+=== Storage Validation Evidence ===
+Initial pod: hks-lab-storage-test-7b87d9467b-8k28r
+Writing: HKS_STORAGE_TEST=2026-08-12T11:45:44Z
+HKS_STORAGE_TEST=2026-08-12T11:45:44Z
+--- deleting pod to force reschedule (Recreate strategy) ---
+deployment "hks-lab-storage-test" successfully rolled out
+New pod: hks-lab-storage-test-7b87d9467b-6nvxd (different from hks-lab-storage-test-7b87d9467b-8k28r: yes)
+--- reading marker.txt after restart ---
+HKS_STORAGE_TEST=2026-08-12T11:45:44Z

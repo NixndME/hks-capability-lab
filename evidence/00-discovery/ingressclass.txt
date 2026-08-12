@@ -1,0 +1,3 @@
+=== ingressclass ===
+NAME    CONTROLLER             PARAMETERS   AGE
+nginx   k8s.io/ingress-nginx   <none>       70m

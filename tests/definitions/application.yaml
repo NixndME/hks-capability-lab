@@ -1,0 +1,36 @@
+# Application deployment -- the prerequisite for almost every other test.
+- id: APP-001
+  name: Sample Application Deployment
+  category: Application
+  description: >
+    Deploy the core hks-lab-app workload (Namespace, ConfigMap-embedded app
+    source, Secret, ServiceAccount/Role/RoleBinding, Deployment, ClusterIP +
+    NodePort Services, HPA, PDB, Ingress) via envsubst + kubectl apply.
+  purpose: >
+    Every networking, scaling, deployment, storage, and observability test
+    below depends on this workload existing and being Ready first.
+  prerequisites: []
+  deployment_modes: [yaml]
+  artifacts:
+    - hks-capability-lab.yaml
+    - config.env.example
+    - scripts/lib.sh
+  commands:
+    - "cp config.env.example config.env"
+    - "set -a && source config.env && set +a"
+    - "envsubst < hks-capability-lab.yaml | kubectl apply -f -"
+    - "kubectl -n hks-capability-lab rollout status deployment/hks-lab-app --timeout=120s"
+  success_conditions:
+    - namespace_exists
+    - deployment_available_replicas_ge_min
+    - all_pods_ready
+    - service_hks-lab-app_has_endpoints
+  result: PASS
+  result_notes: "Core deployment path; every other PASS in this suite depended on this succeeding first."
+  evidence:
+    - evidence/00-discovery/deploy.txt
+    - evidence/00-discovery/pods-a.txt
+  docs:
+    - README.md
+    - TEST_RESULTS.md
+  last_validated: "2026-08-12"

@@ -1,0 +1,4 @@
+NAME                            ATTACHREQUIRED   PODINFOONMOUNT   STORAGECAPACITY   TOKENREQUESTS   REQUIRESREPUBLISH   MODES        AGE
+csi.tigera.io                   true             true             false             <unset>         false               Ephemeral    131m
+rook-ceph.cephfs.csi.ceph.com   true             false            false             <unset>         false               Persistent   127m
+rook-ceph.rbd.csi.ceph.com      true             false            false             <unset>         false               Persistent   127m

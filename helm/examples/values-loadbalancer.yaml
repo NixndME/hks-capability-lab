@@ -1,0 +1,12 @@
+# Requests a LoadBalancer Service. Whether EXTERNAL-IP actually resolves
+# depends on cluster infrastructure (MetalLB / cloud LB controller) that
+# this chart neither provides nor detects -- see NET-004 in
+# tests/definitions/networking.yaml for what "API supported, infra not
+# available" looks like on a cluster without one.
+# helm install hks-lab helm/hks-capability-lab -f helm/examples/values-loadbalancer.yaml
+ingress:
+  enabled: false
+service:
+  loadBalancer:
+    enabled: true
+    port: 80

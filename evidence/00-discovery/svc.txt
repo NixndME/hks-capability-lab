@@ -1,0 +1,26 @@
+=== svc -A ===
+NAMESPACE       NAME                                 TYPE           CLUSTER-IP       EXTERNAL-IP   PORT(S)                        AGE   SELECTOR
+calico-system   calico-api                           ClusterIP      172.30.167.220   <none>        443/TCP                        72m   apiserver=true
+calico-system   calico-kube-controllers-metrics      ClusterIP      None             <none>        9094/TCP                       70m   k8s-app=calico-kube-controllers
+calico-system   calico-typha                         ClusterIP      172.30.68.203    <none>        5473/TCP                       72m   k8s-app=calico-typha
+default         kubernetes                           ClusterIP      172.30.0.1       <none>        443/TCP                        76m   <none>
+ingress-nginx   ingress-nginx-controller             LoadBalancer   172.30.87.194    <pending>     80:31992/TCP,443:30337/TCP     70m   app.kubernetes.io/component=controller,app.kubernetes.io/instance=ingress-nginx,app.kubernetes.io/name=ingress-nginx
+ingress-nginx   ingress-nginx-controller-admission   ClusterIP      172.30.65.158    <none>        443/TCP                        70m   app.kubernetes.io/component=controller,app.kubernetes.io/instance=ingress-nginx,app.kubernetes.io/name=ingress-nginx
+kube-system     kube-dns                             ClusterIP      172.30.0.10      <none>        53/UDP,53/TCP,9153/TCP         76m   k8s-app=kube-dns
+kube-system     kubelet                              ClusterIP      None             <none>        10250/TCP,4194/TCP,10255/TCP   68m   <none>
+monitoring      alertmanager-main                    ClusterIP      172.30.56.195    <none>        9093/TCP,8080/TCP              71m   app.kubernetes.io/component=alert-router,app.kubernetes.io/instance=main,app.kubernetes.io/name=alertmanager,app.kubernetes.io/part-of=kube-prometheus
+monitoring      alertmanager-operated                ClusterIP      None             <none>        9093/TCP,9094/TCP,9094/UDP     68m   app.kubernetes.io/name=alertmanager
+monitoring      blackbox-exporter                    ClusterIP      172.30.92.143    <none>        9115/TCP,19115/TCP             71m   app.kubernetes.io/component=exporter,app.kubernetes.io/name=blackbox-exporter,app.kubernetes.io/part-of=kube-prometheus
+monitoring      grafana                              ClusterIP      172.30.111.248   <none>        3000/TCP                       71m   app.kubernetes.io/component=grafana,app.kubernetes.io/name=grafana,app.kubernetes.io/part-of=kube-prometheus
+monitoring      kube-state-metrics                   ClusterIP      None             <none>        8443/TCP,9443/TCP              70m   app.kubernetes.io/component=exporter,app.kubernetes.io/name=kube-state-metrics,app.kubernetes.io/part-of=kube-prometheus
+monitoring      node-exporter                        ClusterIP      None             <none>        9100/TCP                       70m   app.kubernetes.io/component=exporter,app.kubernetes.io/name=node-exporter,app.kubernetes.io/part-of=kube-prometheus
+monitoring      prometheus-adapter                   ClusterIP      172.30.90.0      <none>        443/TCP                        70m   app.kubernetes.io/component=metrics-adapter,app.kubernetes.io/name=prometheus-adapter,app.kubernetes.io/part-of=kube-prometheus
+monitoring      prometheus-k8s                       ClusterIP      172.30.231.200   <none>        9090/TCP,8080/TCP              71m   app.kubernetes.io/component=prometheus,app.kubernetes.io/instance=k8s,app.kubernetes.io/name=prometheus,app.kubernetes.io/part-of=kube-prometheus
+monitoring      prometheus-operated                  ClusterIP      None             <none>        9090/TCP                       68m   app.kubernetes.io/name=prometheus
+monitoring      prometheus-operator                  ClusterIP      None             <none>        8443/TCP                       71m   app.kubernetes.io/component=controller,app.kubernetes.io/name=prometheus-operator,app.kubernetes.io/part-of=kube-prometheus
+rook-ceph       rook-ceph-exporter                   ClusterIP      172.30.122.99    <none>        9926/TCP                       54m   app=rook-ceph-exporter,rook_cluster=rook-ceph
+rook-ceph       rook-ceph-mgr                        ClusterIP      172.30.142.106   <none>        9283/TCP                       54m   app=rook-ceph-mgr,mgr_role=active,rook_cluster=rook-ceph
+rook-ceph       rook-ceph-mgr-dashboard              ClusterIP      172.30.116.221   <none>        8443/TCP                       54m   app=rook-ceph-mgr,mgr_role=active,rook_cluster=rook-ceph
+rook-ceph       rook-ceph-mon-a                      ClusterIP      172.30.167.49    <none>        6789/TCP,3300/TCP              59m   app=rook-ceph-mon,ceph_daemon_id=a,mon=a,mon_cluster=rook-ceph,rook_cluster=rook-ceph
+rook-ceph       rook-ceph-mon-b                      ClusterIP      172.30.136.19    <none>        6789/TCP,3300/TCP              54m   app=rook-ceph-mon,ceph_daemon_id=b,mon=b,mon_cluster=rook-ceph,rook_cluster=rook-ceph
+rook-ceph       rook-ceph-mon-c                      ClusterIP      172.30.129.248   <none>        6789/TCP,3300/TCP              54m   app=rook-ceph-mon,ceph_daemon_id=c,mon=c,mon_cluster=rook-ceph,rook_cluster=rook-ceph

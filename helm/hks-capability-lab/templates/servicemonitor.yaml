@@ -1,0 +1,51 @@
+{{- if .Values.prometheus.scrapeRbac.enabled }}
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: {{ include "hks.fullname" . }}-prometheus-scrape-access
+  namespace: {{ include "hks.namespace" . }}
+  labels:
+    {{- include "hks.labels" . | nindent 4 }}
+rules:
+  - apiGroups: [""]
+    resources: ["services", "endpoints", "pods"]
+    verbs: ["get", "list", "watch"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: {{ include "hks.fullname" . }}-prometheus-scrape-access
+  namespace: {{ include "hks.namespace" . }}
+  labels:
+    {{- include "hks.labels" . | nindent 4 }}
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: {{ include "hks.fullname" . }}-prometheus-scrape-access
+subjects:
+  - kind: ServiceAccount
+    name: {{ .Values.prometheus.scrapeRbac.serviceAccountName }}
+    namespace: {{ .Values.prometheus.scrapeRbac.namespace }}
+{{- end }}
+---
+{{- if .Values.prometheus.serviceMonitor.enabled }}
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: {{ include "hks.fullname" . }}
+  namespace: {{ include "hks.namespace" . }}
+  labels:
+    {{- include "hks.labels" . | nindent 4 }}
+    hks-capability-lab/servicemonitor: "true"
+spec:
+  selector:
+    matchLabels:
+      hks-capability-lab/metrics: primary
+  namespaceSelector:
+    matchNames:
+      - {{ include "hks.namespace" . }}
+  endpoints:
+    - port: http
+      path: /metrics
+      interval: {{ .Values.prometheus.serviceMonitor.interval }}
+{{- end }}

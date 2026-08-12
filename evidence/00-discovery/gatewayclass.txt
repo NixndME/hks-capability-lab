@@ -1,0 +1,2 @@
+=== gatewayclass ===
+error: the server doesn't have a resource type "gatewayclass"

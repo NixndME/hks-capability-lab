@@ -1,0 +1,74 @@
+- id: RES-001
+  name: Readiness probe failure/recovery
+  category: Resiliency
+  description: Pod is removed from Service endpoints while its injected readiness failure window is active, and rejoins automatically once it expires.
+  prerequisites: [APP-001]
+  deployment_modes: [yaml]
+  artifacts: [hks-capability-lab.yaml, sample-app/app.py]
+  commands:
+    - "curl -s -X POST 'http://<app>/api/chaos/readiness-fail?seconds=30'"
+    - "kubectl -n hks-capability-lab get pods -w"
+  success_conditions:
+    - pod_shows_not_ready_during_window
+    - pod_removed_from_service_endpoints
+    - pod_rejoins_endpoints_after_window
+  result: PASS
+  result_notes: "Pod correctly removed from Service endpoints while unready (READY 0/1), and rejoined automatically once the injected failure window expired."
+  evidence: [evidence/resiliency/resiliency.txt]
+  docs: [TEST_RESULTS.md]
+  last_validated: "2026-08-12"
+
+- id: RES-002
+  name: Liveness probe failure/recovery
+  category: Resiliency
+  description: Container is restarted by the kubelet after consecutive liveness probe failures.
+  prerequisites: [APP-001]
+  deployment_modes: [yaml]
+  artifacts: [hks-capability-lab.yaml, sample-app/app.py]
+  commands:
+    - "curl -s -X POST 'http://<app>/api/chaos/liveness-fail?seconds=30'"
+    - "kubectl -n hks-capability-lab describe pod <pod>"
+  success_conditions:
+    - container_restarts_after_failure_threshold
+    - unhealthy_killing_started_event_sequence_observed
+  result: PASS
+  result_notes: "Container restarted after 3 consecutive probe failures (RESTARTS incremented, kubectl describe pod showed Unhealthy -> Killing -> Created/Started)."
+  evidence: [evidence/resiliency/resiliency.txt]
+  docs: [TEST_RESULTS.md]
+  last_validated: "2026-08-12"
+
+- id: RES-003
+  name: Explicit crash recovery
+  category: Resiliency
+  description: Container that calls os._exit(1) is restarted automatically by Kubernetes.
+  prerequisites: [APP-001]
+  deployment_modes: [yaml]
+  artifacts: [hks-capability-lab.yaml, sample-app/app.py]
+  commands:
+    - "curl -s -X POST 'http://<app>/api/chaos/crash'"
+  success_conditions:
+    - container_automatically_restarted
+  result: PASS
+  result_notes: "Container restarted automatically."
+  evidence: [evidence/resiliency/resiliency.txt]
+  docs: [TEST_RESULTS.md]
+  last_validated: "2026-08-12"
+
+- id: RES-004
+  name: Pod deletion under load / rescheduling
+  category: Resiliency
+  description: Service stays reachable and desired replica count is restored when a pod is deleted while receiving traffic.
+  prerequisites: [APP-001]
+  deployment_modes: [yaml]
+  artifacts: [hks-capability-lab.yaml]
+  commands:
+    - "kubectl -n hks-capability-lab delete pod <pod> &"
+    - "while true; do curl -s -o /dev/null -w '%{http_code}\\n' http://<app>/; sleep 0.5; done"
+  success_conditions:
+    - service_remains_reachable_throughout
+    - desired_replica_count_restored_within_10s
+  result: PASS
+  result_notes: "Service remained reachable throughout replacement; desired replica count (2) was restored within ~10s."
+  evidence: [evidence/resiliency/resiliency.txt]
+  docs: [TEST_RESULTS.md]
+  last_validated: "2026-08-12"

@@ -1,0 +1,2 @@
+NAMESPACE       NAME              POD-SELECTOR     AGE
+calico-system   allow-apiserver   apiserver=true   131m

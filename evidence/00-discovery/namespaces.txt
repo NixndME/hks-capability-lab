@@ -1,0 +1,12 @@
+=== namespaces ===
+NAME              STATUS   AGE
+calico-system     Active   75m
+default           Active   75m
+ingress-nginx     Active   75m
+kube-node-lease   Active   75m
+kube-public       Active   75m
+kube-system       Active   75m
+logging           Active   75m
+monitoring        Active   75m
+rook-ceph         Active   75m
+tigera-operator   Active   75m

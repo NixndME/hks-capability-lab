@@ -1,0 +1,17 @@
+# Enables the ServiceMonitor + the additive namespace-scoped RBAC grant
+# needed on clusters that scope Prometheus RBAC per-namespace (see
+# PROMETHEUS_VALIDATION.md -- this was a real finding on the reference
+# cluster, not a hypothetical). CONFIRM the Prometheus Operator CRDs exist
+# before enabling:
+#   kubectl get crd servicemonitors.monitoring.coreos.com
+# and find the actual ServiceAccount/namespace to bind to:
+#   kubectl get prometheus -A -o jsonpath='{.items[0].spec.serviceAccountName}'
+# helm install hks-lab helm/hks-capability-lab -f helm/examples/values-prometheus.yaml
+prometheus:
+  serviceMonitor:
+    enabled: true
+    interval: 15s
+  scrapeRbac:
+    enabled: true
+    namespace: monitoring
+    serviceAccountName: prometheus-k8s

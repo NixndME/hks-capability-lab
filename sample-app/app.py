@@ -1,0 +1,373 @@
+#!/usr/bin/env python3
+"""
+HKS Capability Lab sample application.
+
+Single-file, Python-stdlib-only HTTP app used to exercise Kubernetes
+capabilities (scheduling, scaling, rollouts, health checks, storage,
+metrics). No third-party dependencies -> runs on a stock python:3.12-alpine
+image with no image build/registry required.
+"""
+import json
+import os
+import socket
+import threading
+import time
+import uuid
+from datetime import datetime, timezone
+from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
+from urllib.parse import urlparse, parse_qs
+
+APP_NAME = "hks-capability-lab"
+APP_VERSION = os.environ.get("APP_VERSION", "v1")
+COLOR = os.environ.get("APP_COLOR", "blue")
+POD_NAME = os.environ.get("POD_NAME", socket.gethostname())
+NODE_NAME = os.environ.get("NODE_NAME", "unknown")
+NAMESPACE = os.environ.get("POD_NAMESPACE", "unknown")
+CONTAINER_NAME = os.environ.get("CONTAINER_NAME", "app")
+PORT = int(os.environ.get("APP_PORT", "8080"))
+START_TIME = time.time()
+
+STATE_LOCK = threading.Lock()
+STATE = {
+    "request_count": 0,
+    "active_load_jobs": 0,
+    "readiness_fail_until": 0.0,
+    "liveness_fail_until": 0.0,
+    "cpu_work_seconds_total": 0.0,
+    "in_flight": 0,
+}
+
+# duration_seconds histogram buckets (seconds)
+BUCKETS = [0.005, 0.01, 0.025, 0.05, 0.1, 0.25, 0.5, 1, 2.5, 5, 10]
+HIST_LOCK = threading.Lock()
+HIST = {"counts": [0] * (len(BUCKETS) + 1), "sum": 0.0, "count": 0}
+REQ_COUNTS_LOCK = threading.Lock()
+REQ_COUNTS = {}  # (method, path, status) -> count
+
+
+def record_request(method, path, status, duration):
+    key = (method, path, str(status))
+    with REQ_COUNTS_LOCK:
+        REQ_COUNTS[key] = REQ_COUNTS.get(key, 0) + 1
+    with HIST_LOCK:
+        HIST["sum"] += duration
+        HIST["count"] += 1
+        for i, b in enumerate(BUCKETS):
+            if duration <= b:
+                HIST["counts"][i] += 1
+                break
+        else:
+            HIST["counts"][-1] += 1  # exceeds all finite buckets -> +Inf-only slot
+
+
+def cpu_burn_worker(target_pct, stop_at):
+    """Busy/sleep duty-cycle a single thread to approximate target_pct CPU."""
+    target_pct = max(0, min(100, target_pct))
+    slice_s = 0.05
+    busy = slice_s * (target_pct / 100.0)
+    idle = slice_s - busy
+    while time.time() < stop_at:
+        t0 = time.time()
+        while time.time() - t0 < busy:
+            _ = sum(i * i for i in range(2000))
+        with STATE_LOCK:
+            STATE["cpu_work_seconds_total"] += busy
+        if idle > 0:
+            time.sleep(idle)
+
+
+def start_load(cpu_pct, duration_s, concurrency):
+    stop_at = time.time() + duration_s
+    with STATE_LOCK:
+        STATE["active_load_jobs"] += concurrency
+
+    def run_and_decrement():
+        cpu_burn_worker(cpu_pct, stop_at)
+        with STATE_LOCK:
+            STATE["active_load_jobs"] -= 1
+
+    for _ in range(concurrency):
+        threading.Thread(target=run_and_decrement, daemon=True).start()
+
+
+def render_index():
+    with STATE_LOCK:
+        req_count = STATE["request_count"]
+        active_jobs = STATE["active_load_jobs"]
+        cpu_secs = round(STATE["cpu_work_seconds_total"], 2)
+        ready = time.time() >= STATE["readiness_fail_until"]
+        alive = time.time() >= STATE["liveness_fail_until"]
+    now = datetime.now(timezone.utc).isoformat()
+    uptime = round(time.time() - START_TIME, 1)
+    # Corporate Trust design tokens, shared with the portal frontend (see
+    # frontend/tailwind.config.js) -- kept as plain CSS custom properties
+    # here since this app is deliberately stdlib-only/single-file, no build
+    # step, no framework.
+    track_label = {"blue": "BLUE", "green": "GREEN", "canary": "CANARY"}.get(COLOR, COLOR.upper())
+    accent_map = {"blue": "#4F46E5", "green": "#10B981", "canary": "#D97706"}
+    accent = accent_map.get(COLOR, "#4F46E5")
+    health_label = "Healthy" if (ready and alive) else ("Not Ready" if not ready else "Unhealthy")
+    health_dot = "&#10003;" if (ready and alive) else "&#33;"
+    return f"""<!doctype html>
+<html lang="en"><head><title>{APP_NAME} &middot; {APP_VERSION}</title>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="HKS Capability Lab sample application">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+ :root {{
+   --bg:#F8FAFC; --surface:#FFFFFF; --primary:{accent}; --secondary:#7C3AED;
+   --text:#0F172A; --muted:#64748B; --success:#10B981; --border:#E2E8F0;
+ }}
+ * {{ box-sizing:border-box; }}
+ body {{ font-family:'Plus Jakarta Sans',-apple-system,'Segoe UI',Roboto,sans-serif; margin:0; background:var(--bg); color:var(--text); }}
+ header {{ background:var(--surface); border-bottom:1px solid var(--border); padding:16px 32px; display:flex; align-items:center; justify-content:space-between; }}
+ .brand {{ display:flex; align-items:center; gap:10px; font-weight:800; font-size:18px; }}
+ .brand .mark {{ width:32px; height:32px; border-radius:8px; background:var(--primary); color:#fff; display:flex; align-items:center; justify-content:center; font-weight:800; box-shadow:0 8px 24px rgba(79,70,229,.25); }}
+ .track {{ display:inline-flex; align-items:center; gap:6px; padding:4px 12px; border-radius:999px; background:{accent}1a; color:{accent}; font-weight:600; font-size:12px; }}
+ .wrap {{ padding:32px; max-width:960px; margin:0 auto; }}
+ h1 {{ font-size:28px; font-weight:800; margin:0 0 4px; }}
+ .subtitle {{ color:var(--muted); margin:0 0 24px; }}
+ .grid {{ display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:16px; margin-bottom:24px; }}
+ .card {{ background:var(--surface); border:1px solid var(--border); border-radius:16px; padding:20px; box-shadow:0 1px 2px rgba(15,23,42,.04),0 4px 12px rgba(15,23,42,.06); }}
+ .metric-label {{ color:var(--muted); font-size:13px; font-weight:500; margin-bottom:4px; }}
+ .metric-value {{ font-size:22px; font-weight:700; }}
+ .status {{ display:inline-flex; align-items:center; gap:6px; font-weight:600; }}
+ .status.ok {{ color:var(--success); }}
+ .status.bad {{ color:#DC2626; }}
+ table {{ width:100%; border-collapse:collapse; }}
+ td {{ padding:10px 0; border-bottom:1px solid var(--border); font-size:14px; }}
+ td.k {{ color:var(--muted); width:180px; font-weight:500; }}
+ tr:last-child td {{ border-bottom:none; }}
+ .field {{ margin-right:16px; margin-bottom:12px; display:inline-block; }}
+ label {{ display:block; color:var(--muted); font-size:12px; font-weight:500; margin-bottom:4px; }}
+ input {{ background:var(--bg); border:1px solid var(--border); color:var(--text); padding:8px 10px; border-radius:8px; width:90px; font-size:14px; }}
+ input:focus {{ outline:2px solid var(--primary); outline-offset:1px; border-color:var(--primary); }}
+ button {{ background:var(--primary); border:none; color:#fff; padding:10px 18px; border-radius:8px; cursor:pointer; font-weight:600; font-size:14px; min-height:44px; box-shadow:0 8px 24px rgba(79,70,229,.25); }}
+ button:hover {{ opacity:.92; }}
+ pre {{ white-space:pre-wrap; word-break:break-word; color:var(--muted); background:var(--bg); border-radius:8px; padding:12px; margin-top:12px; font-size:12px; }}
+</style></head>
+<body>
+<header>
+  <div class="brand"><span class="mark">H</span> {APP_NAME}</div>
+  <span class="track">&#9679; {track_label} &middot; {APP_VERSION}</span>
+</header>
+<div class="wrap">
+  <h1>Application Performance</h1>
+  <p class="subtitle">Your application is <span class="status {'ok' if (ready and alive) else 'bad'}">{health_dot} {health_label}</span>.</p>
+
+  <div class="grid">
+    <div class="card"><div class="metric-label">Version</div><div class="metric-value">{APP_VERSION}</div></div>
+    <div class="card"><div class="metric-label">Status</div><div class="metric-value status {'ok' if (ready and alive) else 'bad'}">{health_label}</div></div>
+    <div class="card"><div class="metric-label">Requests served</div><div class="metric-value" id="reqcount">{req_count}</div></div>
+    <div class="card"><div class="metric-label">Active load jobs</div><div class="metric-value" id="activejobs">{active_jobs}</div></div>
+  </div>
+
+  <div class="card" style="margin-bottom:24px">
+    <table>
+      <tr><td class="k">Pod</td><td>{POD_NAME}</td></tr>
+      <tr><td class="k">Node</td><td>{NODE_NAME}</td></tr>
+      <tr><td class="k">Namespace</td><td>{NAMESPACE}</td></tr>
+      <tr><td class="k">Container</td><td>{CONTAINER_NAME}</td></tr>
+      <tr><td class="k">Timestamp</td><td>{now}</td></tr>
+      <tr><td class="k">Uptime (s)</td><td>{uptime}</td></tr>
+      <tr><td class="k">CPU work seconds (total)</td><td id="cpusecs">{cpu_secs}</td></tr>
+    </table>
+  </div>
+
+  <div class="card">
+    <h2 style="font-size:16px; margin:0 0 4px;">Generate workload</h2>
+    <p class="subtitle" style="margin-bottom:16px;">Drives real CPU work on this pod &mdash; used to exercise HPA scale-up (see AUT-001).</p>
+    <div class="field"><label for="cpu">CPU load %</label><input id="cpu" type="number" value="50" min="0" max="100"></div>
+    <div class="field"><label for="dur">Duration (s)</label><input id="dur" type="number" value="30" min="1" max="600"></div>
+    <div class="field"><label for="conc">Concurrency</label><input id="conc" type="number" value="1" min="1" max="8"></div>
+    <br>
+    <button onclick="startLoad()">Start workload</button>
+    <pre id="out" aria-live="polite"></pre>
+  </div>
+</div>
+<script>
+function startLoad() {{
+  var cpu=document.getElementById('cpu').value;
+  var dur=document.getElementById('dur').value;
+  var conc=document.getElementById('conc').value;
+  fetch('/api/load?cpu='+cpu+'&duration='+dur+'&concurrency='+conc, {{method:'POST'}})
+    .then(r=>r.json()).then(d=>{{document.getElementById('out').textContent=JSON.stringify(d,null,2);}});
+}}
+function poll() {{
+  fetch('/api/info').then(r=>r.json()).then(d=>{{
+    document.getElementById('reqcount').textContent = d.request_count;
+    document.getElementById('activejobs').textContent = d.active_load_jobs;
+    document.getElementById('cpusecs').textContent = d.cpu_work_seconds_total;
+  }}).catch(function(){{}});
+}}
+setInterval(poll, 3000);
+</script>
+</body></html>"""
+
+
+def metrics_text():
+    lines = []
+    lines.append("# HELP app_info Static application info")
+    lines.append("# TYPE app_info gauge")
+    lines.append(
+        f'app_info{{version="{APP_VERSION}",color="{COLOR}",pod="{POD_NAME}",'
+        f'node="{NODE_NAME}",namespace="{NAMESPACE}"}} 1'
+    )
+
+    lines.append("# HELP http_requests_total Total HTTP requests")
+    lines.append("# TYPE http_requests_total counter")
+    with REQ_COUNTS_LOCK:
+        for (method, path, status), count in REQ_COUNTS.items():
+            lines.append(
+                f'http_requests_total{{method="{method}",path="{path}",status="{status}"}} {count}'
+            )
+
+    lines.append("# HELP http_request_duration_seconds HTTP request duration")
+    lines.append("# TYPE http_request_duration_seconds histogram")
+    with HIST_LOCK:
+        cumulative = 0
+        for i, b in enumerate(BUCKETS):
+            cumulative += HIST["counts"][i]
+            lines.append(f'http_request_duration_seconds_bucket{{le="{b}"}} {cumulative}')
+        cumulative += HIST["counts"][-1]
+        lines.append(f'http_request_duration_seconds_bucket{{le="+Inf"}} {cumulative}')
+        lines.append(f'http_request_duration_seconds_sum {HIST["sum"]}')
+        lines.append(f'http_request_duration_seconds_count {HIST["count"]}')
+
+    with STATE_LOCK:
+        cpu_secs = STATE["cpu_work_seconds_total"]
+        in_flight = STATE["in_flight"]
+    lines.append("# HELP app_cpu_work_seconds_total Synthetic CPU work performed")
+    lines.append("# TYPE app_cpu_work_seconds_total counter")
+    lines.append(f"app_cpu_work_seconds_total {cpu_secs}")
+
+    lines.append("# HELP app_requests_in_flight In-flight HTTP requests")
+    lines.append("# TYPE app_requests_in_flight gauge")
+    lines.append(f"app_requests_in_flight {in_flight}")
+
+    return "\n".join(lines) + "\n"
+
+
+class Handler(BaseHTTPRequestHandler):
+    server_version = "hks-lab/1.0"
+
+    def log_message(self, fmt, *args):
+        pass  # keep stdout quiet; kubectl logs stays readable
+
+    def _send(self, status, body, content_type="application/json"):
+        data = body if isinstance(body, bytes) else body.encode("utf-8")
+        self.send_response(status)
+        self.send_header("Content-Type", content_type)
+        self.send_header("Content-Length", str(len(data)))
+        self.end_headers()
+        self.wfile.write(data)
+
+    def do_GET(self):
+        t0 = time.time()
+        with STATE_LOCK:
+            STATE["in_flight"] += 1
+        parsed = urlparse(self.path)
+        path = parsed.path
+        status = 200
+        try:
+            if path == "/":
+                with STATE_LOCK:
+                    STATE["request_count"] += 1
+                self._send(200, render_index(), "text/html")
+            elif path == "/healthz":
+                self._send(200, json.dumps({"status": "ok"}))
+            elif path == "/readyz":
+                now = time.time()
+                with STATE_LOCK:
+                    fail_until = STATE["readiness_fail_until"]
+                if now < fail_until:
+                    status = 503
+                    self._send(503, json.dumps({"status": "not-ready"}))
+                else:
+                    self._send(200, json.dumps({"status": "ready"}))
+            elif path == "/livez":
+                now = time.time()
+                with STATE_LOCK:
+                    fail_until = STATE["liveness_fail_until"]
+                if now < fail_until:
+                    status = 500
+                    self._send(500, json.dumps({"status": "unhealthy"}))
+                else:
+                    self._send(200, json.dumps({"status": "alive"}))
+            elif path == "/api/info":
+                with STATE_LOCK:
+                    req_count = STATE["request_count"]
+                    active_jobs = STATE["active_load_jobs"]
+                    cpu_secs = STATE["cpu_work_seconds_total"]
+                self._send(200, json.dumps({
+                    "application": APP_NAME,
+                    "version": APP_VERSION,
+                    "color": COLOR,
+                    "pod": POD_NAME,
+                    "node": NODE_NAME,
+                    "namespace": NAMESPACE,
+                    "container": CONTAINER_NAME,
+                    "timestamp": datetime.now(timezone.utc).isoformat(),
+                    "uptime_seconds": round(time.time() - START_TIME, 1),
+                    "request_count": req_count,
+                    "active_load_jobs": active_jobs,
+                    "cpu_work_seconds_total": round(cpu_secs, 2),
+                    "request_id": str(uuid.uuid4()),
+                }))
+            elif path == "/metrics":
+                self._send(200, metrics_text(), "text/plain; version=0.0.4")
+            elif path == "/api/load/status":
+                with STATE_LOCK:
+                    self._send(200, json.dumps({
+                        "active_load_jobs": STATE["active_load_jobs"],
+                        "cpu_work_seconds_total": round(STATE["cpu_work_seconds_total"], 2),
+                    }))
+            else:
+                status = 404
+                self._send(404, json.dumps({"error": "not found"}))
+        finally:
+            with STATE_LOCK:
+                STATE["in_flight"] -= 1
+            record_request("GET", path, status, time.time() - t0)
+
+    def do_POST(self):
+        t0 = time.time()
+        parsed = urlparse(self.path)
+        path = parsed.path
+        qs = parse_qs(parsed.query)
+        status = 200
+        if path == "/api/load":
+            cpu = int(qs.get("cpu", ["50"])[0])
+            duration = int(qs.get("duration", ["30"])[0])
+            concurrency = int(qs.get("concurrency", ["1"])[0])
+            duration = max(1, min(duration, 600))
+            concurrency = max(1, min(concurrency, 8))
+            start_load(cpu, duration, concurrency)
+            self._send(200, json.dumps({
+                "started": True, "cpu_pct": cpu, "duration_s": duration,
+                "concurrency": concurrency,
+            }))
+        elif path == "/api/chaos/readiness-fail":
+            seconds = int(qs.get("seconds", ["30"])[0])
+            with STATE_LOCK:
+                STATE["readiness_fail_until"] = time.time() + seconds
+            self._send(200, json.dumps({"readiness_fail_seconds": seconds}))
+        elif path == "/api/chaos/liveness-fail":
+            seconds = int(qs.get("seconds", ["30"])[0])
+            with STATE_LOCK:
+                STATE["liveness_fail_until"] = time.time() + seconds
+            self._send(200, json.dumps({"liveness_fail_seconds": seconds}))
+        elif path == "/api/chaos/crash":
+            self._send(200, json.dumps({"crashing": True}))
+            threading.Thread(target=lambda: (time.sleep(0.2), os._exit(1))).start()
+        else:
+            status = 404
+            self._send(404, json.dumps({"error": "not found"}))
+        record_request("POST", path, status, time.time() - t0)
+
+
+if __name__ == "__main__":
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+    print(f"{APP_NAME} {APP_VERSION} ({COLOR}) listening on :{PORT}, pod={POD_NAME} node={NODE_NAME} ns={NAMESPACE}")
+    server.serve_forever()

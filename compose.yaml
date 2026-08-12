@@ -1,0 +1,19 @@
+# Local dev convenience. Equivalent to:
+#   podman run --rm -p 8080:8080 -v ~/.kube:/root/.kube:ro hks-capability-lab:dev
+#
+# Run with: podman compose up --build   (or docker compose, same file)
+services:
+  portal:
+    build:
+      context: .
+      dockerfile: Containerfile
+    image: hks-capability-lab:dev
+    ports:
+      - "8080:8080"
+    environment:
+      PORTAL_MODE: local
+      PUBLIC_BASE_URL: http://localhost:8080
+    volumes:
+      # Read-only kubeconfig mount -- omit this volume entirely for a
+      # Kubernetes-disconnected local run (portal still browsable).
+      - ${HOME}/.kube:/home/hkslab/.kube:ro

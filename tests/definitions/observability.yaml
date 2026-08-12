@@ -1,0 +1,68 @@
+- id: MON-001
+  name: Prometheus Operator CRD acceptance
+  category: Observability
+  description: ServiceMonitor + PrometheusRule objects are accepted by the cluster's existing Prometheus Operator CRDs.
+  prerequisites: [APP-001]
+  deployment_modes: [yaml]
+  artifacts: [hks-capability-lab.yaml, manifests/monitoring.yaml]
+  commands:
+    - "kubectl -n hks-capability-lab get servicemonitor,prometheusrule"
+  success_conditions:
+    - servicemonitor_created
+    - prometheusrule_created
+  result: PASS
+  result_notes: "Both object kinds accepted."
+  evidence: []
+  docs: [PROMETHEUS_VALIDATION.md]
+  last_validated: "2026-08-12"
+
+- id: MON-002
+  name: Prometheus scrape target health
+  category: Observability
+  description: App pods appear as healthy ("up") scrape targets in the cluster's existing Prometheus, and app metrics are queryable.
+  prerequisites: [MON-001]
+  deployment_modes: [yaml]
+  artifacts: [hks-capability-lab.yaml]
+  commands:
+    - "curl -s http://localhost:19090/api/v1/targets?state=active"
+    - "curl -s --data-urlencode 'query=app_info' http://localhost:19090/api/v1/query"
+  success_conditions:
+    - scrape_targets_up
+    - app_metrics_queryable
+  result: PASS
+  result_notes: >
+    First attempt: zero targets. Root cause: prometheus-k8s's ServiceAccount
+    lacked RBAC to list Services/Endpoints/Pods in the new namespace (this
+    cluster scopes Prometheus RBAC per-namespace, pre-authorized only for
+    default/kube-system/monitoring). Fixed with an additive, namespace-
+    scoped Role/RoleBinding mirroring the platform's own pattern (now part
+    of hks-capability-lab.yaml -- see the prometheus-scrape-access
+    Role/RoleBinding). Also found and fixed a double-scrape: the
+    ServiceMonitor selector originally matched both the ClusterIP and
+    NodePort Service; fixed via the dedicated
+    hks-capability-lab/metrics=primary label applied only to the ClusterIP
+    Service. After both fixes: exactly 2 targets (1 per pod), both up;
+    app_info, http_requests_total, http_request_duration_seconds_* all
+    queryable. PRESERVE both fixes in any future refactor.
+  evidence:
+    - evidence/prometheus/targets.txt
+    - evidence/prometheus/query-app_info.json
+    - evidence/prometheus/query-http_requests_total.json
+  docs: [PROMETHEUS_VALIDATION.md]
+  last_validated: "2026-08-12"
+
+- id: MON-003
+  name: PodMonitor
+  category: Observability
+  description: PodMonitor CRD-based scraping (as opposed to ServiceMonitor).
+  prerequisites: [APP-001]
+  deployment_modes: [yaml]
+  artifacts: []
+  commands: []
+  success_conditions:
+    - podmonitor_scrapes_successfully
+  result: NOT_VALIDATED
+  result_notes: "PodMonitor CRD is present on the cluster but was not exercised in this test run."
+  evidence: [evidence/00-discovery/podmonitor.txt]
+  docs: [HKS_CAPABILITY_MATRIX.md]
+  last_validated: "2026-08-12"

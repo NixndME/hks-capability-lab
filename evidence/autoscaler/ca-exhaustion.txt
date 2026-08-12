@@ -1,0 +1,40 @@
+=== Cluster Autoscaler exhaustion test ===
+2026-08-12T12:07:09Z
+--- node allocatable CPU before ---
+NAME           CPU_ALLOC
+hks-master     2
+hks-worker-1   2
+hks-worker-2   2
+hks-worker-3   2
+deployment.apps/hks-lab-ca-exhaustion-test created
+NAME                                          READY   STATUS    RESTARTS   AGE   IP               NODE           NOMINATED NODE   READINESS GATES
+hks-lab-ca-exhaustion-test-77564bbfb4-7hf2d   1/1     Running   0          42s   172.20.230.221   hks-worker-3   <none>           <none>
+hks-lab-ca-exhaustion-test-77564bbfb4-9wqff   0/1     Pending   0          42s   <none>           <none>         <none>           <none>
+hks-lab-ca-exhaustion-test-77564bbfb4-bt7vh   0/1     Pending   0          42s   <none>           <none>         <none>           <none>
+hks-lab-ca-exhaustion-test-77564bbfb4-cs6lp   0/1     Pending   0          42s   <none>           <none>         <none>           <none>
+hks-lab-ca-exhaustion-test-77564bbfb4-fbc7w   1/1     Running   0          42s   172.20.30.16     hks-worker-1   <none>           <none>
+hks-lab-ca-exhaustion-test-77564bbfb4-jvr4b   0/1     Pending   0          42s   <none>           <none>         <none>           <none>
+hks-lab-ca-exhaustion-test-77564bbfb4-lpf5r   0/1     Pending   0          42s   <none>           <none>         <none>           <none>
+hks-lab-ca-exhaustion-test-77564bbfb4-lpr6x   1/1     Running   0          42s   172.20.67.25     hks-worker-2   <none>           <none>
+hks-lab-ca-exhaustion-test-77564bbfb4-rq2w7   0/1     Pending   0          42s   <none>           <none>         <none>           <none>
+hks-lab-ca-exhaustion-test-77564bbfb4-vt678   0/1     Pending   0          42s   <none>           <none>         <none>           <none>
+--- node count (should remain 4) ---
+4
+--- pending pod event reason ---
+62s         Warning   FailedScheduling   pod/hks-lab-ca-exhaustion-test-77564bbfb4-cs6lp   0/4 nodes are available: 1 node(s) had untolerated taint(s), 3 Insufficient cpu. no new claims to deallocate, preemption: 0/4 nodes are available: 1 Preemption is not helpful for scheduling, 3 No preemption victims found for incoming pod.
+62s         Warning   FailedScheduling   pod/hks-lab-ca-exhaustion-test-77564bbfb4-jvr4b   0/4 nodes are available: 1 node(s) had untolerated taint(s), 3 Insufficient cpu. no new claims to deallocate, preemption: 0/4 nodes are available: 1 Preemption is not helpful for scheduling, 3 No preemption victims found for incoming pod.
+62s         Warning   FailedScheduling   pod/hks-lab-ca-exhaustion-test-77564bbfb4-lpf5r   0/4 nodes are available: 1 node(s) had untolerated taint(s), 3 Insufficient cpu. no new claims to deallocate, preemption: 0/4 nodes are available: 1 Preemption is not helpful for scheduling, 3 No preemption victims found for incoming pod.
+62s         Warning   FailedScheduling   pod/hks-lab-ca-exhaustion-test-77564bbfb4-rq2w7   0/4 nodes are available: 1 node(s) had untolerated taint(s), 3 Insufficient cpu. no new claims to deallocate, preemption: 0/4 nodes are available: 1 Preemption is not helpful for scheduling, 3 No preemption victims found for incoming pod.
+62s         Warning   FailedScheduling   pod/hks-lab-ca-exhaustion-test-77564bbfb4-vt678   0/4 nodes are available: 1 node(s) had untolerated taint(s), 3 Insufficient cpu. no new claims to deallocate, preemption: 0/4 nodes are available: 1 Preemption is not helpful for scheduling, 3 No preemption victims found for incoming pod.
+2026-08-12T12:08:38Z
+node count: 4
+pending pods: 7
+2026-08-12T12:08:58Z
+node count: 4
+pending pods: 7
+--- cleanup ---
+deployment.apps "hks-lab-ca-exhaustion-test" deleted from hks-capability-lab namespace
+NAME                                          READY   STATUS        RESTARTS   AGE
+hks-lab-ca-exhaustion-test-77564bbfb4-7hf2d   1/1     Terminating   0          117s
+hks-lab-ca-exhaustion-test-77564bbfb4-fbc7w   1/1     Terminating   0          117s
+hks-lab-ca-exhaustion-test-77564bbfb4-lpr6x   1/1     Terminating   0          117s

@@ -1,0 +1,66 @@
+=== Resiliency Evidence ===
+--- 1. Readiness probe failure (pod stays Running, leaves Service endpoints) ---
+target pod: hks-lab-app-7cd694d464-gstjd
+NAME                           READY   STATUS    RESTARTS   AGE
+hks-lab-app-7cd694d464-gstjd   1/1     Running   0          6m42s
+endpoints during readiness failure:
+172.20.230.223 172.20.30.18
+pod IP: 172.20.30.18
+{"lastProbeTime":null,"lastTransitionTime":"2026-08-12T12:17:38Z","observedGeneration":1,"status":"True","type":"Ready"}
+--- recheck after readinessProbe cycles ---
+NAME                           READY   STATUS    RESTARTS   AGE     IP             NODE           NOMINATED NODE   READINESS GATES
+hks-lab-app-7cd694d464-gstjd   1/1     Running   0          7m16s   172.20.30.18   hks-worker-1   <none>           <none>
+172.20.230.223 172.20.30.18
+pod excluded from endpoints: no
+confirmed /readyz returns 503 during chaos window
+--- pod READY status + Service endpoints after probe cycles ---
+NAME                           READY   STATUS    RESTARTS   AGE
+hks-lab-app-7cd694d464-gstjd   0/1     Running   0          7m50s
+172.20.230.223
+--- after readiness window (30s) expires, pod should self-heal ---
+NAME                           READY   STATUS    RESTARTS   AGE
+hks-lab-app-7cd694d464-gstjd   1/1     Running   0          8m10s
+172.20.230.223 172.20.30.18--- 2. Liveness probe failure -> container restart. target: hks-lab-app-7cd694d464-gstjd ---
+NAME                           READY   STATUS    RESTARTS   AGE
+hks-lab-app-7cd694d464-gstjd   1/1     Running   0          8m25s
+NAME                           READY   STATUS    RESTARTS      AGE
+hks-lab-app-7cd694d464-gstjd   1/1     Running   1 (64s ago)   10m
+    Liveness:   http-get http://:8080/livez delay=5s timeout=1s period=10s #success=1 #failure=3
+    Readiness:  http-get http://:8080/readyz delay=2s timeout=1s period=5s #success=1 #failure=2
+    Environment:
+      APP_VERSION:     v2
+--
+  Warning  Unhealthy  94s (x3 over 114s)      kubelet            spec.containers{app}: Liveness probe failed: HTTP probe failed with statuscode: 500
+  Normal   Killing    94s                     kubelet            spec.containers{app}: Container app failed liveness probe, will be restarted
+  Normal   Pulled     64s (x2 over 10m)       kubelet            spec.containers{app}: Container image "python:3.12-alpine" already present on machine and can be accessed by the pod
+  Normal   Created    64s (x2 over 10m)       kubelet            spec.containers{app}: Container created
+LAST SEEN   TYPE      REASON      OBJECT                             MESSAGE
+10m         Normal    Scheduled   pod/hks-lab-app-7cd694d464-gstjd   Successfully assigned hks-capability-lab/hks-lab-app-7cd694d464-gstjd to hks-worker-1
+2m32s       Warning   Unhealthy   pod/hks-lab-app-7cd694d464-gstjd   Readiness probe failed: HTTP probe failed with statuscode: 503
+94s         Warning   Unhealthy   pod/hks-lab-app-7cd694d464-gstjd   Liveness probe failed: HTTP probe failed with statuscode: 500
+94s         Normal    Killing     pod/hks-lab-app-7cd694d464-gstjd   Container app failed liveness probe, will be restarted
+64s         Normal    Pulled      pod/hks-lab-app-7cd694d464-gstjd   Container image "python:3.12-alpine" already present on machine and can be accessed by the pod
+64s         Normal    Created     pod/hks-lab-app-7cd694d464-gstjd   Container created
+64s         Normal    Started     pod/hks-lab-app-7cd694d464-gstjd   Container started
+--- 3. Explicit crash (os._exit(1)) -> restart ---
+target: hks-lab-app-7cd694d464-nq9h5
+NAME                           READY   STATUS    RESTARTS   AGE
+hks-lab-app-7cd694d464-nq9h5   1/1     Running   0          10m
+NAME                           READY   STATUS    RESTARTS     AGE
+hks-lab-app-7cd694d464-nq9h5   1/1     Running   1 (7s ago)   10m
+--- 4. Service availability during pod deletion (deployment stays at desired replica count) ---
+pods before: 7
+pod "hks-lab-app-7cd694d464-gstjd" deleted from hks-capability-lab namespace
+--- service still answering DURING replacement ---
+service reachable during pod replacement: 200
+pods running after replacement settles: 8 (deployment restored desired count: no)
+--- correcting selector scope (stable track only) ---
+NAME                           READY   STATUS        RESTARTS       AGE   IP               NODE           NOMINATED NODE   READINESS GATES
+hks-lab-app-7cd694d464-gstjd   1/1     Terminating   1 (115s ago)   11m   172.20.30.18     hks-worker-1   <none>           <none>
+hks-lab-app-7cd694d464-nq9h5   1/1     Running       1 (36s ago)    11m   172.20.230.223   hks-worker-3   <none>           <none>
+hks-lab-app-7cd694d464-wxj47   1/1     Running       0              18s   172.20.30.19     hks-worker-1   <none>           <none>
+stable-track pods: 3 (matches deployment desired replicas=2)
+NAME                           READY   STATUS    RESTARTS      AGE
+hks-lab-app-7cd694d464-nq9h5   1/1     Running   1 (50s ago)   11m
+hks-lab-app-7cd694d464-wxj47   1/1     Running   0             32s
+settled to desired replica count: yes

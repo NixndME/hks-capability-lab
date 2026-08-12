@@ -1,0 +1,33 @@
+{{- if .Values.gateway.enabled }}
+apiVersion: gateway.networking.k8s.io/v1
+kind: Gateway
+metadata:
+  name: {{ include "hks.fullname" . }}
+  namespace: {{ include "hks.namespace" . }}
+  labels:
+    {{- include "hks.labels" . | nindent 4 }}
+spec:
+  gatewayClassName: {{ .Values.gateway.gatewayClassName }}
+  listeners:
+    - name: http
+      protocol: HTTP
+      port: 80
+      hostname: {{ .Values.gateway.host }}
+---
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: {{ include "hks.fullname" . }}
+  namespace: {{ include "hks.namespace" . }}
+  labels:
+    {{- include "hks.labels" . | nindent 4 }}
+spec:
+  parentRefs:
+    - name: {{ include "hks.fullname" . }}
+  hostnames:
+    - {{ .Values.gateway.host }}
+  rules:
+    - backendRefs:
+        - name: {{ include "hks.fullname" . }}
+          port: {{ .Values.service.clusterIP.port }}
+{{- end }}

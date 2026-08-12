@@ -1,0 +1,5 @@
+# Minimal override: everything else inherits chart defaults
+# (ClusterIP + NodePort, HPA, PDB, Ingress with cluster-default IngressClass).
+# helm install hks-lab helm/hks-capability-lab -f helm/examples/values-default.yaml
+ingress:
+  host: hks-demo.example.com

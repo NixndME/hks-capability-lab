@@ -1,0 +1,23 @@
+=== Ingress test (via NodePort + Host header) ===
+NAME          CLASS   HOSTS                ADDRESS   PORTS   AGE
+hks-lab-app   nginx   hks-demo.lab.local             80      113s
+
+ingress-nginx HTTP NodePort: 31992
+curl -H 'Host: hks-demo.lab.local' http://192.168.122.230:31992/ -> HTTP 000ERR
+curl -H 'Host: hks-demo.lab.local' http://192.168.122.231:31992/ -> HTTP 000ERR
+--- body sample ---
+
+Root cause of initial timeout on worker-1 (.230) and worker-3 (.233):
+ingress-nginx-controller Service has externalTrafficPolicy=Local (preserves
+client source IP, standard ingress-nginx default). NodePort 31992 therefore
+only answers on the node that is actually running the controller pod
+(worker-2 / 192.168.122.232 at test time). Traffic to that port on any other
+node is silently dropped (no SNAT/redirect under Local policy) -- this is
+expected behavior, not a defect. hks-lab-app-nodeport uses the default
+externalTrafficPolicy=Cluster and therefore answers on all 4 node IPs.
+--- retest against the correct node (worker-2, running the controller) ---
+HTTP 200
+{"application": "hks-capability-lab", "version": "v1", "color": "blue", "pod": "hks-lab-app-f6f68f5d7-w4hx9", "node": "hks-worker-3", "namespace": "hks-capability-lab", "container": "app", "timestamp": "2026-08-12T11:44:57.804126+00:00", "uptime_seconds": 365.7, "request_count": 1, "active_load_jobs": 0, "cpu_work_seconds_total": 0.0, "request_id": "4c2b0028-99e4-4b0a-842c-028d667b9d48"}
+--- TLS (HTTPS) via ingress-nginx default fake cert, NodePort 30337 ---
+HTTPS NodePort: 30337
+HTTP 200

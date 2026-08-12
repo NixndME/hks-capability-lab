@@ -1,0 +1,19 @@
+apiVersion: v2
+name: hks-capability-lab
+description: >-
+  HKS Kubernetes Capability Lab sample application and validation workload --
+  the Helm-packaged equivalent of hks-capability-lab.yaml, covering the same
+  core resources (Deployment, Services, HPA, PDB, Ingress, ServiceMonitor)
+  plus optional NetworkPolicy, persistence, and Gateway API routing.
+type: application
+version: 1.0.0
+appVersion: "v1"
+keywords:
+  - hks
+  - kubernetes
+  - capability-validation
+home: https://github.com/nixndme/hks-capability-lab
+sources:
+  - https://github.com/nixndme/hks-capability-lab
+maintainers:
+  - name: nixndme

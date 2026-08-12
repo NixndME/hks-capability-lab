@@ -1,0 +1,28 @@
+=== Blue/Green Evidence ===
+--- initial: service selector = blue ---
+blue v1
+blue v1
+blue v1
+blue v1
+blue v1
+--- flipping selector to green ---
+service/hks-lab-bluegreen patched
+green v2
+green v2
+green v2
+green v2
+green v2
+--- rolling back selector to blue ---
+service/hks-lab-bluegreen patched
+green v2
+--- both tracks still coexist (2 blue + 2 green pods) ---
+hks-lab-app-blue-cdfd6c646-hg59m     1/1     Running   0          37s    blue
+hks-lab-app-blue-cdfd6c646-wjvnc     1/1     Running   0          37s    blue
+hks-lab-app-green-654dcc5745-5hbmx   1/1     Running   0          37s    green
+hks-lab-app-green-654dcc5745-j79k7   1/1     Running   0          37s    green
+--- retry after brief propagation delay ---
+blue v1
+blue v1
+blue v1
+blue v1
+blue v1

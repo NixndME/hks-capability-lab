@@ -1,0 +1,44 @@
+- id: NETPOL-001
+  name: NetworkPolicy default-deny + explicit allow
+  category: Security
+  description: >
+    Default-deny on backend pods (Calico) plus an explicit allow from
+    frontend-labeled pods; matches matrix rows "NetworkPolicy" and "Network
+    Isolation (default-deny)" -- same evidence backs both.
+  prerequisites: [APP-001]
+  deployment_modes: [yaml]
+  artifacts: [manifests/network-policy.yaml]
+  commands:
+    - "kubectl -n hks-capability-lab exec <frontend-pod> -- curl -s -o /dev/null -m5 http://netpol-backend:8080/"
+    - "kubectl -n hks-capability-lab exec <untrusted-pod> -- curl -s -o /dev/null -m5 http://netpol-backend:8080/"
+  success_conditions:
+    - frontend_to_backend_allowed
+    - untrusted_to_backend_denied
+  result: PASS
+  result_notes: "frontend -> backend: HTTP 200 (allowed). untrusted -> backend: connection timeout, curl exit 28 (denied). Both directions proven."
+  evidence: [evidence/networkpolicy/netpol.txt]
+  docs: [TEST_RESULTS.md]
+  last_validated: "2026-08-12"
+
+- id: RBAC-001
+  name: Scoped ServiceAccount / Role / RoleBinding
+  category: Security
+  description: >
+    App runs under its own least-privilege ServiceAccount (read-only Role
+    scoped to pods/configmaps/services in its own namespace), not the
+    default ServiceAccount, and automountServiceAccountToken is disabled by
+    default on the pod spec.
+  prerequisites: [APP-001]
+  deployment_modes: [yaml]
+  artifacts: [hks-capability-lab.yaml]
+  commands:
+    - "kubectl -n hks-capability-lab get sa,role,rolebinding"
+  success_conditions:
+    - dedicated_serviceaccount_used
+    - role_scoped_to_namespace
+    - rolebinding_correctly_bound
+  result: PASS
+  result_notes: "Scoped ServiceAccount/Role/RoleBinding created and used."
+  evidence: []
+  docs: [TEST_RESULTS.md, HKS_CAPABILITY_MATRIX.md]
+  last_validated: "2026-08-12"

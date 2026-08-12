@@ -1,0 +1,53 @@
+# Storage validation resources.
+# Isolated PVC + single-replica Deployment used to prove that data written
+# to the discovered StorageClass survives a pod restart. Does not touch
+# Rook/Ceph configuration or any existing PV/PVC/StorageClass.
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: hks-lab-storage-test
+  namespace: ${NAMESPACE}
+  labels:
+    app.kubernetes.io/part-of: hks-capability-lab
+spec:
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: ${STORAGE_CLASS}
+  resources:
+    requests:
+      storage: 1Gi
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: hks-lab-storage-test
+  namespace: ${NAMESPACE}
+  labels:
+    app.kubernetes.io/part-of: hks-capability-lab
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      hks-capability-lab/role: storage-test
+  template:
+    metadata:
+      labels:
+        hks-capability-lab/role: storage-test
+    spec:
+      containers:
+        - name: storage-test
+          image: ${APP_IMAGE}
+          command: ["sleep", "infinity"]
+          volumeMounts:
+            - name: data
+              mountPath: /data
+          resources:
+            requests: { cpu: 10m, memory: 16Mi }
+            limits: { cpu: 100m, memory: 64Mi }
+      volumes:
+        - name: data
+          persistentVolumeClaim:
+            claimName: hks-lab-storage-test

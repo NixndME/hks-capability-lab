@@ -1,0 +1,66 @@
+- id: AUT-001
+  name: HPA scale-up
+  category: Scaling
+  description: Horizontal Pod Autoscaler reacts to CPU pressure by increasing replicas.
+  prerequisites: [APP-001]
+  deployment_modes: [yaml]
+  artifacts: [hks-capability-lab.yaml]
+  commands:
+    - "curl -s -X POST 'http://<app>/api/load?cpu=90&duration=240&concurrency=2'  # on all running pods"
+    - "kubectl -n hks-capability-lab get hpa -w"
+  success_conditions:
+    - replicas_increase_under_cpu_pressure
+    - replicas_reach_maxReplicas_or_below
+  result: PASS
+  result_notes: "2 -> 6 replicas (max) within ~40 seconds; CPU utilization peaked at 570% of the 50% target."
+  evidence: [evidence/autoscaler/hpa-timeline.txt]
+  docs: [TEST_RESULTS.md]
+  last_validated: "2026-08-12"
+
+- id: AUT-002
+  name: HPA scale-down
+  category: Scaling
+  description: Replicas return to minReplicas once load stops and the stabilization window elapses.
+  prerequisites: [AUT-001]
+  deployment_modes: [yaml]
+  artifacts: [hks-capability-lab.yaml]
+  commands:
+    - "kubectl -n hks-capability-lab get hpa -w"
+  success_conditions:
+    - replicas_return_to_minReplicas_after_cooldown
+  result: PASS
+  result_notes: "6 -> 2 replicas roughly 60-90s after CPU utilization returned to 0%, per the HPA's 60s scaleDown.stabilizationWindowSeconds."
+  evidence: [evidence/autoscaler/hpa-timeline.txt]
+  docs: [TEST_RESULTS.md]
+  last_validated: "2026-08-12"
+
+- id: AUT-003
+  name: Cluster Autoscaler reaction
+  category: Scaling
+  description: >
+    Pending workload should trigger a new node joining the cluster and
+    absorbing the pending pods. This is NOT the same claim as "CPU pressure
+    inside an existing pod" -- a real CA test requires unschedulable pods
+    plus an observed node-count change.
+  prerequisites: [APP-001]
+  deployment_modes: [yaml]
+  artifacts: []
+  commands:
+    - "kubectl create deployment ca-exhaustion-test --image=... --replicas=10  # 1200m cpu request each, temporary"
+    - "kubectl get nodes -w"
+  success_conditions:
+    - pending_pods_exist
+    - autoscaler_reacts
+    - new_node_joins_and_becomes_ready
+    - pending_pods_get_scheduled
+  result: NOT_AVAILABLE
+  result_notes: >
+    7/10 pods stuck Pending (Insufficient cpu) for the full ~2-minute
+    observation window; node count stayed at 4 throughout; no autoscaler pod
+    or event appeared at any point. Infrastructure integration absent on
+    this static KVM-VM cluster (no node-pool provider) -- not a Kubernetes-
+    level defect. Test resources cleaned up immediately after evidence
+    capture.
+  evidence: [evidence/autoscaler/ca-exhaustion.txt]
+  docs: [AUTOSCALER_VALIDATION.md]
+  last_validated: "2026-08-12"

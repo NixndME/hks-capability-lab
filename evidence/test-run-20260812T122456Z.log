@@ -1,0 +1,26 @@
+
+[1m== Cluster identity ==[0m
+
+[1m== Nodes ==[0m
+[34mINFO[0m  Node count: 4
+
+[1m== Networking / CNI ==[0m
+
+[1m== Ingress / Gateway API ==[0m
+[34mINFO[0m  Gateway API CRDs NOT present
+
+[1m== LoadBalancer ==[0m
+[33mSKIP[0m  No Service type=LoadBalancer currently has an external address (API-supported, infra likely unavailable)
+
+[1m== Storage ==[0m
+[34mINFO[0m  Rook/Ceph detected
+
+[1m== Prometheus ==[0m
+[32mPASS[0m  Prometheus Operator CRDs present
+[32mPASS[0m  metrics.k8s.io API is available (kubectl top / HPA resource metrics will work)
+
+[1m== Cluster Autoscaler ==[0m
+[33mSKIP[0m  No cluster-autoscaler workload detected (common on static/on-prem node pools)
+
+[1m== RBAC (current identity) ==[0m
+[34mINFO[0m  Raw evidence: /home/nixndme/Desktop/Sync/hks-capability-lab/evidence/discovery-20260812T122456Z

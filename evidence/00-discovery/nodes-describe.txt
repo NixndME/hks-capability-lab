@@ -1,0 +1,362 @@
+=== describe nodes (capacity/allocatable/taints) ===
+Name:               hks-master
+Roles:              control-plane
+Labels:             beta.kubernetes.io/arch=amd64
+                    beta.kubernetes.io/os=linux
+                    ceph-storage=enabled
+                    kubernetes.io/arch=amd64
+                    kubernetes.io/hostname=hks-master
+                    kubernetes.io/os=linux
+                    node-role.kubernetes.io/control-plane=
+                    node.kubernetes.io/exclude-from-external-load-balancers=
+Annotations:        csi.volume.kubernetes.io/nodeid: {"csi.tigera.io":"hks-master"}
+                    node.alpha.kubernetes.io/ttl: 0
+                    projectcalico.org/IPv4Address: 192.168.122.230/24
+                    projectcalico.org/IPv4VXLANTunnelAddr: 172.20.0.0
+                    projectcalico.org/Interfaces: [{"name":"enp1s0","addresses":["192.168.122.230"]}]
+                    volumes.kubernetes.io/controller-managed-attach-detach: true
+CreationTimestamp:  Wed, 12 Aug 2026 15:39:18 +0530
+Taints:             node-role.kubernetes.io/control-plane:NoSchedule
+Unschedulable:      false
+Lease:
+  HolderIdentity:  hks-master
+  AcquireTime:     <unset>
+  RenewTime:       Wed, 12 Aug 2026 16:55:36 +0530
+Conditions:
+  Type                 Status  LastHeartbeatTime                 LastTransitionTime                Reason                       Message
+  ----                 ------  -----------------                 ------------------                ------                       -------
+  NetworkUnavailable   False   Wed, 12 Aug 2026 15:44:35 +0530   Wed, 12 Aug 2026 15:44:35 +0530   CalicoIsUp                   Calico is running on this node
+  MemoryPressure       False   Wed, 12 Aug 2026 16:53:22 +0530   Wed, 12 Aug 2026 15:39:17 +0530   KubeletHasSufficientMemory   kubelet has sufficient memory available
+  DiskPressure         False   Wed, 12 Aug 2026 16:53:22 +0530   Wed, 12 Aug 2026 15:39:17 +0530   KubeletHasNoDiskPressure     kubelet has no disk pressure
+  PIDPressure          False   Wed, 12 Aug 2026 16:53:22 +0530   Wed, 12 Aug 2026 15:39:17 +0530   KubeletHasSufficientPID      kubelet has sufficient PID available
+  Ready                True    Wed, 12 Aug 2026 16:53:22 +0530   Wed, 12 Aug 2026 15:44:37 +0530   KubeletReady                 kubelet is posting ready status
+Addresses:
+  InternalIP:  192.168.122.230
+  Hostname:    hks-master
+Capacity:
+  cpu:                2
+  ephemeral-storage:  39535100Ki
+  hugepages-1Gi:      0
+  hugepages-2Mi:      0
+  memory:             4009872Ki
+  pods:               110
+Allocatable:
+  cpu:                2
+  ephemeral-storage:  36435548100
+  hugepages-1Gi:      0
+  hugepages-2Mi:      0
+  memory:             3907472Ki
+  pods:               110
+System Info:
+  Machine ID:                 02c2279899444ced9ba4ccd70463e7c3
+  System UUID:                02c22798-9944-4ced-9ba4-ccd70463e7c3
+  Boot ID:                    1fce5daa-0d0e-4be8-88ed-7d36e88e8ee3
+  Kernel Version:             6.8.0-136-generic
+  OS Image:                   Ubuntu 24.04.4 LTS
+  Operating System:           linux
+  Architecture:               amd64
+  Container Runtime Version:  containerd://1.7.29
+  Kubelet Version:            v1.35.7
+PodCIDR:                      172.20.0.0/24
+PodCIDRs:                     172.20.0.0/24
+Non-terminated Pods:          (9 in total)
+  Namespace                   Name                                  CPU Requests  CPU Limits  Memory Requests  Memory Limits  Age
+  ---------                   ----                                  ------------  ----------  ---------------  -------------  ---
+  calico-system               calico-node-zcgc5                     0 (0%)        0 (0%)      0 (0%)           0 (0%)         72m
+  calico-system               csi-node-driver-4h4s7                 0 (0%)        0 (0%)      0 (0%)           0 (0%)         72m
+  kube-system                 etcd-hks-master                       100m (5%)     0 (0%)      100Mi (2%)       0 (0%)         76m
+  kube-system                 kube-apiserver-hks-master             250m (12%)    0 (0%)      0 (0%)           0 (0%)         75m
+  kube-system                 kube-controller-manager-hks-master    200m (10%)    0 (0%)      0 (0%)           0 (0%)         76m
+  kube-system                 kube-proxy-h27nn                      0 (0%)        0 (0%)      0 (0%)           0 (0%)         76m
+  kube-system                 kube-scheduler-hks-master             100m (5%)     0 (0%)      0 (0%)           0 (0%)         76m
+  logging                     fluent-bit-9kwtn                      0 (0%)        0 (0%)      0 (0%)           0 (0%)         71m
+  monitoring                  node-exporter-4rxdt                   112m (5%)     270m (13%)  200Mi (5%)       220Mi (5%)     70m
+Allocated resources:
+  (Total limits may be over 100 percent, i.e., overcommitted.)
+  Resource           Requests    Limits
+  --------           --------    ------
+  cpu                762m (38%)  270m (13%)
+  memory             300Mi (7%)  220Mi (5%)
+  ephemeral-storage  0 (0%)      0 (0%)
+  hugepages-1Gi      0 (0%)      0 (0%)
+  hugepages-2Mi      0 (0%)      0 (0%)
+
+
+Name:               hks-worker-1
+Roles:              <none>
+Labels:             beta.kubernetes.io/arch=amd64
+                    beta.kubernetes.io/os=linux
+                    ceph-storage=enabled
+                    kubernetes.io/arch=amd64
+                    kubernetes.io/hostname=hks-worker-1
+                    kubernetes.io/os=linux
+Annotations:        csi.volume.kubernetes.io/nodeid:
+                      {"csi.tigera.io":"hks-worker-1","rook-ceph.cephfs.csi.ceph.com":"hks-worker-1","rook-ceph.rbd.csi.ceph.com":"hks-worker-1"}
+                    node.alpha.kubernetes.io/ttl: 0
+                    projectcalico.org/IPv4Address: 192.168.122.231/24
+                    projectcalico.org/IPv4VXLANTunnelAddr: 172.20.30.0
+                    projectcalico.org/Interfaces: [{"name":"enp1s0","addresses":["192.168.122.231"]}]
+                    volumes.kubernetes.io/controller-managed-attach-detach: true
+CreationTimestamp:  Wed, 12 Aug 2026 15:41:52 +0530
+Taints:             <none>
+Unschedulable:      false
+Lease:
+  HolderIdentity:  hks-worker-1
+  AcquireTime:     <unset>
+  RenewTime:       Wed, 12 Aug 2026 16:55:36 +0530
+Conditions:
+  Type                 Status  LastHeartbeatTime                 LastTransitionTime                Reason                       Message
+  ----                 ------  -----------------                 ------------------                ------                       -------
+  NetworkUnavailable   False   Wed, 12 Aug 2026 15:44:49 +0530   Wed, 12 Aug 2026 15:44:49 +0530   CalicoIsUp                   Calico is running on this node
+  MemoryPressure       False   Wed, 12 Aug 2026 16:51:38 +0530   Wed, 12 Aug 2026 15:41:52 +0530   KubeletHasSufficientMemory   kubelet has sufficient memory available
+  DiskPressure         False   Wed, 12 Aug 2026 16:51:38 +0530   Wed, 12 Aug 2026 15:41:52 +0530   KubeletHasNoDiskPressure     kubelet has no disk pressure
+  PIDPressure          False   Wed, 12 Aug 2026 16:51:38 +0530   Wed, 12 Aug 2026 15:41:52 +0530   KubeletHasSufficientPID      kubelet has sufficient PID available
+  Ready                True    Wed, 12 Aug 2026 16:51:38 +0530   Wed, 12 Aug 2026 15:44:45 +0530   KubeletReady                 kubelet is posting ready status
+Addresses:
+  InternalIP:  192.168.122.231
+  Hostname:    hks-worker-1
+Capacity:
+  cpu:                2
+  ephemeral-storage:  39535100Ki
+  hugepages-1Gi:      0
+  hugepages-2Mi:      0
+  memory:             4009864Ki
+  pods:               110
+Allocatable:
+  cpu:                2
+  ephemeral-storage:  36435548100
+  hugepages-1Gi:      0
+  hugepages-2Mi:      0
+  memory:             3907464Ki
+  pods:               110
+System Info:
+  Machine ID:                 bfc1f1a8f84f418585593116ba63d103
+  System UUID:                bfc1f1a8-f84f-4185-8559-3116ba63d103
+  Boot ID:                    d01f9e7c-8fa0-403f-ab83-30a304b29d9a
+  Kernel Version:             6.8.0-136-generic
+  OS Image:                   Ubuntu 24.04.4 LTS
+  Operating System:           linux
+  Architecture:               amd64
+  Container Runtime Version:  containerd://1.7.29
+  Kubelet Version:            v1.35.7
+PodCIDR:                      172.20.3.0/24
+PodCIDRs:                     172.20.3.0/24
+Non-terminated Pods:          (16 in total)
+  Namespace                   Name                                                      CPU Requests  CPU Limits  Memory Requests  Memory Limits  Age
+  ---------                   ----                                                      ------------  ----------  ---------------  -------------  ---
+  calico-system               calico-node-z7gwb                                         0 (0%)        0 (0%)      0 (0%)           0 (0%)         72m
+  calico-system               csi-node-driver-hfcqk                                     0 (0%)        0 (0%)      0 (0%)           0 (0%)         72m
+  kube-system                 kube-proxy-5qssc                                          0 (0%)        0 (0%)      0 (0%)           0 (0%)         73m
+  logging                     fluent-bit-7nsjw                                          0 (0%)        0 (0%)      0 (0%)           0 (0%)         71m
+  monitoring                  alertmanager-main-2                                       14m (0%)      110m (5%)   150Mi (3%)       150Mi (3%)     68m
+  monitoring                  kube-state-metrics-5799f9d7d6-gnvwp                       40m (2%)      160m (8%)   230Mi (6%)       330Mi (8%)     70m
+  monitoring                  node-exporter-59qmc                                       112m (5%)     270m (13%)  200Mi (5%)       220Mi (5%)     70m
+  monitoring                  prometheus-adapter-6458876f77-9srzf                       102m (5%)     250m (12%)  180Mi (4%)       180Mi (4%)     70m
+  rook-ceph                   csi-cephfsplugin-t6gh7                                    0 (0%)        0 (0%)      0 (0%)           0 (0%)         68m
+  rook-ceph                   csi-rbdplugin-provisioner-5fc7c8f57b-66h64                0 (0%)        0 (0%)      0 (0%)           0 (0%)         68m
+  rook-ceph                   csi-rbdplugin-v5hfb                                       0 (0%)        0 (0%)      0 (0%)           0 (0%)         68m
+  rook-ceph                   rook-ceph-crashcollector-hks-worker-1-66b67fd8bc-wgrd4    0 (0%)        0 (0%)      0 (0%)           0 (0%)         53m
+  rook-ceph                   rook-ceph-exporter-hks-worker-1-74d57c7b95-7pqpq          0 (0%)        0 (0%)      0 (0%)           0 (0%)         53m
+  rook-ceph                   rook-ceph-mon-c-6c65994559-7dphq                          100m (5%)     0 (0%)      512Mi (13%)      2Gi (53%)      54m
+  rook-ceph                   rook-ceph-osd-0-8467854678-f8mvg                          0 (0%)        0 (0%)      0 (0%)           0 (0%)         53m
+  tigera-operator             tigera-operator-87789c8c8-frvtw                           0 (0%)        0 (0%)      0 (0%)           0 (0%)         73m
+Allocated resources:
+  (Total limits may be over 100 percent, i.e., overcommitted.)
+  Resource           Requests      Limits
+  --------           --------      ------
+  cpu                368m (18%)    790m (39%)
+  memory             1272Mi (33%)  2928Mi (76%)
+  ephemeral-storage  0 (0%)        0 (0%)
+  hugepages-1Gi      0 (0%)        0 (0%)
+  hugepages-2Mi      0 (0%)        0 (0%)
+
+
+Name:               hks-worker-2
+Roles:              <none>
+Labels:             beta.kubernetes.io/arch=amd64
+                    beta.kubernetes.io/os=linux
+                    ceph-storage=enabled
+                    kubernetes.io/arch=amd64
+                    kubernetes.io/hostname=hks-worker-2
+                    kubernetes.io/os=linux
+Annotations:        csi.volume.kubernetes.io/nodeid:
+                      {"csi.tigera.io":"hks-worker-2","rook-ceph.cephfs.csi.ceph.com":"hks-worker-2","rook-ceph.rbd.csi.ceph.com":"hks-worker-2"}
+                    node.alpha.kubernetes.io/ttl: 0
+                    projectcalico.org/IPv4Address: 192.168.122.232/24
+                    projectcalico.org/IPv4VXLANTunnelAddr: 172.20.67.0
+                    projectcalico.org/Interfaces: [{"name":"enp1s0","addresses":["192.168.122.232"]}]
+                    volumes.kubernetes.io/controller-managed-attach-detach: true
+CreationTimestamp:  Wed, 12 Aug 2026 15:41:48 +0530
+Taints:             <none>
+Unschedulable:      false
+Lease:
+  HolderIdentity:  hks-worker-2
+  AcquireTime:     <unset>
+  RenewTime:       Wed, 12 Aug 2026 16:55:41 +0530
+Conditions:
+  Type                 Status  LastHeartbeatTime                 LastTransitionTime                Reason                       Message
+  ----                 ------  -----------------                 ------------------                ------                       -------
+  NetworkUnavailable   False   Wed, 12 Aug 2026 15:44:49 +0530   Wed, 12 Aug 2026 15:44:49 +0530   CalicoIsUp                   Calico is running on this node
+  MemoryPressure       False   Wed, 12 Aug 2026 16:51:11 +0530   Wed, 12 Aug 2026 15:41:48 +0530   KubeletHasSufficientMemory   kubelet has sufficient memory available
+  DiskPressure         False   Wed, 12 Aug 2026 16:51:11 +0530   Wed, 12 Aug 2026 15:41:48 +0530   KubeletHasNoDiskPressure     kubelet has no disk pressure
+  PIDPressure          False   Wed, 12 Aug 2026 16:51:11 +0530   Wed, 12 Aug 2026 15:41:48 +0530   KubeletHasSufficientPID      kubelet has sufficient PID available
+  Ready                True    Wed, 12 Aug 2026 16:51:11 +0530   Wed, 12 Aug 2026 15:44:52 +0530   KubeletReady                 kubelet is posting ready status
+Addresses:
+  InternalIP:  192.168.122.232
+  Hostname:    hks-worker-2
+Capacity:
+  cpu:                2
+  ephemeral-storage:  39535100Ki
+  hugepages-1Gi:      0
+  hugepages-2Mi:      0
+  memory:             4009864Ki
+  pods:               110
+Allocatable:
+  cpu:                2
+  ephemeral-storage:  36435548100
+  hugepages-1Gi:      0
+  hugepages-2Mi:      0
+  memory:             3907464Ki
+  pods:               110
+System Info:
+  Machine ID:                 cd67d45af327428ca18ea120a40f1d8a
+  System UUID:                cd67d45a-f327-428c-a18e-a120a40f1d8a
+  Boot ID:                    d9a0bbdb-4f61-4540-ad0f-5ae22d0fa6cd
+  Kernel Version:             6.8.0-136-generic
+  OS Image:                   Ubuntu 24.04.4 LTS
+  Operating System:           linux
+  Architecture:               amd64
+  Container Runtime Version:  containerd://1.7.29
+  Kubelet Version:            v1.35.7
+PodCIDR:                      172.20.1.0/24
+PodCIDRs:                     172.20.1.0/24
+Non-terminated Pods:          (19 in total)
+  Namespace                   Name                                                      CPU Requests  CPU Limits  Memory Requests  Memory Limits  Age
+  ---------                   ----                                                      ------------  ----------  ---------------  -------------  ---
+  calico-system               calico-node-gpmd2                                         0 (0%)        0 (0%)      0 (0%)           0 (0%)         72m
+  calico-system               calico-typha-54568994df-hl925                             0 (0%)        0 (0%)      0 (0%)           0 (0%)         72m
+  calico-system               csi-node-driver-t6bb7                                     0 (0%)        0 (0%)      0 (0%)           0 (0%)         72m
+  ingress-nginx               ingress-nginx-controller-5d984ffcf5-qfhd2                 100m (5%)     0 (0%)      90Mi (2%)        0 (0%)         70m
+  kube-system                 kube-proxy-n2fcv                                          0 (0%)        0 (0%)      0 (0%)           0 (0%)         73m
+  logging                     fluent-bit-gfrqd                                          0 (0%)        0 (0%)      0 (0%)           0 (0%)         71m
+  monitoring                  alertmanager-main-0                                       14m (0%)      110m (5%)   150Mi (3%)       150Mi (3%)     68m
+  monitoring                  node-exporter-ljq2h                                       112m (5%)     270m (13%)  200Mi (5%)       220Mi (5%)     70m
+  monitoring                  prometheus-adapter-6458876f77-vw466                       102m (5%)     250m (12%)  180Mi (4%)       180Mi (4%)     70m
+  monitoring                  prometheus-k8s-1                                          10m (0%)      10m (0%)    450Mi (11%)      50Mi (1%)      68m
+  rook-ceph                   csi-cephfsplugin-dj8d2                                    0 (0%)        0 (0%)      0 (0%)           0 (0%)         68m
+  rook-ceph                   csi-cephfsplugin-provisioner-58584ccfd4-q8pc7             0 (0%)        0 (0%)      0 (0%)           0 (0%)         68m
+  rook-ceph                   csi-rbdplugin-provisioner-5fc7c8f57b-m45cn                0 (0%)        0 (0%)      0 (0%)           0 (0%)         68m
+  rook-ceph                   csi-rbdplugin-wzjlp                                       0 (0%)        0 (0%)      0 (0%)           0 (0%)         68m
+  rook-ceph                   rook-ceph-crashcollector-hks-worker-2-647549664d-777hx    0 (0%)        0 (0%)      0 (0%)           0 (0%)         53m
+  rook-ceph                   rook-ceph-exporter-hks-worker-2-59c8d57778-ss65m          0 (0%)        0 (0%)      0 (0%)           0 (0%)         53m
+  rook-ceph                   rook-ceph-mgr-a-6594545875-xzlpv                          0 (0%)        0 (0%)      0 (0%)           0 (0%)         54m
+  rook-ceph                   rook-ceph-mon-b-5f549448c-tnjqm                           100m (5%)     0 (0%)      512Mi (13%)      2Gi (53%)      54m
+  rook-ceph                   rook-ceph-osd-1-554c6d5cf9-lh42d                          0 (0%)        0 (0%)      0 (0%)           0 (0%)         53m
+Allocated resources:
+  (Total limits may be over 100 percent, i.e., overcommitted.)
+  Resource           Requests      Limits
+  --------           --------      ------
+  cpu                438m (21%)    640m (32%)
+  memory             1582Mi (41%)  2648Mi (69%)
+  ephemeral-storage  0 (0%)        0 (0%)
+  hugepages-1Gi      0 (0%)        0 (0%)
+  hugepages-2Mi      0 (0%)        0 (0%)
+
+
+Name:               hks-worker-3
+Roles:              <none>
+Labels:             beta.kubernetes.io/arch=amd64
+                    beta.kubernetes.io/os=linux
+                    ceph-storage=enabled
+                    kubernetes.io/arch=amd64
+                    kubernetes.io/hostname=hks-worker-3
+                    kubernetes.io/os=linux
+Annotations:        csi.volume.kubernetes.io/nodeid:
+                      {"csi.tigera.io":"hks-worker-3","rook-ceph.cephfs.csi.ceph.com":"hks-worker-3","rook-ceph.rbd.csi.ceph.com":"hks-worker-3"}
+                    node.alpha.kubernetes.io/ttl: 0
+                    projectcalico.org/IPv4Address: 192.168.122.233/24
+                    projectcalico.org/IPv4VXLANTunnelAddr: 172.20.230.192
+                    projectcalico.org/Interfaces: [{"name":"enp1s0","addresses":["192.168.122.233"]}]
+                    volumes.kubernetes.io/controller-managed-attach-detach: true
+CreationTimestamp:  Wed, 12 Aug 2026 15:41:49 +0530
+Taints:             <none>
+Unschedulable:      false
+Lease:
+  HolderIdentity:  hks-worker-3
+  AcquireTime:     <unset>
+  RenewTime:       Wed, 12 Aug 2026 16:55:42 +0530
+Conditions:
+  Type                 Status  LastHeartbeatTime                 LastTransitionTime                Reason                       Message
+  ----                 ------  -----------------                 ------------------                ------                       -------
+  NetworkUnavailable   False   Wed, 12 Aug 2026 15:44:35 +0530   Wed, 12 Aug 2026 15:44:35 +0530   CalicoIsUp                   Calico is running on this node
+  MemoryPressure       False   Wed, 12 Aug 2026 16:55:15 +0530   Wed, 12 Aug 2026 15:41:49 +0530   KubeletHasSufficientMemory   kubelet has sufficient memory available
+  DiskPressure         False   Wed, 12 Aug 2026 16:55:15 +0530   Wed, 12 Aug 2026 15:41:49 +0530   KubeletHasNoDiskPressure     kubelet has no disk pressure
+  PIDPressure          False   Wed, 12 Aug 2026 16:55:15 +0530   Wed, 12 Aug 2026 15:41:49 +0530   KubeletHasSufficientPID      kubelet has sufficient PID available
+  Ready                True    Wed, 12 Aug 2026 16:55:15 +0530   Wed, 12 Aug 2026 15:44:32 +0530   KubeletReady                 kubelet is posting ready status
+Addresses:
+  InternalIP:  192.168.122.233
+  Hostname:    hks-worker-3
+Capacity:
+  cpu:                2
+  ephemeral-storage:  39535100Ki
+  hugepages-1Gi:      0
+  hugepages-2Mi:      0
+  memory:             4009864Ki
+  pods:               110
+Allocatable:
+  cpu:                2
+  ephemeral-storage:  36435548100
+  hugepages-1Gi:      0
+  hugepages-2Mi:      0
+  memory:             3907464Ki
+  pods:               110
+System Info:
+  Machine ID:                 be78cd9174e1411e8e82d92ae8bce43e
+  System UUID:                be78cd91-74e1-411e-8e82-d92ae8bce43e
+  Boot ID:                    20713ace-1c39-44a0-bb46-a1ed359d1b5b
+  Kernel Version:             6.8.0-136-generic
+  OS Image:                   Ubuntu 24.04.4 LTS
+  Operating System:           linux
+  Architecture:               amd64
+  Container Runtime Version:  containerd://1.7.29
+  Kubelet Version:            v1.35.7
+PodCIDR:                      172.20.2.0/24
+PodCIDRs:                     172.20.2.0/24
+Non-terminated Pods:          (26 in total)
+  Namespace                   Name                                                      CPU Requests  CPU Limits  Memory Requests  Memory Limits  Age
+  ---------                   ----                                                      ------------  ----------  ---------------  -------------  ---
+  calico-system               calico-apiserver-6679bd5db4-2m9z4                         0 (0%)        0 (0%)      0 (0%)           0 (0%)         72m
+  calico-system               calico-apiserver-6679bd5db4-g9f9p                         0 (0%)        0 (0%)      0 (0%)           0 (0%)         72m
+  calico-system               calico-kube-controllers-6dfb4c88fb-86bst                  0 (0%)        0 (0%)      0 (0%)           0 (0%)         72m
+  calico-system               calico-node-j6tcf                                         0 (0%)        0 (0%)      0 (0%)           0 (0%)         72m
+  calico-system               calico-typha-54568994df-srkrw                             0 (0%)        0 (0%)      0 (0%)           0 (0%)         72m
+  calico-system               calicoctl                                                 0 (0%)        0 (0%)      0 (0%)           0 (0%)         73m
+  calico-system               csi-node-driver-2nhmc                                     0 (0%)        0 (0%)      0 (0%)           0 (0%)         72m
+  kube-system                 coredns-6f65db5985-bzzql                                  100m (5%)     0 (0%)      70Mi (1%)        170Mi (4%)     73m
+  kube-system                 coredns-6f65db5985-d4vxw                                  100m (5%)     0 (0%)      70Mi (1%)        170Mi (4%)     73m
+  kube-system                 kube-proxy-r6rlm                                          0 (0%)        0 (0%)      0 (0%)           0 (0%)         73m
+  logging                     fluent-bit-tjv96                                          0 (0%)        0 (0%)      0 (0%)           0 (0%)         71m
+  monitoring                  alertmanager-main-1                                       14m (0%)      110m (5%)   150Mi (3%)       150Mi (3%)     68m
+  monitoring                  blackbox-exporter-86f4c466db-8tbmk                        30m (1%)      60m (3%)    60Mi (1%)        120Mi (3%)     71m
+  monitoring                  grafana-b4b4fffff-zsbcr                                   100m (5%)     200m (10%)  100Mi (2%)       200Mi (5%)     71m
+  monitoring                  node-exporter-dkl9r                                       112m (5%)     270m (13%)  200Mi (5%)       220Mi (5%)     70m
+  monitoring                  prometheus-k8s-0                                          10m (0%)      10m (0%)    450Mi (11%)      50Mi (1%)      68m
+  monitoring                  prometheus-operator-588fb6c996-bc2d7                      110m (5%)     220m (11%)  120Mi (3%)       240Mi (6%)     71m
+  rook-ceph                   csi-cephfsplugin-provisioner-58584ccfd4-s7b2k             0 (0%)        0 (0%)      0 (0%)           0 (0%)         68m
+  rook-ceph                   csi-cephfsplugin-sbblc                                    0 (0%)        0 (0%)      0 (0%)           0 (0%)         68m
+  rook-ceph                   csi-rbdplugin-rqq2l                                       0 (0%)        0 (0%)      0 (0%)           0 (0%)         68m
+  rook-ceph                   rook-ceph-crashcollector-hks-worker-3-74df44bc8f-xxbmh    0 (0%)        0 (0%)      0 (0%)           0 (0%)         53m
+  rook-ceph                   rook-ceph-exporter-hks-worker-3-69d98cf477-7pjxc          0 (0%)        0 (0%)      0 (0%)           0 (0%)         53m
+  rook-ceph                   rook-ceph-mgr-b-ccc554489-sdsr6                           0 (0%)        0 (0%)      0 (0%)           0 (0%)         54m
+  rook-ceph                   rook-ceph-mon-a-778fb5447-dt4zb                           100m (5%)     0 (0%)      512Mi (13%)      2Gi (53%)      55m
+  rook-ceph                   rook-ceph-operator-7f854d8f6b-fvbpz                       0 (0%)        0 (0%)      0 (0%)           0 (0%)         72m
+  rook-ceph                   rook-ceph-osd-2-69bc4d9db-tch8w                           0 (0%)        0 (0%)      0 (0%)           0 (0%)         53m
+Allocated resources:
+  (Total limits may be over 100 percent, i.e., overcommitted.)
+  Resource           Requests      Limits
+  --------           --------      ------
+  cpu                676m (33%)    870m (43%)
+  memory             1732Mi (45%)  3368Mi (88%)
+  ephemeral-storage  0 (0%)        0 (0%)
+  hugepages-1Gi      0 (0%)        0 (0%)
+  hugepages-2Mi      0 (0%)        0 (0%)

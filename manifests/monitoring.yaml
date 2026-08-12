@@ -1,0 +1,35 @@
+# Supplementary observability resources for the sample app.
+# The ServiceMonitor that wires the app into the existing Prometheus is
+# already part of hks-capability-lab.yaml (created only when the Prometheus
+# Operator CRDs are present). This file adds an optional PrometheusRule so
+# the existing Prometheus/Alertmanager can alert on the lab app specifically
+# — it does not modify any existing rule, alert route, or receiver.
+#
+# Applied only when servicemonitors.monitoring.coreos.com AND
+# prometheusrules.monitoring.coreos.com CRDs are present (checked by
+# scripts/validate-prometheus.sh).
+---
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: hks-lab-app
+  namespace: ${NAMESPACE}
+  labels:
+    app.kubernetes.io/name: hks-lab-app
+    app.kubernetes.io/part-of: hks-capability-lab
+    # kube-prometheus's Prometheus CR typically selects PrometheusRules by
+    # release label; run-hks-test.sh checks the CR's ruleSelector and only
+    # applies this file if it will actually be picked up (see
+    # PROMETHEUS_VALIDATION.md for the observed selector on this cluster).
+spec:
+  groups:
+    - name: hks-capability-lab.rules
+      rules:
+        - alert: HksLabAppTargetDown
+          expr: up{job="hks-lab-app"} == 0
+          for: 2m
+          labels:
+            severity: warning
+          annotations:
+            summary: "HKS Capability Lab sample app target is down"
+            description: "Prometheus has not been able to scrape the hks-lab-app ServiceMonitor target for 2 minutes."

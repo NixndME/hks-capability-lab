@@ -1,0 +1,7 @@
+[34mINFO[0m  Resolved Prometheus ServiceAccount -> monitoring/prometheus-k8s
+
+[1m== MON-001: Prometheus Operator + ServiceMonitor present ==[0m
+[32mPASS[0m  MON-001 ServiceMonitor exists
+
+[1m== MON-002: scrape target health (via port-forward) ==[0m
+[32mPASS[0m  MON-002 2 target(s) up for namespace=hks-capability-lab

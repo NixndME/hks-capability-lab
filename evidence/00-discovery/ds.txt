@@ -1,0 +1,9 @@
+=== daemonsets -A ===
+NAMESPACE       NAME               DESIRED   CURRENT   READY   UP-TO-DATE   AVAILABLE   NODE SELECTOR            AGE
+calico-system   calico-node        4         4         4       4            4           kubernetes.io/os=linux   72m
+calico-system   csi-node-driver    4         4         4       4            4           kubernetes.io/os=linux   72m
+kube-system     kube-proxy         4         4         4       4            4           kubernetes.io/os=linux   76m
+logging         fluent-bit         4         4         4       4            4           <none>                   71m
+monitoring      node-exporter      4         4         4       4            4           kubernetes.io/os=linux   70m
+rook-ceph       csi-cephfsplugin   3         3         3       3            3           <none>                   68m
+rook-ceph       csi-rbdplugin      3         3         3       3            3           <none>                   68m

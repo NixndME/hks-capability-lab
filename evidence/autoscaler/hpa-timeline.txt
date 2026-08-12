@@ -1,0 +1,114 @@
+=== Baseline HPA/pods before load ===
+2026-08-12T11:57:43Z
+NAME          REFERENCE                TARGETS       MINPODS   MAXPODS   REPLICAS   AGE
+hks-lab-app   Deployment/hks-lab-app   cpu: 0%/50%   2         6         2          19m
+NAME                          READY   STATUS    RESTARTS   AGE   IP               NODE           NOMINATED NODE   READINESS GATES
+hks-lab-app-f6f68f5d7-44lt2   1/1     Running   0          19m   172.20.30.14     hks-worker-1   <none>           <none>
+hks-lab-app-f6f68f5d7-w4hx9   1/1     Running   0          19m   172.20.230.217   hks-worker-3   <none>           <none>
+2026-08-12T12:00:45Z
+hks-lab-app   Deployment/hks-lab-app   cpu: 0%/50%   2     6     2     22m
+hks-lab-app-f6f68f5d7-44lt2   1/1   Running   0     22m
+hks-lab-app-f6f68f5d7-w4hx9   1/1   Running   0     22m
+---
+2026-08-12T12:01:05Z
+hks-lab-app   Deployment/hks-lab-app   cpu: 356%/50%   2     6     2     22m
+hks-lab-app-f6f68f5d7-44lt2   1/1   Running   0     22m
+hks-lab-app-f6f68f5d7-9566b   1/1   Running   0     7s
+hks-lab-app-f6f68f5d7-9kqpx   1/1   Running   0     7s
+hks-lab-app-f6f68f5d7-m9ljg   1/1   Running   0     7s
+hks-lab-app-f6f68f5d7-vsfld   1/1   Running   0     7s
+hks-lab-app-f6f68f5d7-w4hx9   1/1   Running   0     22m
+---
+2026-08-12T12:01:25Z
+hks-lab-app   Deployment/hks-lab-app   cpu: 356%/50%   2     6     6     22m
+hks-lab-app-f6f68f5d7-44lt2   1/1   Running   0     22m
+hks-lab-app-f6f68f5d7-9566b   1/1   Running   0     28s
+hks-lab-app-f6f68f5d7-9kqpx   1/1   Running   0     28s
+hks-lab-app-f6f68f5d7-m9ljg   1/1   Running   0     28s
+hks-lab-app-f6f68f5d7-vsfld   1/1   Running   0     28s
+hks-lab-app-f6f68f5d7-w4hx9   1/1   Running   0     22m
+---
+2026-08-12T12:01:46Z
+hks-lab-app   Deployment/hks-lab-app   cpu: 443%/50%   2     6     6     23m
+hks-lab-app-f6f68f5d7-44lt2   1/1   Running   0     23m
+hks-lab-app-f6f68f5d7-9566b   1/1   Running   0     48s
+hks-lab-app-f6f68f5d7-9kqpx   1/1   Running   0     48s
+hks-lab-app-f6f68f5d7-m9ljg   1/1   Running   0     48s
+hks-lab-app-f6f68f5d7-vsfld   1/1   Running   0     48s
+hks-lab-app-f6f68f5d7-w4hx9   1/1   Running   0     23m
+---
+2026-08-12T12:02:06Z
+hks-lab-app   Deployment/hks-lab-app   cpu: 472%/50%   2     6     6     23m
+hks-lab-app-f6f68f5d7-44lt2   1/1   Running   0     23m
+hks-lab-app-f6f68f5d7-9566b   1/1   Running   0     68s
+hks-lab-app-f6f68f5d7-9kqpx   1/1   Running   0     68s
+hks-lab-app-f6f68f5d7-m9ljg   1/1   Running   0     68s
+hks-lab-app-f6f68f5d7-vsfld   1/1   Running   0     68s
+hks-lab-app-f6f68f5d7-w4hx9   1/1   Running   0     23m
+---
+2026-08-12T12:02:26Z
+hks-lab-app   Deployment/hks-lab-app   cpu: 472%/50%   2     6     6     23m
+hks-lab-app-f6f68f5d7-44lt2   1/1   Running   0     23m
+hks-lab-app-f6f68f5d7-9566b   1/1   Running   0     88s
+hks-lab-app-f6f68f5d7-9kqpx   1/1   Running   0     88s
+hks-lab-app-f6f68f5d7-m9ljg   1/1   Running   0     88s
+hks-lab-app-f6f68f5d7-vsfld   1/1   Running   0     88s
+hks-lab-app-f6f68f5d7-w4hx9   1/1   Running   0     23m
+---
+=== post-load scale-down observation ===
+2026-08-12T12:04:46Z
+hks-lab-app   Deployment/hks-lab-app   cpu: 532%/50%   2     6     6     26m
+6
+---
+2026-08-12T12:05:06Z
+hks-lab-app   Deployment/hks-lab-app   cpu: 117%/50%   2     6     6     26m
+6
+---
+2026-08-12T12:05:26Z
+hks-lab-app   Deployment/hks-lab-app   cpu: 117%/50%   2     6     6     26m
+6
+---
+2026-08-12T12:05:46Z
+hks-lab-app   Deployment/hks-lab-app   cpu: 0%/50%   2     6     6     27m
+6
+---
+2026-08-12T12:06:07Z
+hks-lab-app   Deployment/hks-lab-app   cpu: 0%/50%   2     6     6     27m
+6
+---
+2026-08-12T12:06:27Z
+hks-lab-app   Deployment/hks-lab-app   cpu: 0%/50%   2     6     6     27m
+6
+---
+2026-08-12T12:06:47Z
+hks-lab-app   Deployment/hks-lab-app   cpu: 0%/50%   2     6     2     28m
+2
+---
+2026-08-12T12:07:07Z
+hks-lab-app   Deployment/hks-lab-app   cpu: 0%/50%   2     6     2     28m
+2
+---
+2026-08-12T12:07:27Z
+hks-lab-app   Deployment/hks-lab-app   cpu: 0%/50%   2     6     2     28m
+2
+---
+2026-08-12T12:07:48Z
+hks-lab-app   Deployment/hks-lab-app   cpu: 0%/50%   2     6     2     29m
+2
+---
+2026-08-12T12:08:08Z
+hks-lab-app   Deployment/hks-lab-app   cpu: 0%/50%   2     6     2     29m
+2
+---
+2026-08-12T12:08:28Z
+hks-lab-app   Deployment/hks-lab-app   cpu: 0%/50%   2     6     2     29m
+2
+---
+2026-08-12T12:08:48Z
+hks-lab-app   Deployment/hks-lab-app   cpu: 0%/50%   2     6     2     30m
+2
+---
+2026-08-12T12:09:08Z
+hks-lab-app   Deployment/hks-lab-app   cpu: 0%/50%   2     6     2     30m
+2
+---
