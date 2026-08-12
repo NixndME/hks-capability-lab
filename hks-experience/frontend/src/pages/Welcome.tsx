@@ -37,13 +37,11 @@ export function Welcome() {
             complete the full journey, or skip any step and come back later.
           </p>
 
-          {info.mode === "local" && (
-            <p className="mt-4 text-xs text-muted">
-              {info.kubernetes.connected
-                ? `Connected to ${info.kubernetes.context} · Kubernetes ${info.kubernetes.version} · ${info.kubernetes.node_count} nodes`
-                : "No cluster connected yet — you can still browse the journey and every command."}
-            </p>
-          )}
+          <p className="mx-auto mt-3 max-w-md rounded-lg bg-slate-50 px-3 py-2 text-xs text-muted">
+            {info.kubernetes.connected
+              ? `Connected to ${info.kubernetes.context} · Kubernetes ${info.kubernetes.version} · ${info.kubernetes.node_count} nodes — automated Run / Verify will work.`
+              : "This portal isn't connected to a Kubernetes cluster — that's expected here. Every step still shows the exact YAML and commands to copy into your own terminal; just skip the automated \"Run / Verify\" and click Continue after you've checked it yourself."}
+          </p>
 
           <div className="mt-8 flex flex-col items-center gap-3">
             {lastStepDef && (

@@ -41,6 +41,12 @@ COPY hks-capability-lab.yaml /app/hks-capability-lab.yaml
 COPY config.env.example /app/config.env.example
 COPY manifests /app/manifests
 COPY helm /app/helm
+# Customer-facing public manifests (see ../yaml/README.md) -- served at
+# runtime by backend/app/public_artifacts.py for View/Copy/Download, and
+# linked to via their raw GitHub URL for "kubectl apply -f". This image
+# never contains .git (see .containerignore), so PUBLIC_GITHUB_OWNER/REPO
+# below are what make those raw URLs resolve at runtime instead of coming
+# back null.
 COPY yaml /app/yaml
 
 COPY hks-experience/backend/app /app/hks-experience/backend/app
@@ -48,15 +54,33 @@ COPY hks-experience/workflows /app/hks-experience/workflows
 COPY hks-experience/sample-app /app/hks-experience/sample-app
 COPY --from=frontend-build /frontend/dist /app/hks-experience/frontend/dist
 
+# Packaged ONCE at build time so the "Download Chart" button never depends
+# on the `helm` binary (or a live `helm package` subprocess call)
+# succeeding at request time in the running container -- see
+# backend/app/routers/public_yaml.py's download_helm_chart.
+RUN mkdir -p /app/hks-experience/.helm-dist \
+    && helm package /app/helm/hks-capability-lab -d /app/hks-experience/.helm-dist
+
 RUN useradd --system --create-home --uid 10002 hksexp \
     && chmod +x /app/hks-experience/backend/app/shim.sh \
     && mkdir -p /app/evidence \
-    && chown -R hksexp:hksexp /app/evidence
+    && chown -R hksexp:hksexp /app/evidence /app/hks-experience/.helm-dist
 USER hksexp
+
+# Overridden per build (see scripts/build-multiarch*.sh, which compute
+# these from `git remote get-url origin` / the current branch) -- these
+# defaults are this project's own public repo, used only if an image is
+# built without passing the build args (e.g. `docker build` run by hand).
+ARG PUBLIC_GITHUB_OWNER=NixndME
+ARG PUBLIC_GITHUB_REPO=hks-capability-lab
+ARG PUBLIC_ARTIFACT_REF=main
 
 ENV PYTHONUNBUFFERED=1 \
     PORTAL_MODE=local \
-    PORT=8080
+    PORT=8080 \
+    PUBLIC_GITHUB_OWNER=${PUBLIC_GITHUB_OWNER} \
+    PUBLIC_GITHUB_REPO=${PUBLIC_GITHUB_REPO} \
+    PUBLIC_ARTIFACT_REF=${PUBLIC_ARTIFACT_REF}
 
 WORKDIR /app/hks-experience/backend
 EXPOSE 8080

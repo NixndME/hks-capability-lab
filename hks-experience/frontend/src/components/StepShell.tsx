@@ -19,6 +19,7 @@ export function StepShell({
   onAdvance,
   onBack,
   extra,
+  clusterConnected,
 }: {
   step: Step;
   onAdvance: () => void;
@@ -26,11 +27,19 @@ export function StepShell({
   /** Optional rich visualization rendered above the generic action panel --
    * used by steps/*.tsx for the "aha moment" steps (HPA, blue/green, etc). */
   extra?: React.ReactNode;
+  /** undefined while still loading; false covers hosted mode AND a
+   * self-hosted portal with no kubeconfig mounted -- either way, an
+   * automated Run/Verify is guaranteed to fail here, so it's shown as a
+   * secondary, optional action instead of the primary CTA (see
+   * ../pages/Journey.tsx, which fetches this once via api.info()). */
+  clusterConnected?: boolean;
 }) {
   const [mode, setMode] = useState<"yaml" | "helm">(step.deploy?.yaml ? "yaml" : "helm");
   const [running, setRunning] = useState(false);
   const [result, setResult] = useState<RunResult | null>(null);
   const [confirmSkip, setConfirmSkip] = useState(false);
+  const [chartError, setChartError] = useState<string | null>(null);
+  const [downloadingChart, setDownloadingChart] = useState(false);
 
   const activeDeploy = step.deploy?.[mode];
   const hasBothModes = !!(step.deploy?.yaml && step.deploy?.helm);
@@ -58,6 +67,33 @@ export function StepShell({
   const skip = async () => {
     await api.skip(step.id);
     onAdvance();
+  };
+
+  const downloadChart = async () => {
+    setDownloadingChart(true);
+    setChartError(null);
+    try {
+      const res = await fetch(api.helmChartUrl, { credentials: "include" });
+      if (!res.ok) {
+        const body = await res.json().catch(() => ({}));
+        throw new Error(body.detail || `HTTP ${res.status}`);
+      }
+      const disposition = res.headers.get("content-disposition") ?? "";
+      const filename = /filename=([^;]+)/.exec(disposition)?.[1]?.trim() ?? "hks-capability-lab.tgz";
+      const blob = await res.blob();
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = filename;
+      a.click();
+      URL.revokeObjectURL(url);
+    } catch (e) {
+      // Never let a failed download silently save a broken/misnamed file --
+      // fetch-and-check first, show a real message on failure instead.
+      setChartError(String(e instanceof Error ? e.message : e));
+    } finally {
+      setDownloadingChart(false);
+    }
   };
 
   const showsBlockedPanel = result?.error && (result.result === "BLOCKED" || result.result === "ERROR");
@@ -160,14 +196,21 @@ export function StepShell({
 
           {mode === "helm" && step.deploy?.helm && (
             <div className="space-y-4">
-              <div className="flex items-center justify-between rounded-card border border-border bg-slate-50 p-3">
-                <div className="flex items-center gap-2 text-sm">
-                  <Package size={16} className="text-primary" aria-hidden="true" />
-                  <span className="font-subheading">{step.deploy.helm.chart}</span>
+              <div>
+                <div className="flex items-center justify-between rounded-card border border-border bg-slate-50 p-3">
+                  <div className="flex items-center gap-2 text-sm">
+                    <Package size={16} className="text-primary" aria-hidden="true" />
+                    <span className="font-subheading">{step.deploy.helm.chart}</span>
+                  </div>
+                  <button onClick={downloadChart} disabled={downloadingChart} className="btn-secondary !min-h-[32px] !py-1 text-xs">
+                    <Download size={14} aria-hidden="true" /> {downloadingChart ? "Downloading…" : "Download Chart"}
+                  </button>
                 </div>
-                <a href={api.helmChartUrl} className="btn-secondary !min-h-[32px] !py-1 text-xs">
-                  <Download size={14} aria-hidden="true" /> Download Chart
-                </a>
+                {chartError && (
+                  <p className="mt-2 text-xs text-danger">
+                    Couldn't download the chart: {chartError}. This is a portal deployment issue, not something wrong with your command below — the <code className="rounded bg-slate-100 px-1 py-0.5">helm install</code> command still works once you point it at your own copy of the chart.
+                  </p>
+                )}
               </div>
               <div>
                 <p className="mb-1.5 font-subheading text-sm">Install</p>
@@ -194,14 +237,29 @@ export function StepShell({
         <p className="mb-4 text-sm text-muted">{step.expected_result}</p>
 
         {canRun ? (
-          <button onClick={run} disabled={running} className="btn-primary">
-            <PlayCircle size={16} aria-hidden="true" />
-            {running ? "Checking…" : "Run / Verify"}
-          </button>
+          clusterConnected === false ? (
+            <div>
+              <p className="mb-2 flex items-center gap-2 text-sm text-muted">
+                <HelpCircle size={16} className="shrink-0" aria-hidden="true" />
+                This portal isn't connected to a live cluster, so this automated check can't run here. Run the command(s) above yourself, then click Continue below.
+              </p>
+              <button onClick={run} disabled={running} className="btn-secondary">
+                <PlayCircle size={16} aria-hidden="true" />
+                {running ? "Checking…" : "Try Run / Verify anyway"}
+              </button>
+            </div>
+          ) : (
+            <button onClick={run} disabled={running} className="btn-primary">
+              <PlayCircle size={16} aria-hidden="true" />
+              {running ? "Checking…" : "Run / Verify"}
+            </button>
+          )
         ) : (
           <p className="flex items-center gap-2 text-sm text-muted">
             <HelpCircle size={16} aria-hidden="true" />
-            No automated check for this step — run the command above yourself, then continue.
+            {activeDeploy || step.manual_commands?.length
+              ? "No automated check for this step — run the command(s) above yourself, then continue."
+              : "No automated check for this step — follow the instructions above, then continue."}
           </p>
         )}
 

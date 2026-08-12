@@ -15,9 +15,14 @@
     We never assume — we discover, the same way the existing validator
     does before running anything.
   what_you_will_do:
-    - Confirm the Kubernetes API is reachable
-    - Review what HKS discovered automatically
+    - Run the commands below against your own cluster, in your own terminal
+    - "Optional: if this portal itself is connected to a cluster (self-hosted with your kubeconfig mounted), click Run / Verify to have it check automatically"
   deploy: null
+  manual_commands:
+    - "kubectl cluster-info"
+    - "kubectl get nodes"
+    - "kubectl get storageclass"
+    - "kubectl get ingressclass"
   verify:
     description: >
       Read-only discovery via the Kubernetes python client (no kubectl

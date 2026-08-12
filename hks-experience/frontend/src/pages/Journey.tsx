@@ -14,12 +14,18 @@ export function Journey() {
   const navigate = useNavigate();
   const [steps, setSteps] = useState<Step[] | null>(null);
   const [error, setError] = useState<string | null>(null);
+  // Undefined while loading; false covers both hosted mode AND a
+  // self-hosted portal with no kubeconfig mounted -- either way, every
+  // step's automated Run/Verify is guaranteed to fail, so StepShell needs
+  // to know this to lead with "run it yourself" instead of a doomed button.
+  const [clusterConnected, setClusterConnected] = useState<boolean | undefined>(undefined);
 
   const reload = useCallback(() => {
     api.steps().then((d) => setSteps(d.steps)).catch((e) => setError(String(e)));
   }, []);
 
   useEffect(() => { reload(); }, [reload]);
+  useEffect(() => { api.info().then((i) => setClusterConnected(i.kubernetes.connected)).catch(() => setClusterConnected(false)); }, []);
   useEffect(() => { if (stepId) setLastStep(stepId); }, [stepId]);
 
   if (error) return <ErrorState message={error} />;
@@ -51,6 +57,7 @@ export function Journey() {
           step={current}
           onAdvance={goNext}
           onBack={goBack}
+          clusterConnected={clusterConnected}
           extra={
             <>
               <HpaVisual stepId={current.id} />

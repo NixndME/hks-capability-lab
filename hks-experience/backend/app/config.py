@@ -35,6 +35,17 @@ ACTION_TIMEOUT_SECONDS = int(os.environ.get("EXPERIENCE_ACTION_TIMEOUT", "200"))
 
 PUBLIC_YAML_DIR = os.path.join(REPO_ROOT, "yaml")
 
+# Where the Containerfile pre-packages the Helm chart at BUILD time (see
+# Containerfile's `helm package` step) -- serving a static file here means
+# the "Download Chart" button never depends on the `helm` binary existing
+# at runtime, or on that subprocess call succeeding on demand. Overridable
+# so local dev (running uvicorn directly, no container) can point it
+# somewhere it's actually populated, or leave it unset to fall back to
+# live `helm package` (see routers/public_yaml.py).
+HELM_CHART_DIST_DIR = os.environ.get(
+    "HELM_CHART_DIST_DIR", os.path.join(EXPERIENCE_ROOT, ".helm-dist")
+)
+
 
 def _git(*args: str) -> str | None:
     """Best-effort `git` invocation against REPO_ROOT. Returns None on any

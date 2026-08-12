@@ -31,6 +31,15 @@ CONTAINERFILE="hks-experience/Containerfile"
 BUILDER_NAME="hks-experience-builder"
 PLATFORMS="linux/amd64,linux/arm64"
 
+# Baked into the image as PUBLIC_GITHUB_OWNER/REPO/PUBLIC_ARTIFACT_REF (see
+# Containerfile) -- see build-multiarch.sh's matching comment for why.
+_origin_url="$(git remote get-url origin 2>/dev/null || true)"
+_owner_repo="$(echo "$_origin_url" | sed -E 's#(git@github\.com:|https://github\.com/)([^/]+)/([^/.]+)(\.git)?#\2/\3#')"
+PUBLIC_GITHUB_OWNER="${PUBLIC_GITHUB_OWNER:-${_owner_repo%%/*}}"
+PUBLIC_GITHUB_REPO="${PUBLIC_GITHUB_REPO:-${_owner_repo##*/}}"
+PUBLIC_ARTIFACT_REF="${PUBLIC_ARTIFACT_REF:-$(git branch --show-current 2>/dev/null || echo main)}"
+echo "Public artifact URLs will resolve against: ${PUBLIC_GITHUB_OWNER}/${PUBLIC_GITHUB_REPO}@${PUBLIC_ARTIFACT_REF}"
+
 echo "== Docker / Buildx version =="
 docker --version
 if ! docker buildx version >/dev/null 2>&1; then
@@ -55,7 +64,11 @@ docker buildx inspect --bootstrap
 echo
 echo "== Building ${IMAGE} for ${PLATFORMS} =="
 
-ARGS=(buildx build --platform "$PLATFORMS" -t "$IMAGE" -f "$CONTAINERFILE" .)
+ARGS=(buildx build --platform "$PLATFORMS" \
+  --build-arg "PUBLIC_GITHUB_OWNER=${PUBLIC_GITHUB_OWNER}" \
+  --build-arg "PUBLIC_GITHUB_REPO=${PUBLIC_GITHUB_REPO}" \
+  --build-arg "PUBLIC_ARTIFACT_REF=${PUBLIC_ARTIFACT_REF}" \
+  -t "$IMAGE" -f "$CONTAINERFILE" .)
 if [[ "$TAG" != "latest" ]]; then
   ARGS+=(-t "${IMAGE_REPOSITORY}:latest")
 fi
